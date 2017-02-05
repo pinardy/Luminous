@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="14" tileheight="14" nextobjectid="11">
+ <tileset firstgid="1" name="ff6MapTileZozo" tilewidth="15" tileheight="15" spacing="1" margin="1" tilecount="256" columns="16">
+  <image source="ff6MapTileZozo.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Background" width="70" height="70">
+  <data encoding="base64" compression="zlib">
+   eJzt1rERgzAQRUG1h4ECzOACgFJcEd1xgVLGCmwQeINNNV8vujWltAIAAAAAAPzIOzt7R210AQBqUXKTTGHOlgo2H9XlU5smPEIX+i+8dwUl/3iGIYzh9SddAIDrc5foAgAAcDdtdvaO2ugCAAAA+zYZBMyW
+  </data>
+ </layer>
+ <layer name="Graphics" width="70" height="70">
+  <data encoding="base64" compression="zlib">
+   eJztwQEBAAAAgiD/r25IQAEAAAAAAAAAAAAAAAAAAAAAAACvBkyQAAE=
+  </data>
+ </layer>
+ <objectgroup name="Pillar">
+  <object id="2" name="Pillar_W" x="297.333" y="448.667" width="28" height="28"/>
+  <object id="3" name="Pillar_N" x="435.333" y="308.333" width="28" height="28"/>
+  <object id="4" name="Pillar_E" x="575" y="448.333" width="28" height="28"/>
+  <object id="5" name="Pillar_S" x="434.333" y="574.333" width="28" height="28"/>
+ </objectgroup>
+ <objectgroup name="Core">
+  <object id="6" x="424" y="435" width="56" height="42"/>
+ </objectgroup>
+</map>
