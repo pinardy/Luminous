@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Sprites.Player;
+import com.mygdx.game.Tools.B2WorldCreator;
 
 /**
  * Created by Pin on 04-Feb-17.
@@ -72,45 +73,10 @@ public class PlayScreen implements Screen {
         world = new World(new Vector2(0, 0), true);
         b2dr = new Box2DDebugRenderer();
 
-        // body attributes
-        BodyDef bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-        FixtureDef fdef = new FixtureDef();
-        Body body;
-
-        // allows for debug lines of our box2d world.
-        // initialization of Mario class object
+        // create a player in our game world
         player = new Player(world);
 
-        // pillar object index is 2
-        for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) , (rect.getY() + rect.getHeight() / 2) );
-
-            body = world.createBody(bdef);
-
-            // define polygon shape (divide by 2 because starts in centre and goes both direction)
-            shape.setAsBox((rect.getWidth() / 2) , (rect.getHeight() /2) );
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
-
-        // core object index is 3
-        for(MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2) , (rect.getY() + rect.getHeight() / 2) );
-
-            body = world.createBody(bdef);
-
-            // define polygon shape (divide by 2 because starts in centre and goes both direction)
-            shape.setAsBox((rect.getWidth() / 2) , (rect.getHeight() /2));
-            fdef.shape = shape;
-            body.createFixture(fdef);
-        }
+        new B2WorldCreator(world, map);
 
     }
 
@@ -199,6 +165,10 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        map.dispose();
+        renderer.dispose();
+        world.dispose();
+        b2dr.dispose();
+        hud.dispose();
     }
 }
