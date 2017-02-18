@@ -9,20 +9,24 @@ public class GameLogic {
     Pillar pillar = new Pillar();
     Orb orb = new Orb();
 
-    public void shadowAttCore(){
+    public int shadowAttCore(){
         if (pillar.lightStatus == 1){
             // shadow disappears, nothing happens
+            return 0;
         } else{ // if pillar is unlit
             shadow.attackCore(core, ui);
+            return 1;
         }
     }
 
-    public void checkGameStatus(){
+    public int checkGameStatus(){
         if (core.getHealth() <= 0){
             System.out.println("Game is lost!");
+            return 0;
         }
         else {
             System.out.println("Game is still in session");
+            return 1;
         }
     }
     
