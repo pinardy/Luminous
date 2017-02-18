@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Core;
 import com.mygdx.game.Sprites.Pillar;
 import com.mygdx.game.Sprites.Player;
@@ -22,7 +23,9 @@ public class B2WorldCreator {
     // Sprites
     private Player player;
 
-    public B2WorldCreator(World world, TiledMap map){
+    public B2WorldCreator(PlayScreen screen){
+        World world = screen.getWorld();
+        TiledMap map = screen.getMap();
 
         // body and fixture variables
         BodyDef bdef = new BodyDef();
@@ -35,7 +38,7 @@ public class B2WorldCreator {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             // instantiate a new Pillar object for its location in the map
-            new Pillar(world, map, rect);
+            new Pillar(screen, rect);
         }
 
         // core object index is 3
@@ -43,7 +46,7 @@ public class B2WorldCreator {
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
 
             // instantiate a new Core object for its location in the map
-            new Core(world, map, rect);
+            new Core(screen, rect);
         }
     }
 }

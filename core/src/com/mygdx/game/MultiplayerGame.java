@@ -17,7 +17,6 @@ public class MultiplayerGame extends Game {
     // virtual width and height for game
     public static final int V_WIDTH = 500;
     public static final int V_HEIGHT = 500;
-    public static final float PPM = 60;
 
 	public SpriteBatch batch;
 	

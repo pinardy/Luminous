@@ -76,7 +76,7 @@ public class PlayScreen implements Screen {
         // create a player in our game world
         player = new Player(world);
 
-        new B2WorldCreator(world, map);
+        new B2WorldCreator(this);
 
     }
 
@@ -141,6 +141,14 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
 
+    }
+
+    public TiledMap getMap(){
+        return map;
+    }
+
+    public World getWorld(){
+        return world;
     }
 
     @Override
