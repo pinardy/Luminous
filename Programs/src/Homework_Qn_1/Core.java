@@ -2,13 +2,21 @@ package Homework_Qn_1;
 
 public class Core {
     /** If the Core has zero or less health left, the game ends */
-    static int health;
+    private int health;
 
-    public static void decreaseHealth(int damage){
-        health -= damage;
+    public Core() {
+        this.health = 100;
     }
-    public static int getHealth() {
-        return health;
+
+    public void decreaseHealth(int damage){
+        if(this.health - damage >= 0) this.health -= damage;
+    }
+    public int getHealth() {
+        return this.health;
+    }
+    public int setHealth(int hp){
+        this.health = hp;
+        return this.health;
     }
 
 }

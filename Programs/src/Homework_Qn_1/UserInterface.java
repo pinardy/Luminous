@@ -1,32 +1,30 @@
 package Homework_Qn_1;
 
 public class UserInterface {
-    static int score;
-    static int health;
-    static int timer;
+    int score;
+    int health = 100;
+    int timer;
 
     public void updateScore(int score) {
         this.score = score;
     }
 
-    public int getScore(int score) {
+    public int getScore() {
         return score;
     }
 
-    public static void updatehealth(int hp) {
+    public void updateHealth(int hp) {
         health = hp;
     }
 
-    public static int getHealth(int health) {
+    public int getHealth() {
         return health;
     }
 
-    public static void setTime(int time) {
+    public void setTime(int time) {
         timer = time;
     }
 
-    public static int getTime(int time) {
-        return time;
-    }
+    public int getTime() { return timer; }
 
 }
