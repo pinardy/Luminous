@@ -1,6 +1,13 @@
 package Homework_Qn_1;
 
 public class UserInterface {
+    /** The User Interface keeps track of the following:
+     *  1) Score
+     *  2) Health of core
+     *  3) Time
+     */
+
+
     int score;
     int health = 100;
     int timer;

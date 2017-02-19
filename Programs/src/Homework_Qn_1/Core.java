@@ -1,7 +1,10 @@
 package Homework_Qn_1;
 
 public class Core {
-    /** If the Core has zero or less health left, the game ends */
+    /** If the Core has zero or less health left, the game ends
+     *  The core can be damaged by shadows
+     */
+
     private int health;
 
     public Core() {

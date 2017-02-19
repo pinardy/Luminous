@@ -1,7 +1,6 @@
 package Homework_Qn_1;
 
 public class Shadow {
-
     /**
      * The Shadow acts as the 'enemy' of the game
      * If the shadow comes in contact with the core, the core gets damaged
