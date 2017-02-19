@@ -6,7 +6,7 @@ public class Shadow {
      * If the shadow comes in contact with the core, the core gets damaged
      */
 
-    public void attackCore(Core core, UserInterface ui){
+    public static void attackCore(Core core, UserInterface ui){
         core.decreaseHealth(5);
 
         // updates health on user interface accordingly
