@@ -8,13 +8,15 @@ public class Pillar {
      *  If there is no orb on the pillar, it is considered unlit (lightStatus = 0)
      */
     // default status is unlit
-    static int lightStatus = 0; // 0 is unlit, 1 is lit
+    private int lightStatus = 0; // 0 is unlit, 1 is lit
 
-    public static void setLight(){
+    public void setLight(){
         lightStatus = 1;
     }
-    public static void removeLight(){
+    public void removeLight(){
         lightStatus = 0;
     }
+    public int getLightStatus() { return lightStatus; }
+
 
 }
