@@ -12,4 +12,7 @@ public class Orb {
     public void placeOrb(){
         onPillar = true;
     }
+
+    // Get orb status (on or off pillar)
+    public boolean getOrbStatus() { return onPillar;}
 }
