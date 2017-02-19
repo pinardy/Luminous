@@ -1,4 +1,4 @@
-package Week4;
+package Homework_Qn_1;
 
 import org.junit.After;
 import org.junit.Before;
@@ -8,8 +8,10 @@ import org.junit.Test;
  * Created by polarvenezia on 19/2/17.
  */
 public class ShadowTest {
+    
     Core core;
     UserInterface ui;
+    
     @Before
     public void runBeforeTest(){
         core = new Core();
