@@ -18,6 +18,14 @@ public class MultiplayerGame extends Game {
     public static final int V_WIDTH = 500;
     public static final int V_HEIGHT = 500;
 
+    // powers of 2 so its easier to OR bits tgt
+	public static final short DEFAULT_BIT = 1;
+	public static final short PLAYER_BIT = 2;
+	public static final short PILLAR_BIT = 4;
+	public static final short CORE_BIT = 8;
+	public static final short ORB_BIT = 16;
+	public static final short SHADOW_BIT = 32;
+
 	public SpriteBatch batch;
 	
 	@Override

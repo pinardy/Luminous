@@ -5,26 +5,20 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Sprites.Player;
+import com.mygdx.game.Sprites.Shadow;
 import com.mygdx.game.Tools.B2WorldCreator;
+import com.mygdx.game.Tools.WorldContactListener;
 
 /**
  * Created by Pin on 04-Feb-17.
@@ -50,6 +44,7 @@ public class PlayScreen implements Screen {
 
     // Sprites
     private Player player;
+    private Shadow shadow;
 
 
     public PlayScreen (MultiplayerGame game){
@@ -78,12 +73,18 @@ public class PlayScreen implements Screen {
 
         new B2WorldCreator(this);
 
+        world.setContactListener(new WorldContactListener());
+
+        shadow = new Shadow(this, .32f, .32f);
     }
 
     public void update(float dt){
         // handle input first
         handleInput(dt);
         world.step(1/60f, 6, 2);
+
+        //TODO: player.update(dt) ?
+        shadow.update(dt);
 
         // track movement of player
         gameCam.position.x = player.b2body.getPosition().x;
@@ -139,6 +140,8 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+
+
         hud.stage.draw();
 
     }

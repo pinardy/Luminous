@@ -18,7 +18,8 @@ public abstract class Enemy extends Sprite {
         this.world = screen.getWorld();
         this.screen = screen;
         setPosition(x, y);
+        defineObject();
     }
 
-    protected abstract void defineEnemy();
+    protected abstract void defineObject();
 }
