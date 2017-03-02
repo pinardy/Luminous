@@ -36,9 +36,15 @@ public class Player extends Sprite {
         // The player can collide with these
         fdef.filter.maskBits = MultiplayerGame.DEFAULT_BIT |
                 MultiplayerGame.PILLAR_BIT |
-                MultiplayerGame.CORE_BIT;
+                MultiplayerGame.CORE_BIT |
+                MultiplayerGame.SHADOW_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef);
+    }
+
+
+    public void update(float dt) {
+        // player interaction
     }
 }

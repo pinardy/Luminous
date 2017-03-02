@@ -9,12 +9,13 @@ import com.mygdx.game.Screens.PlayScreen;
  * Created by Pin on 06-Feb-17.
  */
 
-public abstract class Enemy extends Sprite {
+// Sprite is a library from LibGDX
+public abstract class Object extends Sprite {
     protected World world;
     protected PlayScreen screen;
     public Body b2body;
 
-    public Enemy(PlayScreen screen, float x, float y){
+    public Object(PlayScreen screen, float x, float y){
         this.world = screen.getWorld();
         this.screen = screen;
         setPosition(x, y);

@@ -25,6 +25,7 @@ public class MultiplayerGame extends Game {
 	public static final short CORE_BIT = 8;
 	public static final short ORB_BIT = 16;
 	public static final short SHADOW_BIT = 32;
+	public static final short LIGHTEDPILLAR_BIT = 32;
 
 	public SpriteBatch batch;
 	

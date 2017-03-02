@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Core;
 import com.mygdx.game.Sprites.Pillar;
@@ -39,6 +40,16 @@ public class B2WorldCreator {
 
             // instantiate a new Pillar object for its location in the map
             new Pillar(screen, rect);
+
+            bdef.type = BodyDef.BodyType.StaticBody;
+            bdef.position.set((rect.getX() + rect.getWidth() / 2), (rect.getY() + rect.getHeight() / 2));
+
+            body = world.createBody(bdef);
+
+            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+            fdef.shape = shape;
+            fdef.filter.categoryBits = MultiplayerGame.PILLAR_BIT;
+            body.createFixture(fdef);
         }
 
         // core object index is 3

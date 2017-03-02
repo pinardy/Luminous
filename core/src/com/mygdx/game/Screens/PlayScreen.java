@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
+import com.mygdx.game.Sprites.Orb;
 import com.mygdx.game.Sprites.Player;
 import com.mygdx.game.Sprites.Shadow;
 import com.mygdx.game.Tools.B2WorldCreator;
@@ -41,10 +42,12 @@ public class PlayScreen implements Screen {
     // Box2d variables
     private World world;
     private Box2DDebugRenderer b2dr; // graphical representation of fixtures in box2d world
+    private B2WorldCreator creator;
 
     // Sprites
     private Player player;
     private Shadow shadow;
+    private Orb orb;
 
 
     public PlayScreen (MultiplayerGame game){
@@ -62,20 +65,27 @@ public class PlayScreen implements Screen {
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("map_easy.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
+
+        // initially set our gamcam to be centered correctly at the start of of map
         gameCam.position.set((gamePort.getWorldWidth() / 2) , (gamePort.getWorldHeight() / 2) , 0) ;
 
         // World(Vector2 gravity, boolean doSleep)
         world = new World(new Vector2(0, 0), true);
+
+        // allows for debug lines of our box2d world
         b2dr = new Box2DDebugRenderer();
+
+        creator = new B2WorldCreator(this);
+
+
 
         // create a player in our game world
         player = new Player(world);
 
-        new B2WorldCreator(this);
+        // create a shadow in our game world
+        shadow = new Shadow(this, .32f, .32f);
 
         world.setContactListener(new WorldContactListener());
-
-        shadow = new Shadow(this, .32f, .32f);
     }
 
     public void update(float dt){
@@ -83,7 +93,8 @@ public class PlayScreen implements Screen {
         handleInput(dt);
         world.step(1/60f, 6, 2);
 
-        //TODO: player.update(dt) ?
+        //TODO: update player.update(dt) accordingly
+        player.update(dt);
         shadow.update(dt);
 
         // track movement of player
@@ -100,7 +111,7 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
 
-        //TODO: Player keeps moving in a certain direction (doesn't slow down)
+        // Player keeps moving in a certain direction (doesn't slow down)
         // Up-Down-Left-Right movement
         if(Gdx.input.isKeyPressed(Input.Keys.UP)){
             player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
@@ -138,12 +149,9 @@ public class PlayScreen implements Screen {
 
         // tell our game batch to recognise where the gameCam is and render what the camera can see
         game.batch.setProjectionMatrix(gameCam.combined);
-
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
-
         hud.stage.draw();
-
     }
 
     public TiledMap getMap(){

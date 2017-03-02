@@ -10,11 +10,11 @@ import com.mygdx.game.Screens.PlayScreen;
  * Created by Pin on 06-Feb-17.
  */
 
-public class Shadow extends Object{
+public class Orb extends Object{
 
     private float stateTime;
 
-    public Shadow(PlayScreen screen, float x, float y) {
+    public Orb(PlayScreen screen, float x, float y) {
         super(screen, x, y);
         stateTime = 0;
         setBounds(getX(), getY(), 16, 16);
@@ -30,7 +30,7 @@ public class Shadow extends Object{
     @Override
     protected void defineObject() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(10, 40);
+        bdef.position.set(12, 50);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -39,16 +39,14 @@ public class Shadow extends Object{
         // shape
         CircleShape shape = new CircleShape();
         shape.setRadius(10);
-
-
-        fdef.filter.categoryBits = MultiplayerGame.SHADOW_BIT;
-
-        // The shadow can collide with these
-        fdef.filter.maskBits = MultiplayerGame.PILLAR_BIT|
-                            MultiplayerGame.CORE_BIT;
-
-
         fdef.shape = shape;
-        b2body.createFixture(fdef).setUserData(this);
+
+        fdef.filter.categoryBits = MultiplayerGame.ORB_BIT;
+
+        // The orb can collide with these
+        fdef.filter.maskBits = MultiplayerGame.PILLAR_BIT
+                | MultiplayerGame.PLAYER_BIT;
+
+        b2body.createFixture(fdef);
     }
 }
