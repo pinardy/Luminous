@@ -44,7 +44,7 @@ public abstract class InteractiveTileObject {
         // define polygon shape (divide by 2 because starts in centre and goes both direction)
         shape.setAsBox((bounds.getWidth() / 2) , (bounds.getHeight() /2));
         fdef.shape = shape;
-        body.createFixture(fdef);
+        fixture = body.createFixture(fdef);
     }
 
     public void setCategoryFilter(short filterBit){
