@@ -15,6 +15,8 @@ import com.mygdx.game.Sprites.Core;
 import com.mygdx.game.Sprites.Pillar;
 import com.mygdx.game.Sprites.Player;
 
+import java.net.MulticastSocket;
+
 /**
  * Created by Pin on 06-Feb-17.
  */
@@ -37,6 +39,8 @@ public class B2WorldCreator {
         // pillar object index is 2
         for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
+
+            MultiplayerGame.pillarPositions.add(rect);
 
             // instantiate a new Pillar object for its location in the map
             new Pillar(screen, rect);

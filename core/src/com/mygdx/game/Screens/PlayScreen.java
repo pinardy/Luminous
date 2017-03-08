@@ -53,7 +53,6 @@ public class PlayScreen implements Screen {
     public PlayScreen (MultiplayerGame game){
         this.game = game;
 
-
         // create cam to follow player throughout world
         gameCam = new OrthographicCamera();
 
@@ -77,6 +76,7 @@ public class PlayScreen implements Screen {
 
         creator = new B2WorldCreator(this);
 
+        System.out.println(game.getPillarPositions());
 
 
         // create a player in our game world

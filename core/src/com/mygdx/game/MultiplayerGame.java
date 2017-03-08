@@ -2,7 +2,11 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.Tools.B2WorldCreator;
+
+import java.util.ArrayList;
 
 public class MultiplayerGame extends Game {
 
@@ -24,7 +28,8 @@ public class MultiplayerGame extends Game {
 	public static final short LIGHTEDPILLAR_BIT = 64;
 
 	public SpriteBatch batch;
-	
+	public static ArrayList<Rectangle> pillarPositions = new ArrayList<Rectangle>();
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
@@ -40,5 +45,9 @@ public class MultiplayerGame extends Game {
 	@Override
 	public void dispose () {
 		batch.dispose();
+	}
+
+	public ArrayList<Rectangle> getPillarPositions() {
+        return pillarPositions;
 	}
 }
