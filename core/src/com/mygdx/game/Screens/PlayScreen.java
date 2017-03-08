@@ -79,15 +79,15 @@ public class PlayScreen implements Screen {
 
         creator = new B2WorldCreator(this);
 
-        System.out.println(game.getPillarPositions());
-
-
         // create a player in our game world
         player = new Player(world);
 
-        // create a shadow in our game world
+        //set the shadow to appear 1 x distance away from pillar
+        calculateShadowStartPosition(game);
+
+        //this will draw all the shawdow for testing as we prefer to create them randomly
         for(Rectangle r: game.getPillarPositions()) {
-            shadows.add(new Shadow(this, r.getX()+r.getWidth()/2, r.getY()+r.getHeight()/2));
+            shadows.add(new Shadow(this, r.getX(), r.getY()));
         }
 
         // create an orb in our game world
@@ -107,7 +107,6 @@ public class PlayScreen implements Screen {
 
         for(Shadow s: shadows) {
             s.update(dt);
-
         }
 
         // track movement of player
@@ -121,6 +120,24 @@ public class PlayScreen implements Screen {
         renderer.setView(gameCam);
     }
 
+
+    private void calculateShadowStartPosition(MultiplayerGame game) {
+        float coreX = game.corePosition.getX() + game.corePosition.getWidth()/2;
+        float coreY = game.corePosition.getY() + game.corePosition.getHeight()/2;
+
+        // create a shadow in our game world
+        for(Rectangle r: game.getPillarPositions()) {
+            float x = r.getX() + r.getWidth()/2;
+            float y = r.getY() + r.getHeight()/2;
+
+
+            float adjustedX = x + (x-coreX);
+            float adjustedY = y + (y-coreY);
+
+            r.setX(adjustedX);
+            r.setY(adjustedY);
+        }
+    }
 
     public void handleInput(float dt) {
 

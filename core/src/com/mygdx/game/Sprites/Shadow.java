@@ -13,6 +13,8 @@ import com.mygdx.game.Screens.PlayScreen;
 public class Shadow extends Object{
 
     private float stateTime;
+    private float coreX = MultiplayerGame.corePosition.getX() + MultiplayerGame.corePosition.getWidth()/2;
+    private float coreY = MultiplayerGame.corePosition.getY() + MultiplayerGame.corePosition.getHeight()/2;
 
     public Shadow(PlayScreen screen, float x, float y) {
         super(screen, x, y);
@@ -22,8 +24,12 @@ public class Shadow extends Object{
 
     public void update(float dt){
         stateTime += dt;
-//        b2body.setLinearVelocity(getX()/100,getY()/100);
-//        bdef.awake = false;
+
+        float speedX = -(getX() - coreX)/10;
+        float speedY = -(getY() - coreY)/10;
+
+
+        b2body.setLinearVelocity(speedX, speedY);
         // move a bit over half the width of the sprite, and down half the height
 //        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 

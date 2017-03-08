@@ -57,7 +57,7 @@ public class B2WorldCreator {
         // core object index is 3
         for(MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
+            MultiplayerGame.corePosition = rect;
             // instantiate a new Core object for its location in the map
             new Core(screen, rect);
         }

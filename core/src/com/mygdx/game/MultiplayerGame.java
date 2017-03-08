@@ -29,6 +29,7 @@ public class MultiplayerGame extends Game {
 
 	public SpriteBatch batch;
 	public static ArrayList<Rectangle> pillarPositions = new ArrayList<Rectangle>();
+    public static Rectangle corePosition = new Rectangle();
 
 	@Override
 	public void create () {
