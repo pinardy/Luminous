@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -20,6 +21,10 @@ import com.mygdx.game.Sprites.Player;
 import com.mygdx.game.Sprites.Shadow;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
+
+import java.util.ArrayList;
+
+import sun.security.provider.SHA;
 
 /**
  * Created by Pin on 04-Feb-17.
@@ -46,7 +51,7 @@ public class PlayScreen implements Screen {
 
     // Sprites
     private Player player;
-    private Shadow shadow;
+    private ArrayList<Shadow> shadows = new ArrayList<Shadow>();
     private Orb orb;
 
 
@@ -83,7 +88,9 @@ public class PlayScreen implements Screen {
         player = new Player(world);
 
         // create a shadow in our game world
-        shadow = new Shadow(this, .32f, .32f);
+        for(Rectangle r: game.getPillarPositions()) {
+            shadows.add(new Shadow(this, r.getX()+r.getWidth()/2, r.getY()+r.getHeight()/2));
+        }
 
         // create an orb in our game world
         orb = new Orb(this, .32f, .32f);
@@ -98,8 +105,12 @@ public class PlayScreen implements Screen {
 
         //TODO: update player.update(dt) accordingly
         player.update(dt);
-        shadow.update(dt);
         orb.update(dt);
+
+        for(Shadow s: shadows) {
+            s.update(dt);
+
+        }
 
         // track movement of player
         gameCam.position.x = player.b2body.getPosition().x;

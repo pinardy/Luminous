@@ -22,15 +22,17 @@ public class Shadow extends Object{
 
     public void update(float dt){
         stateTime += dt;
+//        b2body.setLinearVelocity(getX()/100,getY()/100);
+//        bdef.awake = false;
         // move a bit over half the width of the sprite, and down half the height
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+//        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
 
     }
 
     @Override
     protected void defineObject() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(400, 400);
+        bdef.position.set(getX(), getY());
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -39,7 +41,6 @@ public class Shadow extends Object{
         // shape
         CircleShape shape = new CircleShape();
         shape.setRadius(10);
-
 
         fdef.filter.categoryBits = MultiplayerGame.SHADOW_BIT;
 
