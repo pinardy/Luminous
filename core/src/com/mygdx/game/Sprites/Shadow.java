@@ -15,6 +15,7 @@ public class Shadow extends Object{
     private float stateTime;
     private float coreX = MultiplayerGame.corePosition.getX() + MultiplayerGame.corePosition.getWidth()/2;
     private float coreY = MultiplayerGame.corePosition.getY() + MultiplayerGame.corePosition.getHeight()/2;
+    private float speed = 10;
 
     public Shadow(PlayScreen screen, float x, float y) {
         super(screen, x, y);
@@ -25,14 +26,15 @@ public class Shadow extends Object{
     public void update(float dt){
         stateTime += dt;
 
-        float speedX = -(getX() - coreX)/10;
-        float speedY = -(getY() - coreY)/10;
-
+        float speedX = -(getX() - coreX)/speed;
+        float speedY = -(getY() - coreY)/speed;
 
         b2body.setLinearVelocity(speedX, speedY);
-        // move a bit over half the width of the sprite, and down half the height
-//        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        b2body.setActive(false);
+    }
 
+    public void setActive(boolean active) {
+        b2body.setActive(active);
     }
 
     @Override
