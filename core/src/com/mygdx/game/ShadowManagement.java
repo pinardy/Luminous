@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Shadow;
 
@@ -58,8 +59,8 @@ public class ShadowManagement extends Thread {
 
         for(Rectangle r: game.getPillarPositions()) {
             while(System.currentTimeMillis() - oldTime < 10000) {};
+
             shadows.add(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY()));
-            shadows.get(shadows.size()-1).update(1);
             oldTime = System.currentTimeMillis();
             System.out.println("Shadow created!");
         }
