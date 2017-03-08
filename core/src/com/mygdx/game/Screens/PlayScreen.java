@@ -85,6 +85,9 @@ public class PlayScreen implements Screen {
         // create a shadow in our game world
         shadow = new Shadow(this, .32f, .32f);
 
+        // create an orb in our game world
+        orb = new Orb(this, .32f, .32f);
+
         world.setContactListener(new WorldContactListener());
     }
 
@@ -96,6 +99,7 @@ public class PlayScreen implements Screen {
         //TODO: update player.update(dt) accordingly
         player.update(dt);
         shadow.update(dt);
+        orb.update(dt);
 
         // track movement of player
         gameCam.position.x = player.b2body.getPosition().x;

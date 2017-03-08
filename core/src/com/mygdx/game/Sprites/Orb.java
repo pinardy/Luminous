@@ -13,25 +13,35 @@ import com.mygdx.game.Screens.PlayScreen;
 public class Orb extends Object{
 
     private float stateTime;
+    private boolean setToPicked;
+    private boolean picked;
 
     public Orb(PlayScreen screen, float x, float y) {
         super(screen, x, y);
         stateTime = 0;
         setBounds(getX(), getY(), 16, 16);
+        setToPicked = false;
+        picked = false;
     }
 
     public void update(float dt){
         stateTime += dt;
-        // move a bit over half the width of the sprite, and down half the height
-        setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        if (setToPicked && !picked){
+            world.destroyBody(b2body);
+            picked = true;
+        }
+        else if (!picked) {
+            // move a bit over half the width of the sprite, and down half the height
+            setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
+        }
 
     }
 
     @Override
     protected void defineObject() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(12, 50);
-        bdef.type = BodyDef.BodyType.DynamicBody;
+        bdef.position.set(500, 600);
+        bdef.type = BodyDef.BodyType.StaticBody;
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
@@ -48,5 +58,12 @@ public class Orb extends Object{
                 | MultiplayerGame.PLAYER_BIT;
 
         b2body.createFixture(fdef);
+
+        // TODO: trying this out (check if this does anything)
+        b2body.setUserData(this);
+    }
+
+    public void getPicked() {
+        setToPicked = true;
     }
 }

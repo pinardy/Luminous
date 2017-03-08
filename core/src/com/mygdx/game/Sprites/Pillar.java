@@ -11,7 +11,7 @@ import com.mygdx.game.Screens.PlayScreen;
 public class Pillar extends InteractiveTileObject {
     public Pillar(PlayScreen screen, Rectangle bounds) {
         super(screen, bounds);
-//        fixture.setUserData(this);
+        fixture.setUserData(this);
         setCategoryFilter(MultiplayerGame.PILLAR_BIT);
 
     }

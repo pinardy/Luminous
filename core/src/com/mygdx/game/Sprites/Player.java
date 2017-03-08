@@ -24,7 +24,7 @@ public class Player extends Sprite {
 
     public void definePlayer() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(32, 32);
+        bdef.position.set(500, 500);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -37,6 +37,7 @@ public class Player extends Sprite {
         fdef.filter.maskBits = MultiplayerGame.DEFAULT_BIT |
                 MultiplayerGame.PILLAR_BIT |
                 MultiplayerGame.CORE_BIT |
+                MultiplayerGame.ORB_BIT |
                 MultiplayerGame.SHADOW_BIT;
 
         fdef.shape = shape;

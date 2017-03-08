@@ -30,7 +30,7 @@ public class Shadow extends Object{
     @Override
     protected void defineObject() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(10, 40);
+        bdef.position.set(400, 400);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
