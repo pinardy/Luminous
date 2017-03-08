@@ -24,13 +24,13 @@ public class WorldContactListener implements ContactListener{
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         switch (cDef){
-            //TODO: Fix crash for orb picking
             case MultiplayerGame.ORB_BIT | MultiplayerGame.PLAYER_BIT :
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.ORB_BIT){
                     boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     if (pickOrb){
 //                        fixA.getUserData().orbPick();
-                        ((Orb)fixA.getUserData()).getPicked();
+                        //TODO: Fix crash for orb picking
+//                        ((Orb)fixA.getUserData()).getPicked();
                         Gdx.app.log("Picking orb","");
                     }
                 }
@@ -38,7 +38,8 @@ public class WorldContactListener implements ContactListener{
                     boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     if (pickOrb){
 //                        fixA.getUserData().orbPick();
-                        ((Orb)fixB.getUserData()).getPicked();
+                        //TODO: Fix crash for orb picking
+//                        ((Orb)fixB.getUserData()).getPicked();
                         Gdx.app.log("Picking orb","");
                     }
                 }

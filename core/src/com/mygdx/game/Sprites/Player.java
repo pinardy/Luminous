@@ -29,8 +29,12 @@ public class Player extends Sprite {
         b2body = world.createBody(bdef);
 
         FixtureDef fdef = new FixtureDef();
+
+        // shape
         CircleShape shape = new CircleShape();
         shape.setRadius(10);
+        fdef.shape = shape;
+
         fdef.filter.categoryBits = MultiplayerGame.PLAYER_BIT;
 
         // The player can collide with these
@@ -40,7 +44,7 @@ public class Player extends Sprite {
                 MultiplayerGame.ORB_BIT |
                 MultiplayerGame.SHADOW_BIT;
 
-        fdef.shape = shape;
+
         b2body.createFixture(fdef);
     }
 
