@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Sprites.Orb;
+import com.mygdx.game.Sprites.Pillar;
 import com.mygdx.game.Sprites.Player;
 
 /**
@@ -50,11 +51,43 @@ public class WorldContactListener implements ContactListener{
                         Gdx.app.log("Picking orb","");
                     }
                 }
+                break;
+
+            case MultiplayerGame.ORB_BIT | MultiplayerGame.PILLAR_BIT :
+                // do nothing
+
+            case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT :
+                if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
+                    boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
+                    if (placeOrb){
+                        // Updates Pillar's status to lighted
+                        ((Pillar)fixB.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
+
+                        // Updates Player's status to not carrying orb
+                        ((Player)fixA.getUserData()).orbDrop();
+
+                        Gdx.app.log("Pillar is LIT","");
+                    }
+                }
+                else if (fixB.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
+                    boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
+                    if (placeOrb){
+                        // Updates Pillar's status to lighted
+                        //TODO: Crashes
+                        ((Pillar)fixA.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
+
+                        // Updates Player's status to not carrying orb
+                        ((Player)fixB.getUserData()).orbDrop();
+
+                        Gdx.app.log("Pillar is LIT","");
+                    }
+                }
+                break;
 
         }
 
 
-        Gdx.app.log("Begin contact","");
+//        Gdx.app.log("Begin contact","");
     }
 
     @Override
