@@ -57,4 +57,8 @@ public class Player extends Sprite {
     public void orbPick() {
         pickingOrb = true;
     }
+
+    public void orbDrop() {
+        pickingOrb = false;
+    }
 }

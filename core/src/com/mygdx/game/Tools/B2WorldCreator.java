@@ -37,27 +37,17 @@ public class B2WorldCreator {
         // pillar object index is 2
         for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
             MultiplayerGame.pillarPositions.add(rect);
 
             // instantiate a new Pillar object for its location in the map
             new Pillar(screen, rect);
-
-            bdef.type = BodyDef.BodyType.StaticBody;
-            bdef.position.set((rect.getX() + rect.getWidth() / 2), (rect.getY() + rect.getHeight() / 2));
-
-            body = world.createBody(bdef);
-
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
-            fdef.shape = shape;
-            fdef.filter.categoryBits = MultiplayerGame.PILLAR_BIT;
-            body.createFixture(fdef);
         }
 
         // core object index is 3
         for(MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             MultiplayerGame.corePosition = rect;
+
             // instantiate a new Core object for its location in the map
             new Core(screen, rect);
         }
