@@ -1,6 +1,8 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Screens.PlayScreen;
@@ -31,9 +33,15 @@ public class MultiplayerGame extends Game {
 	public static ArrayList<Rectangle> pillarPositions = new ArrayList<Rectangle>();
     public static Rectangle corePosition = new Rectangle();
 
+	public static AssetManager manager;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+		manager = new AssetManager();
+		manager.load("audio/music/dungeon_peace.mp3", Music.class);
+		manager.finishLoading();
+
         setScreen(new PlayScreen(this));
 
 	}

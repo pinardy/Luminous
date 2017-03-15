@@ -3,6 +3,7 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -52,6 +53,9 @@ public class PlayScreen implements Screen {
     private Player player;
     private Orb orb;
 
+    // Music
+    private Music music;
+
     private ShadowManagement sm = null;
 
     public PlayScreen(MultiplayerGame game) {
@@ -84,6 +88,11 @@ public class PlayScreen implements Screen {
 
         // create an orb in our game world
         orb = new Orb(this, .32f, .32f);
+
+        // play music
+        music = MultiplayerGame.manager.get("audio/music/dungeon_peace.mp3", Music.class);
+        music.setLooping(true);
+        music.play();
 
         world.setContactListener(new WorldContactListener());
 
