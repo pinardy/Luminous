@@ -109,6 +109,38 @@ public class WorldContactListener implements ContactListener{
                     }
                 }
                 break;
+
+            //TODO: Fix Interaction for picking and dropping orb
+            case MultiplayerGame.PLAYER_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT:
+                if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
+                    boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
+                    if (grabOrb){
+                        if (((Player)fixA.getUserData()).holdingOrb == false) {
+                            // Updates Pillar's status to lighted
+                            ((Pillar) fixB.getUserData()).setCategoryFilter(MultiplayerGame.PILLAR_BIT);
+
+                            // Updates Player's status to not carrying orb
+                            ((Player) fixA.getUserData()).orbPick();
+
+                            Gdx.app.log("Picked orb from pillar", "");
+                        }
+                    }
+                }
+                else if (fixB.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
+                    boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
+                    if (grabOrb){
+                        if (((Player)fixB.getUserData()).holdingOrb == false) {
+                            // Updates Pillar's status to lighted
+                            ((Pillar) fixA.getUserData()).setCategoryFilter(MultiplayerGame.PILLAR_BIT);
+
+                            // Updates Player's status to not carrying orb
+                            ((Player) fixB.getUserData()).orbPick();
+
+                            Gdx.app.log("Picked orb from pillar", "");
+                        }
+                    }
+                }
+                break;
         }
 //        Gdx.app.log("Begin contact","");
     }

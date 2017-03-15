@@ -133,15 +133,15 @@ public class PlayScreen implements Screen {
         }
 
         // Drops orb if carrying orb
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            if (player.holdingOrb == true){
-                player.holdingOrb = false;
-
-                //TODO: Create Orb object (effect of "dropping orb")
-                Gdx.app.log("Dropping orb", "");
-
-            }
-        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+//            if (player.holdingOrb == true){
+//                player.holdingOrb = false;
+//
+//                //TODO: Create Orb object (effect of "dropping orb")
+//                Gdx.app.log("Dropping orb", "");
+//
+//            }
+//        }
 
 
     }
