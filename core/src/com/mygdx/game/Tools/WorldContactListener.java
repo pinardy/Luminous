@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Sprites.Orb;
+import com.mygdx.game.Sprites.Player;
 
 /**
  * Created by Pin on 21-Feb-17.
@@ -28,18 +29,24 @@ public class WorldContactListener implements ContactListener{
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.ORB_BIT){
                     boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     if (pickOrb){
-//                        fixA.getUserData().orbPick();
-                        //TODO: Fix crash for orb picking
-//                        ((Orb)fixA.getUserData()).getPicked();
+                        // Updates Player's status to pickingOrb
+                        ((Player)fixA.getUserData()).orbPick();
+
+                        // Updates Orb's status to getPicked
+                        ((Orb)fixA.getUserData()).getPicked();
+
                         Gdx.app.log("Picking orb","");
                     }
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.ORB_BIT){
                     boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     if (pickOrb){
-//                        fixA.getUserData().orbPick();
-                        //TODO: Fix crash for orb picking
-//                        ((Orb)fixB.getUserData()).getPicked();
+                        // Updates Player's status to pickingOrb
+                        ((Player)fixA.getUserData()).orbPick();
+
+                        // Updates Orb's status to getPicked
+                        ((Orb)fixB.getUserData()).getPicked();
+
                         Gdx.app.log("Picking orb","");
                     }
                 }

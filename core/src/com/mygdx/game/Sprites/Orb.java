@@ -57,10 +57,10 @@ public class Orb extends Object{
         fdef.filter.maskBits = MultiplayerGame.PILLAR_BIT
                 | MultiplayerGame.PLAYER_BIT;
 
-        b2body.createFixture(fdef);
+        // creates the fixture for the body and sets the data to it
+        b2body.createFixture(fdef).setUserData(this);
 
-        // TODO: trying this out (check if this does anything)
-        b2body.setUserData(this);
+
     }
 
     public void getPicked() {

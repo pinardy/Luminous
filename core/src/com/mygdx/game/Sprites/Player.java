@@ -15,6 +15,7 @@ import com.mygdx.game.MultiplayerGame;
 public class Player extends Sprite {
     public World world;
     public Body b2body;
+    private boolean pickingOrb = false;
 
 
     public Player(World world){
@@ -45,11 +46,15 @@ public class Player extends Sprite {
                 MultiplayerGame.SHADOW_BIT;
 
 
-        b2body.createFixture(fdef);
+        b2body.createFixture(fdef).setUserData(this);
     }
 
 
     public void update(float dt) {
         // player interaction
+    }
+
+    public void orbPick() {
+        pickingOrb = true;
     }
 }
