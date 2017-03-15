@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
+import com.mygdx.game.ShadowManagement;
 import com.mygdx.game.Sprites.Orb;
 import com.mygdx.game.Sprites.Player;
 import com.mygdx.game.Sprites.Shadow;
@@ -49,9 +50,9 @@ public class PlayScreen implements Screen {
 
     // Sprites
     private Player player;
-    private ArrayList<Shadow> shadows = new ArrayList<Shadow>();
     private Orb orb;
 
+    private ShadowManagement sm = null;
 
     public PlayScreen (MultiplayerGame game){
         this.game = game;
@@ -82,18 +83,14 @@ public class PlayScreen implements Screen {
         // create a player in our game world
         player = new Player(world);
 
-        //set the shadow to appear 1 x distance away from pillar
-        calculateShadowStartPosition(game);
-
-        //this will draw all the shawdow for testing as we prefer to create them randomly
-        for(Rectangle r: game.getPillarPositions()) {
-            shadows.add(new Shadow(this, r.getX(), r.getY()));
-        }
-
         // create an orb in our game world
         orb = new Orb(this, .32f, .32f);
 
         world.setContactListener(new WorldContactListener());
+
+        sm = new ShadowManagement(game);
+        sm.start();
+
     }
 
     public void update(float dt){
@@ -105,9 +102,8 @@ public class PlayScreen implements Screen {
         player.update(dt);
         orb.update(dt);
 
-        for(Shadow s: shadows) {
-            s.update(dt);
-        }
+        sm.update(dt);
+
 
         // track movement of player
         gameCam.position.x = player.b2body.getPosition().x;
@@ -121,23 +117,7 @@ public class PlayScreen implements Screen {
     }
 
 
-    private void calculateShadowStartPosition(MultiplayerGame game) {
-        float coreX = game.corePosition.getX() + game.corePosition.getWidth()/2;
-        float coreY = game.corePosition.getY() + game.corePosition.getHeight()/2;
 
-        // create a shadow in our game world
-        for(Rectangle r: game.getPillarPositions()) {
-            float x = r.getX() + r.getWidth()/2;
-            float y = r.getY() + r.getHeight()/2;
-
-
-            float adjustedX = x + (x-coreX);
-            float adjustedY = y + (y-coreY);
-
-            r.setX(adjustedX);
-            r.setY(adjustedY);
-        }
-    }
 
     public void handleInput(float dt) {
 

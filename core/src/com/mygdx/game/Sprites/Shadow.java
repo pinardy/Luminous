@@ -30,7 +30,6 @@ public class Shadow extends Object{
         float speedY = -(getY() - coreY)/speed;
 
         b2body.setLinearVelocity(speedX, speedY);
-        b2body.setActive(false);
     }
 
     public void setActive(boolean active) {
