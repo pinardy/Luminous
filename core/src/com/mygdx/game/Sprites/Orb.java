@@ -59,6 +59,7 @@ public class Orb extends Object{
 
         // creates the fixture for the body and sets the data to it
         b2body.createFixture(fdef).setUserData(this);
+
     }
 
     public void getPicked() {

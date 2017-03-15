@@ -15,7 +15,7 @@ import com.mygdx.game.MultiplayerGame;
 public class Player extends Sprite {
     public World world;
     public Body b2body;
-    private boolean pickingOrb = false;
+    public boolean holdingOrb = false;
 
 
     public Player(World world){
@@ -41,6 +41,7 @@ public class Player extends Sprite {
         // The player can collide with these
         fdef.filter.maskBits = MultiplayerGame.DEFAULT_BIT |
                 MultiplayerGame.PILLAR_BIT |
+                MultiplayerGame.LIGHTEDPILLAR_BIT |
                 MultiplayerGame.CORE_BIT |
                 MultiplayerGame.ORB_BIT |
                 MultiplayerGame.SHADOW_BIT;
@@ -55,10 +56,10 @@ public class Player extends Sprite {
     }
 
     public void orbPick() {
-        pickingOrb = true;
+        holdingOrb = true;
     }
 
     public void orbDrop() {
-        pickingOrb = false;
+        holdingOrb = false;
     }
 }

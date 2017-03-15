@@ -83,38 +83,39 @@ public class WorldContactListener implements ContactListener{
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     if (placeOrb){
-                        // Updates Pillar's status to lighted
-                        ((Pillar)fixB.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
+                        if (((Player)fixA.getUserData()).holdingOrb == true) {
+                            // Updates Pillar's status to lighted
+                            ((Pillar) fixB.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
 
-                        // Updates Player's status to not carrying orb
-                        ((Player)fixA.getUserData()).orbDrop();
+                            // Updates Player's status to not carrying orb
+                            ((Player) fixA.getUserData()).orbDrop();
 
-                        Gdx.app.log("Pillar is LIT","");
+                            Gdx.app.log("Pillar is LIT", "");
+                        }
                     }
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     if (placeOrb){
-                        // Updates Pillar's status to lighted
-                        //TODO: Crashes
-                        ((Pillar)fixA.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
+                        if (((Player)fixB.getUserData()).holdingOrb == true) {
+                            // Updates Pillar's status to lighted
+                            ((Pillar) fixA.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
 
-                        // Updates Player's status to not carrying orb
-                        ((Player)fixB.getUserData()).orbDrop();
+                            // Updates Player's status to not carrying orb
+                            ((Player) fixB.getUserData()).orbDrop();
 
-                        Gdx.app.log("Pillar is LIT","");
+                            Gdx.app.log("Pillar is LIT", "");
+                        }
                     }
                 }
                 break;
         }
-
-
 //        Gdx.app.log("Begin contact","");
     }
 
     @Override
     public void endContact(Contact contact) {
-        Gdx.app.log("End contact","");
+//        Gdx.app.log("End contact","");
     }
 
     @Override

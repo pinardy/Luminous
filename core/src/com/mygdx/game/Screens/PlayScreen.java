@@ -54,7 +54,7 @@ public class PlayScreen implements Screen {
 
     private ShadowManagement sm = null;
 
-    public PlayScreen (MultiplayerGame game){
+    public PlayScreen(MultiplayerGame game) {
         this.game = game;
 
         // create cam to follow player throughout world
@@ -70,14 +70,13 @@ public class PlayScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map);
 
         // initially set our gamcam to be centered correctly at the start of of map
-        gameCam.position.set((gamePort.getWorldWidth() / 2) , (gamePort.getWorldHeight() / 2) , 0) ;
+        gameCam.position.set((gamePort.getWorldWidth() / 2), (gamePort.getWorldHeight() / 2), 0);
 
         // World(Vector2 gravity, boolean doSleep)
         world = new World(new Vector2(0, 0), true);
 
         // allows for debug lines of our box2d world
         b2dr = new Box2DDebugRenderer();
-
         creator = new B2WorldCreator(this);
 
         // create a player in our game world
@@ -93,12 +92,11 @@ public class PlayScreen implements Screen {
 
     }
 
-    public void update(float dt){
+    public void update(float dt) {
         // handle input first
         handleInput(dt);
-        world.step(1/60f, 6, 2);
+        world.step(1 / 60f, 6, 2);
 
-        //TODO: update player.update(dt) accordingly
         player.update(dt);
         orb.update(dt);
 
@@ -117,24 +115,34 @@ public class PlayScreen implements Screen {
     }
 
 
-
-
     public void handleInput(float dt) {
 
         // Player keeps moving in a certain direction (doesn't slow down)
         // Up-Down-Left-Right movement
-        if(Gdx.input.isKeyPressed(Input.Keys.UP)){
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN)){
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
             player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
         }
+
+        // Drops orb if carrying orb
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            if (player.holdingOrb == true){
+                player.holdingOrb = false;
+
+                //TODO: Create Orb object (effect of "dropping orb")
+                Gdx.app.log("Dropping orb", "");
+
+            }
+        }
+
 
     }
 
@@ -148,7 +156,7 @@ public class PlayScreen implements Screen {
         update(dt);
 
         // clear game screen with black
-        Gdx.gl.glClearColor(0,0,0,1); // colour, alpha
+        Gdx.gl.glClearColor(0, 0, 0, 1); // colour, alpha
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // render game map
@@ -164,11 +172,11 @@ public class PlayScreen implements Screen {
         hud.stage.draw();
     }
 
-    public TiledMap getMap(){
+    public TiledMap getMap() {
         return map;
     }
 
-    public World getWorld(){
+    public World getWorld() {
         return world;
     }
 
