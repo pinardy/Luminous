@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Screens.PlayScreen;
@@ -38,8 +39,12 @@ public class MultiplayerGame extends Game {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+
+		// handling music
 		manager = new AssetManager();
 		manager.load("audio/music/dungeon_peace.mp3", Music.class);
+		manager.load("audio/sounds/woosh.mp3", Sound.class);
+		manager.load("audio/sounds/pickOrb.mp3", Sound.class);
 		manager.finishLoading();
 
         setScreen(new PlayScreen(this));

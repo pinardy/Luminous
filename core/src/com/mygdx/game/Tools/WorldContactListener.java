@@ -2,6 +2,7 @@ package com.mygdx.game.Tools;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -49,6 +50,9 @@ public class WorldContactListener implements ContactListener{
                         // Updates Orb's status to getPicked
                         ((Orb)fixB.getUserData()).getPicked();
 
+                        MultiplayerGame.manager.get("audio/sounds/pickOrb.mp3", Sound.class).play();
+
+
                         Gdx.app.log("Picking orb","");
                     }
                 }
@@ -86,6 +90,7 @@ public class WorldContactListener implements ContactListener{
                         if (((Player)fixA.getUserData()).holdingOrb == true) {
                             // Updates Pillar's status to lighted
                             ((Pillar) fixB.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
+                            MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
                             ((Player) fixA.getUserData()).orbDrop();
@@ -100,6 +105,7 @@ public class WorldContactListener implements ContactListener{
                         if (((Player)fixB.getUserData()).holdingOrb == true) {
                             // Updates Pillar's status to lighted
                             ((Pillar) fixA.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
+                            MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
                             ((Player) fixB.getUserData()).orbDrop();
@@ -110,7 +116,6 @@ public class WorldContactListener implements ContactListener{
                 }
                 break;
 
-            //TODO: Fix Interaction for picking and dropping orb
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
@@ -118,6 +123,7 @@ public class WorldContactListener implements ContactListener{
                         if (((Player)fixA.getUserData()).holdingOrb == false) {
                             // Updates Pillar's status to lighted
                             ((Pillar) fixB.getUserData()).setCategoryFilter(MultiplayerGame.PILLAR_BIT);
+                            MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
                             ((Player) fixA.getUserData()).orbPick();
@@ -132,6 +138,7 @@ public class WorldContactListener implements ContactListener{
                         if (((Player)fixB.getUserData()).holdingOrb == false) {
                             // Updates Pillar's status to lighted
                             ((Pillar) fixA.getUserData()).setCategoryFilter(MultiplayerGame.PILLAR_BIT);
+                            MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
                             ((Player) fixB.getUserData()).orbPick();
