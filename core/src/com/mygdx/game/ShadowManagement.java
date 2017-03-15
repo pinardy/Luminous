@@ -26,8 +26,8 @@ public class ShadowManagement extends Thread {
 
         while (true) {
             if (shadows.size() == 0) {
-                int randomShadow = rand.ints(1, 0, game.getPillarPositions().size()).findFirst().getAsInt();
-
+//                int randomShadow = rand.ints(1, 0, game.getPillarPositions().size()).findFirst().getAsInt();
+                int randomShadow = 0;
                 Rectangle r = game.getPillarPositions().get(randomShadow);
                 shadows.add(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY()));
                 System.out.println("Spawning new shadow");
