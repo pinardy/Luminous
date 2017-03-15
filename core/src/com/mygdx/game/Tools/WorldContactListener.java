@@ -54,13 +54,22 @@ public class WorldContactListener implements ContactListener{
             case MultiplayerGame.SHADOW_BIT | MultiplayerGame.CORE_BIT :
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
+                    Gdx.app.log("Shadow hits core","fixA");
+                }
+                else if (fixB.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
+                    ((Shadow) fixB.getUserData()).collided();
+                    Gdx.app.log("Shadow hits core","fixB");
+                }
+
+            case MultiplayerGame.SHADOW_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT :
+                if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
+                    ((Shadow) fixA.getUserData()).collided();
                     Gdx.app.log("Shadow hits pillar","fixA");
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixB.getUserData()).collided();
                     Gdx.app.log("Shadow hits pillar","fixB");
                 }
-
 
         }
 

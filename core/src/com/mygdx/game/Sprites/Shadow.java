@@ -62,8 +62,7 @@ public class Shadow extends Object{
         fdef.filter.categoryBits = MultiplayerGame.SHADOW_BIT;
 
         // The shadow can collide with these
-        fdef.filter.maskBits = MultiplayerGame.CORE_BIT;    //MultiplayerGame.PILLAR_BIT|
-
+        fdef.filter.maskBits = MultiplayerGame.CORE_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT;
 
         fdef.shape = shape;
         b2body.createFixture(fdef).setUserData(this);
