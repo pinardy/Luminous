@@ -1,11 +1,12 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Shadow;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by kennethlimcp on 08/Mar/2017.
@@ -13,7 +14,8 @@ import java.util.ArrayList;
 
 public class ShadowManagement extends Thread {
     private MultiplayerGame game = null;
-    private ArrayList<Shadow> shadows = new ArrayList<Shadow>();
+    private CopyOnWriteArrayList<Shadow> shadows = new CopyOnWriteArrayList<Shadow>();
+    private final Object shadowsLock = new Object();
 
     public ShadowManagement(MultiplayerGame game) {
         this.game = game;
@@ -22,21 +24,31 @@ public class ShadowManagement extends Thread {
     @Override
     public void run() {
         calculateShadowStartPosition();
-        //this will draw all the shawdow for testing as we prefer to create them randomly
+
+        Random rand = new Random();
         long oldTime = System.currentTimeMillis();
 
-        for(Rectangle r: game.getPillarPositions()) {
-            while(System.currentTimeMillis() - oldTime < 10000) {};
-
-            shadows.add(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY()));
-            oldTime = System.currentTimeMillis();
-            System.out.println("Shadow created!");
-        }
-
         while(true) {
+            if(shadows.size() == 0) {
+                int randomShadow = rand.ints(1, 0, game.getPillarPositions().size()).findFirst().getAsInt();
+
+                Rectangle r = game.getPillarPositions().get(randomShadow);
+                shadows.add(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY()));
+                System.out.println("Spawning new shadow");
+            }
+
+            synchronized (shadowsLock) {
+                for(Shadow s: shadows) {
+                    if (!s.isAlive()) {
+                        shadows.remove(s);
+                    }
+                }
+            }
 
         }
     }
+
+
 
     private void calculateShadowStartPosition() {
         float coreX = game.corePosition.getX() + game.corePosition.getWidth()/2;
@@ -56,8 +68,10 @@ public class ShadowManagement extends Thread {
     }
 
     public void update(float dt) {
-        for(Shadow s: shadows) {
-            s.update(dt);
+        synchronized (shadowsLock) {
+            for(Shadow s: shadows) {
+                s.update(dt);
+            }
         }
     }
 }
