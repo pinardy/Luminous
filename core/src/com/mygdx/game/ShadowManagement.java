@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Shadow;
@@ -26,11 +27,10 @@ public class ShadowManagement extends Thread {
 
         while (true) {
             if (shadows.size() == 0) {
-//                int randomShadow = rand.ints(1, 0, game.getPillarPositions().size()).findFirst().getAsInt();
-                int randomShadow = 0;
+                int randomShadow = rand.nextInt(game.getPillarPositions().size());
                 Rectangle r = game.getPillarPositions().get(randomShadow);
                 shadows.add(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY()));
-                System.out.println("Spawning new shadow");
+                Gdx.app.log("Spawning new shadow","sm thread");
             }
 
             synchronized (shadowsLock) {
