@@ -15,14 +15,29 @@ public class Orb extends Object{
     private float stateTime;
     private boolean setToPicked;
     private boolean picked;
+    static float startPosX = 500;
+    static float startPosY = 600;
 
     public Orb(PlayScreen screen, float x, float y) {
         super(screen, x, y);
+//        startPosX = 500;
+//        startPosY = 600;
         stateTime = 0;
         setBounds(getX(), getY(), 16, 16);
         setToPicked = false;
         picked = false;
     }
+
+    public Orb(PlayScreen screen, float x, float y, float posX, float posY) {
+        super(screen, x, y);
+        startPosX = posX;
+        startPosY = posY;
+        stateTime = 0;
+        setBounds(getX(), getY(), 16, 16);
+        setToPicked = false;
+        picked = false;
+    }
+
 
     public void update(float dt){
         stateTime += dt;
@@ -40,7 +55,7 @@ public class Orb extends Object{
     @Override
     protected void defineObject() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(500, 600);
+        bdef.position.set(startPosX, startPosY);
         bdef.type = BodyDef.BodyType.StaticBody;
         b2body = world.createBody(bdef);
 

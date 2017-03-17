@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
@@ -20,7 +19,6 @@ import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.ShadowManagement;
 import com.mygdx.game.Sprites.Orb;
 import com.mygdx.game.Sprites.Player;
-import com.mygdx.game.Sprites.Shadow;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
 
@@ -52,6 +50,9 @@ public class PlayScreen implements Screen {
     // Sprites
     private Player player;
     private Orb orb;
+
+    // List of Orbs
+    public static ArrayList<Orb> listOfOrbs = new ArrayList<Orb>();
 
     // Music
     private Music music;
@@ -109,8 +110,11 @@ public class PlayScreen implements Screen {
         player.update(dt);
         orb.update(dt);
 
-        sm.update(dt);
+        for (int i = 0; i < listOfOrbs.size(); i++){
+            listOfOrbs.get(i).update(dt);
+        }
 
+        sm.update(dt);
 
         // track movement of player
         gameCam.position.x = player.b2body.getPosition().x;
@@ -142,15 +146,19 @@ public class PlayScreen implements Screen {
         }
 
         // Drops orb if carrying orb
-//        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-//            if (player.holdingOrb == true){
-//                player.holdingOrb = false;
-//
-//                //TODO: Create Orb object (effect of "dropping orb")
-//                Gdx.app.log("Dropping orb", "");
-//
-//            }
-//        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            if (player.holdingOrb == true){
+                player.holdingOrb = false;
+
+                // Create Orb object (effect of "dropping orb")
+                //TODO: The position of the dropped orb is strange
+                Orb orb = new Orb(this, .32f, .32f, player.b2body.getPosition().x, player.b2body.getPosition().x);
+                listOfOrbs.add(orb);
+
+                Gdx.app.log("Dropping orb", "");
+
+            }
+        }
 
 
     }

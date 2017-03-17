@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.MultiplayerGame;
+import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Orb;
 import com.mygdx.game.Sprites.Pillar;
 import com.mygdx.game.Sprites.Player;
@@ -28,36 +29,41 @@ public class WorldContactListener implements ContactListener{
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         switch (cDef){
+            // =-=-= PLAYER collides with ORB =-=-=
             case MultiplayerGame.ORB_BIT | MultiplayerGame.PLAYER_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.ORB_BIT){
-                    boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
-                    if (pickOrb){
-                        // Updates Player's status to pickingOrb
-                        ((Player)fixA.getUserData()).orbPick();
+                    if (((Player)fixA.getUserData()).holdingOrb == false) {
+                        boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
+                        if (pickOrb) {
+                            // Updates Player's status to pickingOrb
+                            ((Player) fixA.getUserData()).orbPick();
 
-                        // Updates Orb's status to getPicked
-                        ((Orb)fixA.getUserData()).getPicked();
+                            // Updates Orb's status to getPicked
+                            ((Orb) fixA.getUserData()).getPicked();
 
-                        Gdx.app.log("Picking orb","");
+                            Gdx.app.log("Picking orb", "");
+                        }
                     }
                 }
-                else if (fixB.getFilterData().categoryBits == MultiplayerGame.ORB_BIT){
-                    boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
-                    if (pickOrb){
-                        // Updates Player's status to pickingOrb
-                        ((Player)fixA.getUserData()).orbPick();
+                else if (fixB.getFilterData().categoryBits == MultiplayerGame.ORB_BIT) {
+                    if (((Player) fixA.getUserData()).holdingOrb == false) {
+                        boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
+                        if (pickOrb) {
+                            // Updates Player's status to pickingOrb
+                            ((Player) fixA.getUserData()).orbPick();
 
-                        // Updates Orb's status to getPicked
-                        ((Orb)fixB.getUserData()).getPicked();
+                            // Updates Orb's status to getPicked
+                            ((Orb) fixB.getUserData()).getPicked();
 
-                        MultiplayerGame.manager.get("audio/sounds/pickOrb.mp3", Sound.class).play();
+                            MultiplayerGame.manager.get("audio/sounds/pickOrb.mp3", Sound.class).play();
 
-
-                        Gdx.app.log("Picking orb","");
+                            Gdx.app.log("Picking orb", "");
+                        }
                     }
                 }
                 break;
 
+            // =-=-= SHADOW collides with CORE =-=-=
             case MultiplayerGame.SHADOW_BIT | MultiplayerGame.CORE_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
@@ -67,7 +73,9 @@ public class WorldContactListener implements ContactListener{
                     ((Shadow) fixB.getUserData()).collided();
                     Gdx.app.log("Shadow hits core","fixB");
                 }
+                break;
 
+            // =-=-= SHADOW collides with LIGHTED PILLAR =-=-=
             case MultiplayerGame.SHADOW_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT :
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
@@ -79,10 +87,12 @@ public class WorldContactListener implements ContactListener{
                 }
                 break;
 
+            // =-=-= ORB collides with PILLAR =-=-=
             case MultiplayerGame.ORB_BIT | MultiplayerGame.PILLAR_BIT:
                 // do nothing
                 break;
 
+            // =-=-= PLAYER collides with PILLAR =-=-=
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
@@ -116,6 +126,7 @@ public class WorldContactListener implements ContactListener{
                 }
                 break;
 
+            // =-=-= PLAYER collides with LIGHTED PILLAR =-=-=
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
