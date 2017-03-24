@@ -1,5 +1,6 @@
 package com.mygdx.game.Screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -20,6 +21,7 @@ import com.mygdx.game.ShadowManagement;
 import com.mygdx.game.Sprites.Orb;
 import com.mygdx.game.Sprites.Player;
 import com.mygdx.game.Tools.B2WorldCreator;
+import com.mygdx.game.Tools.Controller;
 import com.mygdx.game.Tools.WorldContactListener;
 
 import java.util.ArrayList;
@@ -56,6 +58,10 @@ public class PlayScreen implements Screen {
 
     // Music
     private Music music;
+
+    // Controller
+    private Controller controller;
+
 
     private ShadowManagement sm = null;
 
@@ -94,6 +100,9 @@ public class PlayScreen implements Screen {
         music = MultiplayerGame.manager.get("audio/music/dungeon_peace.mp3", Music.class);
         music.setLooping(true);
         music.play();
+
+        // controller
+        controller = new Controller();
 
         world.setContactListener(new WorldContactListener());
 
@@ -145,6 +154,19 @@ public class PlayScreen implements Screen {
             player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
         }
 
+        if(controller.isUpPressed()) {
+            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+        }
+        if(controller.isDownPressed()) {
+            player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
+        }
+        if(controller.isLeftPressed()) {
+            player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
+        }
+        if(controller.isRightPressed()) {
+            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
+        }
+
         // Drops orb if carrying orb
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             if (player.holdingOrb == true){
@@ -156,11 +178,8 @@ public class PlayScreen implements Screen {
                 listOfOrbs.add(orb);
 
                 Gdx.app.log("Dropping orb", "");
-
             }
         }
-
-
     }
 
     @Override
@@ -182,6 +201,10 @@ public class PlayScreen implements Screen {
         // render our Box2DDebugLines
         b2dr.render(world, gameCam.combined);
 
+        // render our controller
+//        if (Gdx.app.getType() == Application.ApplicationType.Android)
+        controller.draw();
+
         // tell our game batch to recognise where the gameCam is and render what the camera can see
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -200,6 +223,7 @@ public class PlayScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
+        controller.resize(width, height);
     }
 
     @Override
