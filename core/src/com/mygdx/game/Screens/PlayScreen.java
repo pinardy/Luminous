@@ -60,7 +60,7 @@ public class PlayScreen implements Screen {
     private Music music;
 
     // Controller
-    private Controller controller;
+    public static Controller controller;
 
 
     private ShadowManagement sm = null;
@@ -140,7 +140,8 @@ public class PlayScreen implements Screen {
     public void handleInput(float dt) {
 
         // Player keeps moving in a certain direction (doesn't slow down)
-        // Up-Down-Left-Right movement
+
+        // Keyboard controls
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
         }
@@ -154,6 +155,9 @@ public class PlayScreen implements Screen {
             player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
         }
 
+
+
+        // Virtual gamepad
         if(controller.isUpPressed()) {
             player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
         }
@@ -167,19 +171,7 @@ public class PlayScreen implements Screen {
             player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
         }
 
-        // Drops orb if carrying orb
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            if (player.holdingOrb == true){
-                player.holdingOrb = false;
 
-                // Create Orb object (effect of "dropping orb")
-                //TODO: The position of the dropped orb is strange
-                Orb orb = new Orb(this, .32f, .32f, player.b2body.getPosition().x, player.b2body.getPosition().x);
-                listOfOrbs.add(orb);
-
-                Gdx.app.log("Dropping orb", "");
-            }
-        }
     }
 
     @Override

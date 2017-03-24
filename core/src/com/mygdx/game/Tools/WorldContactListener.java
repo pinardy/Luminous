@@ -34,7 +34,9 @@ public class WorldContactListener implements ContactListener{
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.ORB_BIT){
                     if (((Player)fixA.getUserData()).holdingOrb == false) {
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
-                        if (pickOrb) {
+                        boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
+
+                        if (pickOrb | pickOrbAndroid) {
                             // Updates Player's status to pickingOrb
                             ((Player) fixA.getUserData()).orbPick();
 
@@ -48,7 +50,9 @@ public class WorldContactListener implements ContactListener{
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.ORB_BIT) {
                     if (((Player) fixA.getUserData()).holdingOrb == false) {
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
-                        if (pickOrb) {
+                        boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
+
+                        if (pickOrb | pickOrbAndroid) {
                             // Updates Player's status to pickingOrb
                             ((Player) fixA.getUserData()).orbPick();
 
@@ -96,7 +100,9 @@ public class WorldContactListener implements ContactListener{
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
-                    if (placeOrb){
+                    boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
+
+                    if (placeOrb | pickOrbAndroid){
                         if (((Player)fixA.getUserData()).holdingOrb == true) {
                             // Updates Pillar's status to lighted
                             ((Pillar) fixB.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
@@ -111,7 +117,9 @@ public class WorldContactListener implements ContactListener{
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
-                    if (placeOrb){
+                    boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
+
+                    if (placeOrb | pickOrbAndroid){
                         if (((Player)fixB.getUserData()).holdingOrb == true) {
                             // Updates Pillar's status to lighted
                             ((Pillar) fixA.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
@@ -130,7 +138,9 @@ public class WorldContactListener implements ContactListener{
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
-                    if (grabOrb){
+                    boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
+
+                    if (grabOrb | pickOrbAndroid){
                         if (((Player)fixA.getUserData()).holdingOrb == false) {
                             // Updates Pillar's status to lighted
                             ((Pillar) fixB.getUserData()).setCategoryFilter(MultiplayerGame.PILLAR_BIT);
@@ -145,7 +155,10 @@ public class WorldContactListener implements ContactListener{
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
-                    if (grabOrb){
+                    boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
+
+
+                    if (grabOrb | pickOrbAndroid){
                         if (((Player)fixB.getUserData()).holdingOrb == false) {
                             // Updates Pillar's status to lighted
                             ((Pillar) fixA.getUserData()).setCategoryFilter(MultiplayerGame.PILLAR_BIT);

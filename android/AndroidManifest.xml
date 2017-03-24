@@ -8,12 +8,12 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/luminousicon"
         android:label="@string/app_name"
         android:theme="@style/GdxTheme" >
         <activity
             android:name="com.mygdx.game.AndroidLauncher"
-            android:label="@string/app_name" 
+            android:label="Luminous"
             android:screenOrientation="landscape"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize">
             <intent-filter>

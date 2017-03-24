@@ -22,7 +22,7 @@ public class MultiplayerGame extends Game {
     public static final String TITLE = "LUMINOUS";
 
     // virtual width and height for game
-    public static final int V_WIDTH = 500;
+    public static final int V_WIDTH = 850;
     public static final int V_HEIGHT = 500;
 
     // powers of 2 so its easier to OR bits tgt

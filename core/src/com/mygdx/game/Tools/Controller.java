@@ -16,7 +16,7 @@ import com.mygdx.game.MultiplayerGame;
 public class Controller {
     Viewport viewport;
     Stage stage;
-    boolean upPressed, downPressed, leftPressed, rightPressed;
+    boolean upPressed, downPressed, leftPressed, rightPressed, pickOrDrop;
     OrthographicCamera cam;
 
     public Controller(){
@@ -28,13 +28,15 @@ public class Controller {
         Gdx.input.setInputProcessor(stage);
 
         Table table = new Table();
+        Table actions = new Table();
 
         //TODO: Location may have to change
 //        table.right().bottom();
-        table.setPosition(100, 100);
+        table.setPosition(150, 150);
+        actions.setPosition(750, 100);
 
         Image upImg = new Image(new Texture("up.png"));
-        upImg.setSize(50,50);
+        upImg.setSize(70,70);
         upImg.addListener(new InputListener() {
 
             @Override
@@ -50,7 +52,7 @@ public class Controller {
         });
 
         Image downImg = new Image(new Texture("down.png"));
-        downImg.setSize(50,50);
+        downImg.setSize(70,70);
         downImg.addListener(new InputListener() {
 
             @Override
@@ -66,7 +68,7 @@ public class Controller {
         });
 
         Image rightImg = new Image(new Texture("right.png"));
-        rightImg.setSize(50,50);
+        rightImg.setSize(70,70);
         rightImg.addListener(new InputListener() {
 
             @Override
@@ -82,7 +84,7 @@ public class Controller {
         });
 
         Image leftImg = new Image(new Texture("left.png"));
-        leftImg.setSize(50,50);
+        leftImg.setSize(70,70);
         leftImg.addListener(new InputListener() {
 
             @Override
@@ -94,6 +96,22 @@ public class Controller {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 leftPressed = false;
+            }
+        });
+
+        Image handImg = new Image(new Texture("handbutton.png"));
+        handImg.setSize(70,70);
+        handImg.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                pickOrDrop = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                pickOrDrop = false;
             }
         });
 
@@ -114,7 +132,12 @@ public class Controller {
         table.add(downImg).size(downImg.getWidth(), downImg.getHeight());
         table.add();
 
+        // actions
+        actions.add(handImg).size(handImg.getWidth(), handImg.getHeight());
+
+        // adding the controls to the stage
         stage.addActor(table);
+        stage.addActor(actions);
     }
 
     public void draw(){
@@ -135,6 +158,10 @@ public class Controller {
 
     public boolean isRightPressed() {
         return rightPressed;
+    }
+
+    public boolean isOrbPressed() {
+        return pickOrDrop;
     }
 
     // resizing
