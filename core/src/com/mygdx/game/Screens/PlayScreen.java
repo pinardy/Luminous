@@ -50,7 +50,7 @@ public class PlayScreen implements Screen {
     private B2WorldCreator creator;
 
     // Sprites
-    private Player player;
+    public static Player player;
     private Orb orb;
 
     // List of Orbs
@@ -159,16 +159,20 @@ public class PlayScreen implements Screen {
 
         // Virtual gamepad
         if(controller.isUpPressed()) {
-            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+//            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+            player.b2body.setLinearVelocity(0, 100);
         }
         if(controller.isDownPressed()) {
-            player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
+//            player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
+            player.b2body.setLinearVelocity(0, -100);
         }
         if(controller.isLeftPressed()) {
-            player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
+//            player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.setLinearVelocity(-100, 0);
         }
         if(controller.isRightPressed()) {
-            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
+//            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.setLinearVelocity(100, 0);
         }
 
 

@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
+import com.mygdx.game.Screens.PlayScreen;
 
 public class Controller {
     Viewport viewport;
@@ -48,6 +49,7 @@ public class Controller {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 upPressed = false;
+                PlayScreen.player.b2body.setLinearVelocity(0, 0);
             }
         });
 
@@ -64,6 +66,7 @@ public class Controller {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 downPressed = false;
+                PlayScreen.player.b2body.setLinearVelocity(0, 0);
             }
         });
 
@@ -80,6 +83,7 @@ public class Controller {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 rightPressed = false;
+                PlayScreen.player.b2body.setLinearVelocity(0, 0);
             }
         });
 
@@ -96,6 +100,7 @@ public class Controller {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 leftPressed = false;
+                PlayScreen.player.b2body.setLinearVelocity(0, 0);
             }
         });
 
@@ -112,6 +117,7 @@ public class Controller {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 pickOrDrop = false;
+                PlayScreen.player.b2body.setLinearVelocity(0, 0);
             }
         });
 
