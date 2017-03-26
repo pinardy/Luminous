@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.MultiplayerGame;
+import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Orb;
 import com.mygdx.game.Sprites.Pillar;
@@ -83,10 +84,12 @@ public class WorldContactListener implements ContactListener{
             case MultiplayerGame.SHADOW_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT :
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
+                    Hud.addScore(10);
                     Gdx.app.log("Shadow hits pillar","fixA");
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixB.getUserData()).collided();
+                    Hud.addScore(10);
                     Gdx.app.log("Shadow hits pillar","fixB");
                 }
                 break;

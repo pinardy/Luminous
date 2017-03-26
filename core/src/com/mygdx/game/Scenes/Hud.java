@@ -24,22 +24,27 @@ public class Hud implements Disposable{
     public Stage stage;
     private Viewport viewport;
 
+    // score/time tracking variables
     private Integer worldTimer;
     private float timeCount;
-    private Integer score;
+    private static Integer score;
 
-    Label countDownLabel;
-    static Label scoreValue;
-    Label timeLabel;
-    Label levelLabel;
-    Label levelHeader;
-    Label scoreLabel;
+    // Scene2D widgets
+    private Label countDownLabel;
+    private static Label scoreValue;
+    private Label timeLabel;
+    private Label levelLabel;
+    private Label levelHeader;
+    private static Label scoreLabel;
 
     public Hud(SpriteBatch sb){
+        // define our tracking variables
         worldTimer = 300;
         timeCount = 0;
         score = 0;
 
+        // setup the HUD viewport using a new camera separate from our gamecam
+        // define our stage using that viewport and our game's SpriteBatch
         viewport = new FitViewport(MultiplayerGame.V_WIDTH, MultiplayerGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, sb);
 
@@ -48,7 +53,7 @@ public class Hud implements Disposable{
         table.setFillParent(true); // table is size of stage
 
         countDownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        scoreValue = new Label(String.format("%06d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        scoreValue = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         levelLabel = new Label("1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         levelHeader = new Label("LEVEL", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
@@ -71,14 +76,14 @@ public class Hud implements Disposable{
 
     public void update(float dt){
         timeCount += dt;
-        if (timeCount > 1) { // 1 second
+        if (timeCount >= 1) { // 1 second
             worldTimer--; // our world timer is 1 second less
             countDownLabel.setText(String.format("%03d", worldTimer));
             timeCount = 0;
         }
     }
 
-    public void addScore(int value){
+    public static void addScore(int value){
         score += value;
         scoreValue.setText(String.format("%06d", score));
     }
