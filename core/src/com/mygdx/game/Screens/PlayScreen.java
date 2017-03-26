@@ -139,43 +139,57 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
 
-        // Player keeps moving in a certain direction (doesn't slow down)
-
         // Keyboard controls
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
-        }
+        boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
+        boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+        boolean left = Gdx.input.isKeyPressed(Input.Keys.LEFT);
+        boolean right = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
 
-
-
-        // Virtual gamepad
-        if(controller.isUpPressed()) {
+        // if player is NOT moving, velocity is set to 0
+        if (!(up | down | left | right)){
+            player.b2body.setLinearVelocity(0, 0);
+        }
+        if (up) {
 //            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(0, 100);
         }
-        if(controller.isDownPressed()) {
+        if (down) {
 //            player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(0, -100);
         }
-        if(controller.isLeftPressed()) {
+        if (left) {
 //            player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(-100, 0);
         }
-        if(controller.isRightPressed()) {
+        if (right) {
 //            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(100, 0);
         }
 
 
+        // Virtual gamepad
+        boolean padUp = controller.isUpPressed();
+        boolean padDown = controller.isDownPressed();
+        boolean padLeft = controller.isLeftPressed();
+        boolean padRight = controller.isRightPressed();
+
+        if(padUp) {
+//            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+            player.b2body.setLinearVelocity(0, 100);
+        }
+        if(padDown) {
+//            player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
+            player.b2body.setLinearVelocity(0, -100);
+        }
+        if(padLeft) {
+//            player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.setLinearVelocity(-100, 0);
+        }
+        if(padRight) {
+//            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
+            player.b2body.setLinearVelocity(100, 0);
+        }
+        
     }
 
     @Override
