@@ -72,10 +72,14 @@ public class WorldContactListener implements ContactListener{
             case MultiplayerGame.SHADOW_BIT | MultiplayerGame.CORE_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
+                    Hud.reduceHealth();
+                    MultiplayerGame.manager.get("audio/sounds/evilCrack.mp3", Sound.class).play();
                     Gdx.app.log("Shadow hits core","fixA");
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixB.getUserData()).collided();
+                    Hud.reduceHealth();
+                    MultiplayerGame.manager.get("audio/sounds/evilCrack.mp3", Sound.class).play();
                     Gdx.app.log("Shadow hits core","fixB");
                 }
                 break;

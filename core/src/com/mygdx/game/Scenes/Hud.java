@@ -28,13 +28,16 @@ public class Hud implements Disposable{
     private Integer worldTimer;
     private float timeCount;
     private static Integer score;
+    private static Integer health;
 
     // Scene2D widgets
     private Label countDownLabel;
     private static Label scoreValue;
+    private static Label healthValue;
     private Label timeLabel;
     private Label levelLabel;
     private Label levelHeader;
+    private Label healthLabel;
     private static Label scoreLabel;
 
     public Hud(SpriteBatch sb){
@@ -42,6 +45,7 @@ public class Hud implements Disposable{
         worldTimer = 300;
         timeCount = 0;
         score = 0;
+        health = 5;
 
         // setup the HUD viewport using a new camera separate from our gamecam
         // define our stage using that viewport and our game's SpriteBatch
@@ -52,23 +56,33 @@ public class Hud implements Disposable{
         table.top(); // put at top of stage
         table.setFillParent(true); // table is size of stage
 
-        countDownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        scoreValue = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        levelLabel = new Label("1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        levelHeader = new Label("LEVEL", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        // score
         scoreLabel = new Label("SCORE", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        scoreValue = new Label(String.format("%06d", score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
-        // the entire top row will be marioLabel if it's the only label in the table
+        // level
+        levelHeader = new Label("LEVEL", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        levelLabel = new Label("1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
+        // time
+        timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        countDownLabel = new Label(String.format("%03d", worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
+        // core's health
+        healthLabel = new Label("HEALTH", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        healthValue = new Label(String.format("%06d", health), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+
         table.add(scoreLabel).expandX().padTop(10);
         table.add(levelHeader).expandX().padTop(10); // at this pt, both labels share half of screen
         table.add(timeLabel).expandX().padTop(10);
+        table.add(healthLabel).expandX().padTop(10);
 
         // creates a new row. everything below this will be in a new row
         table.row();
         table.add(scoreValue).expandX();
         table.add(levelLabel).expandX();
         table.add(countDownLabel).expandX();
+        table.add(healthValue).expandX();
 
         // add table to stage
         stage.addActor(table);
@@ -86,6 +100,11 @@ public class Hud implements Disposable{
     public static void addScore(int value){
         score += value;
         scoreValue.setText(String.format("%06d", score));
+    }
+
+    public static void reduceHealth(){
+        health --;
+        healthValue.setText(String.format("%06d", health));
     }
 
     @Override
