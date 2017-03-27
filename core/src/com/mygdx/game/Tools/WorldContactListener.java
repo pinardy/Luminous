@@ -89,11 +89,13 @@ public class WorldContactListener implements ContactListener{
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
                     Hud.addScore(10);
+                    MultiplayerGame.manager.get("audio/sounds/shadowVanish.mp3", Sound.class).play();
                     Gdx.app.log("Shadow hits pillar","fixA");
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixB.getUserData()).collided();
                     Hud.addScore(10);
+                    MultiplayerGame.manager.get("audio/sounds/shadowVanish.mp3", Sound.class).play();
                     Gdx.app.log("Shadow hits pillar","fixB");
                 }
                 break;
