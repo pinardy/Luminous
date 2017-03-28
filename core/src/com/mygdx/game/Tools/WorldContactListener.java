@@ -10,18 +10,26 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.SocketClient;
 import com.mygdx.game.Sprites.Orb;
 import com.mygdx.game.Sprites.Pillar;
 import com.mygdx.game.Sprites.Player;
 import com.mygdx.game.Sprites.Shadow;
+
+import io.socket.client.Socket;
+
 
 /**
  * Created by Pin on 21-Feb-17.
  */
 
 public class WorldContactListener implements ContactListener{
+    private Socket socket;
+    private boolean multiplayer = false;
     @Override
     public void beginContact(Contact contact) {
+        socket = SocketClient.getInstance();
+
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
 
@@ -188,6 +196,10 @@ public class WorldContactListener implements ContactListener{
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
+
+    }
+
+    private void configureSocket(){
 
     }
 }

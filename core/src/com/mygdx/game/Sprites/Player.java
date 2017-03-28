@@ -46,7 +46,7 @@ public class Player extends Sprite {
                 MultiplayerGame.ORB_BIT |
                 MultiplayerGame.SHADOW_BIT;
 
-
+        fdef.friction = 10f;
         b2body.createFixture(fdef).setUserData(this);
     }
 

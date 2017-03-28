@@ -18,19 +18,36 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.ShadowManagement;
+import com.mygdx.game.SocketClient;
 import com.mygdx.game.Sprites.Orb;
 import com.mygdx.game.Sprites.Player;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.Controller;
 import com.mygdx.game.Tools.WorldContactListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 /**
  * Created by Pin on 04-Feb-17.
  */
 
 public class PlayScreen implements Screen {
+
+    private Socket socket;
+    private String myID;
+    HashMap<String, Vector2> clientPrediction;
+    private HashMap<String, Player> players;
+    private boolean keyPressed;
+    private boolean multiplayer = false;
 
     private MultiplayerGame game;
     private OrthographicCamera gameCam;
@@ -66,6 +83,11 @@ public class PlayScreen implements Screen {
     private ShadowManagement sm = null;
 
     public PlayScreen(MultiplayerGame game) {
+        players = new HashMap<String, Player>();
+        clientPrediction = new HashMap<String, Vector2>();
+        keyPressed = false;
+        multiplayer = true;
+
         this.game = game;
 
         // create cam to follow player throughout world
@@ -109,6 +131,7 @@ public class PlayScreen implements Screen {
         sm = new ShadowManagement(game);
         sm.start();
 
+        if (multiplayer) connectSocket();
     }
 
     public void update(float dt) {
@@ -148,6 +171,8 @@ public class PlayScreen implements Screen {
         // if player is NOT moving, velocity is set to 0
         if (!(up | down | left | right)){
             player.b2body.setLinearVelocity(0, 0);
+        }else {
+            keyPressed = true;
         }
         if (up) {
 //            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
@@ -199,6 +224,7 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float dt) {
+        if (multiplayer) updateServer(dt);
         update(dt);
 
         // clear game screen with black
@@ -258,5 +284,134 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
+    }
+
+
+    public void updateMyPosition(String idAction, float x, float y){
+        Vector2 predictedPos = clientPrediction.get(idAction);
+        if (predictedPos == null){
+            player.b2body.setTransform(x, y, player.b2body.getAngle());
+        }else if (floatEquals(predictedPos.x, x) && floatEquals(predictedPos.y, y)) {
+            Gdx.app.log("Socket Prediction", "correct prediction");
+            clientPrediction.remove(idAction);
+        }
+        else {
+            player.b2body.setTransform(x, y, 0);
+            clientPrediction.remove(idAction);
+        }
+    }
+
+    // Update server when player moves
+    public void updateServer(float dt){
+        if (player != null && keyPressed){
+            keyPressed = false;
+			String actionID = ""+System.currentTimeMillis();
+            Vector2 position = new Vector2(player.b2body.getPosition());
+			clientPrediction.put(actionID, position);
+			JSONObject object = new JSONObject();
+			try {
+                object.put("x", position.x);
+                object.put("y", position.y);
+				socket.emit("playerMoved", object);
+			}catch (JSONException e){
+				Gdx.app.log("SocketIO", "Error sending message");
+			}
+        }
+    }
+
+    // Try establishing the TCP connection between the player and the server.
+    public void connectSocket(){
+        try {
+            socket = SocketClient.getInstance();
+            socket.connect();
+            configSocketEvents();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private boolean floatEquals(float a, float b){
+        return (Math.abs(a-b) < 0.001);
+    }
+
+    // Configure socket events after TCP connection has been established.
+    public void configSocketEvents(){
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Gdx.app.log("SocketIO", "Connected");
+            }
+        });
+
+        socket.on("socketID", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    myID = data.getString("id");
+                    Gdx.app.log("SocketIO", "My ID: " + myID);
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error getting id");
+                }
+            }
+        }).on("newPlayer", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String id = data.getString("id");
+                    players.put(id, new Player(world));
+                    Gdx.app.log("SocketIO", "New player has id: " + id);
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error getting id");
+                }
+
+            }
+        }).on("playerDisconnected", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String id = data.getString("id");
+                    players.remove(id);
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error player disconnected");
+                }
+
+            }
+        }).on("playerMoved", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String id = data.getString("id");
+                    Double x = data.getDouble("x");
+                    Double y = data.getDouble("y");
+                    if (players.get(id) != null){
+                        players.get(id).b2body.setTransform(x.floatValue(), y.floatValue(),players.get(id).b2body.getAngle());
+                    }
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error getting id");
+                }
+            }
+        }).on("getPlayers", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONArray onlinePlayers = (JSONArray) args[0];
+                try {
+                    for (int i = 0; i < onlinePlayers.length(); i++){
+                        Player coopPlayer = new Player(world);
+                        Vector2 position = new Vector2();
+                        position.x = ((Double) onlinePlayers.getJSONObject(i).getDouble("x")).floatValue();
+                        position.y = ((Double) onlinePlayers.getJSONObject(i).getDouble("y")).floatValue();
+                        coopPlayer.b2body.setTransform(position.x, position.y, coopPlayer.b2body.getAngle());
+                        players.put(onlinePlayers.getJSONObject(i).getString("id"), coopPlayer);
+                    }
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error getting id");
+                }
+
+            }
+        });
     }
 }
