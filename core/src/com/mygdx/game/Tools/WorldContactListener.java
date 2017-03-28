@@ -21,6 +21,7 @@ import com.mygdx.game.Sprites.Shadow;
  */
 
 public class WorldContactListener implements ContactListener{
+    public static int fullVisibility = 0;
     @Override
     public void beginContact(Contact contact) {
         Fixture fixA = contact.getFixtureA();
@@ -107,6 +108,7 @@ public class WorldContactListener implements ContactListener{
 
             // =-=-= PLAYER collides with PILLAR =-=-=
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
+                fullVisibility = 1;
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
@@ -187,6 +189,7 @@ public class WorldContactListener implements ContactListener{
 
     @Override
     public void endContact(Contact contact) {
+        fullVisibility = 0;
 //        Gdx.app.log("End contact","");
     }
 
