@@ -1,16 +1,16 @@
-#version 120
+#version 300 es
 
-attribute vec4 a_position;
-attribute vec4 a_color;
-attribute vec2 a_texCoord0;
+in vec4 a_position;
+in vec4 a_color;
+in vec2 a_texCoord0;
 
 uniform mat4 u_worldView;
 uniform vec2 u_lightPos; //player's pos
 
-varying vec4 v_color;
-varying vec2 v_texCoords;
-varying vec2 v_lightPos;
-varying vec4 v_position;
+out vec4 v_color;
+out vec2 v_texCoords;
+out vec2 v_lightPos;
+out vec4 v_position;
 
 void main() {
     v_color = a_color;

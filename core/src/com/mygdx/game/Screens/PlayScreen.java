@@ -210,8 +210,12 @@ public class PlayScreen implements Screen {
 
         //shader to hide visibility
         renderer.setView(gameCam);
-        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("Shaders/BasicLightingVertex.glsl"),
-                Gdx.files.internal("Shaders/BasicLightingFragment.glsl"));
+//        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("Shaders/BasicLightingVertex.txt"),
+//                Gdx.files.internal("Shaders/BasicLightingFragment.txt"));
+
+        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
+                Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
+
         shader.pedantic = false;
         if (!shader.isCompiled())
             throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
