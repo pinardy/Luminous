@@ -49,6 +49,8 @@ public class MultiplayerGame extends Game {
         manager.load("audio/music/dungeon_peace.mp3", Music.class);
         manager.load("audio/sounds/woosh.mp3", Sound.class);
         manager.load("audio/sounds/pickOrb.mp3", Sound.class);
+        manager.load("audio/sounds/evilCrack.mp3", Sound.class);
+        manager.load("audio/sounds/shadowVanish.mp3", Sound.class);
         manager.finishLoading();
 
         setScreen(new PlayScreen(this));

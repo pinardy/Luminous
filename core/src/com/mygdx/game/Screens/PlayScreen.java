@@ -141,6 +141,7 @@ public class PlayScreen implements Screen {
 
         player.update(dt);
         orb.update(dt);
+        hud.update(dt);
 
         for (int i = 0; i < listOfOrbs.size(); i++){
             listOfOrbs.get(i).update(dt);
@@ -214,7 +215,7 @@ public class PlayScreen implements Screen {
 //            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(100, 0);
         }
-        
+
     }
 
     @Override
