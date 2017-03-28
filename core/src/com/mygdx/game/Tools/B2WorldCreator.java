@@ -14,6 +14,9 @@ import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Core;
 import com.mygdx.game.Sprites.Pillar;
 import com.mygdx.game.Sprites.Player;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+
+import java.util.ArrayList;
 
 /**
  * Created by Pin on 06-Feb-17.
@@ -23,6 +26,8 @@ public class B2WorldCreator {
 
     // Sprites
     private Player player;
+    public static ArrayList<Pillar> listOfPillars = new ArrayList<Pillar>();
+    static int id = 1;
 
     public B2WorldCreator(PlayScreen screen){
         World world = screen.getWorld();
@@ -40,7 +45,9 @@ public class B2WorldCreator {
             MultiplayerGame.pillarPositions.add(rect);
 
             // instantiate a new Pillar object for its location in the map
-            new Pillar(screen, rect);
+            Pillar pillar = new Pillar(screen, rect, id);
+            listOfPillars.add(pillar);
+            id++;
         }
 
         // core object index is 3

@@ -19,7 +19,7 @@ public class MultiplayerGame extends Game {
      */
 
     // title for our game
-    public static final String TITLE = "LUMINOUS";
+    public static final String TITLE = "Luminous";
 
     // virtual width and height for game
     public static final int V_WIDTH = 850;
