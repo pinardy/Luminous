@@ -33,6 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -48,6 +49,7 @@ public class PlayScreen implements Screen {
     private String myID;
     HashMap<String, Vector2> clientPrediction;
     private HashMap<String, Player> players;
+    private HashMap<String, LinkedList<Vector2>> playerActions;
     private boolean keyPressed;
     private boolean multiplayer = false;
 
@@ -86,6 +88,7 @@ public class PlayScreen implements Screen {
 
     public PlayScreen(MultiplayerGame game) {
         players = new HashMap<String, Player>();
+        playerActions = new HashMap<String, LinkedList<Vector2>>();
         clientPrediction = new HashMap<String, Vector2>();
         keyPressed = false;
         multiplayer = true;
@@ -131,10 +134,8 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener());
 
         if (multiplayer) connectSocket();
-        else {
-            sm = new ShadowManagement(game);
-            sm.start();
-        }
+        sm = new ShadowManagement(game);
+        sm.start();
     }
 
     public void update(float dt) {
@@ -336,6 +337,12 @@ public class PlayScreen implements Screen {
 
     // Update server when player moves
     public void updateServer(float dt){
+        for (String id:playerActions.keySet()){
+            if (!playerActions.get(id).isEmpty()){
+                Vector2 newPos = playerActions.get(id).poll();
+                players.get(id).b2body.setTransform(newPos.x, newPos.y,players.get(id).b2body.getAngle());
+            }
+        }
         if (player != null && keyPressed){
             keyPressed = false;
 			String actionID = ""+System.currentTimeMillis();
@@ -394,6 +401,7 @@ public class PlayScreen implements Screen {
                 try {
                     String id = data.getString("id");
                     players.put(id, new Player(world));
+                    playerActions.put(id, new LinkedList<Vector2>());
                     Gdx.app.log("SocketIO", "New player has id: " + id);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error getting id");
@@ -421,10 +429,12 @@ public class PlayScreen implements Screen {
                     Double x = data.getDouble("x");
                     Double y = data.getDouble("y");
                     if (players.get(id) != null){
-                        players.get(id).b2body.setTransform(x.floatValue(), y.floatValue(),players.get(id).b2body.getAngle());
+                        playerActions.get(id).offer(new Vector2(x.floatValue(), y.floatValue()));
+//                        players.get(id).b2body.setTransform(x.floatValue(), y.floatValue(),players.get(id).b2body.getAngle());
                     }
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error getting id");
+                    e.printStackTrace();
                 }
             }
         }).on("getPlayers", new Emitter.Listener() {
@@ -439,6 +449,7 @@ public class PlayScreen implements Screen {
                         position.y = ((Double) onlinePlayers.getJSONObject(i).getDouble("y")).floatValue();
                         coopPlayer.b2body.setTransform(position.x, position.y, coopPlayer.b2body.getAngle());
                         players.put(onlinePlayers.getJSONObject(i).getString("id"), coopPlayer);
+                        playerActions.put(onlinePlayers.getJSONObject(i).getString("id"), new LinkedList<Vector2>());
                     }
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error getting id");
