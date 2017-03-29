@@ -17,7 +17,11 @@ import com.mygdx.game.Sprites.Pillar;
 import com.mygdx.game.Sprites.Player;
 import com.mygdx.game.Sprites.Shadow;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 
 /**
@@ -25,11 +29,17 @@ import io.socket.client.Socket;
  */
 
 public class WorldContactListener implements ContactListener{
+    public final int PICK_UP_ORB = 1001;
+    public final int DROP_ORB = 1002;
+    public final int PLACE_ORB = 1003;
     private Socket socket;
     private boolean multiplayer = false;
     @Override
     public void beginContact(Contact contact) {
-        socket = SocketClient.getInstance();
+        if (multiplayer){
+            socket = SocketClient.getInstance();
+            configureSocket();
+        }
 
         Fixture fixA = contact.getFixtureA();
         Fixture fixB = contact.getFixtureB();
@@ -126,6 +136,7 @@ public class WorldContactListener implements ContactListener{
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
+
                             ((Player) fixA.getUserData()).orbDrop();
 
                             Gdx.app.log("Pillar is LIT", "");
@@ -209,6 +220,62 @@ public class WorldContactListener implements ContactListener{
     }
 
     private void configureSocket(){
+        socket.on("pickUpOrb", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String orbOwnerID = data.getString("id");
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error getting id");
+                }
+            }
+        }).on("dropOrb", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String orbOwnerID = data.getString("id");
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error getting id");
+                }
+            }
+        }).on("placeOrbOnPillar", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String orbOwnerID = data.getString("id");
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error getting id");
+                }
+            }
+        });
+    }
 
+    private void updateServerOrb(int action){
+
+        JSONObject object = new JSONObject();
+        try {
+            switch (action) {
+                case PICK_UP_ORB:
+                    object.put("orbID", 0);
+                    socket.emit("pickUpOrb", object);
+                    break;
+                case DROP_ORB:
+                    object.put("orbID", 0);
+                    socket.emit("dropOrb", object);
+                    break;
+                case PLACE_ORB:
+                    object.put("orbID", 0);
+                    object.put("pillarID", 0);
+                    socket.emit("placeOrbOnPillar", object);
+                    break;
+                default:
+                    break;
+            }
+        }catch (JSONException e){
+            Gdx.app.log("SocketIO", "Error sending message");
+        }
     }
 }

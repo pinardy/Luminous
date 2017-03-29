@@ -128,10 +128,11 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
-        sm = new ShadowManagement(game);
-        sm.start();
-
         if (multiplayer) connectSocket();
+        else {
+            sm = new ShadowManagement(game);
+            sm.start();
+        }
     }
 
     public void update(float dt) {
