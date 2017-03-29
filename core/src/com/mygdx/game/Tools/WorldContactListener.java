@@ -33,13 +33,13 @@ public class WorldContactListener implements ContactListener{
     public final int DROP_ORB = 1002;
     public final int PLACE_ORB = 1003;
     private Socket socket;
-    private boolean multiplayer = false;
+    private boolean multiplayer = true;
     public static int fullVisibility = 0;
     @Override
     public void beginContact(Contact contact) {
         if (multiplayer){
             socket = SocketClient.getInstance();
-            configureSocket();
+//            configureSocketOrb();
         }
 
         Fixture fixA = contact.getFixtureA();
@@ -57,11 +57,12 @@ public class WorldContactListener implements ContactListener{
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
                         if (pickOrb | pickOrbAndroid) {
-                            // Updates Player's status to pickingOrb
-                            ((Player) fixA.getUserData()).orbPick();
-
                             // Updates Orb's status to getPicked
-                            ((Orb) fixA.getUserData()).getPicked();
+                            Orb toBePicked = (Orb) fixA.getUserData();
+
+                            // Updates Player's status to pickingOrb
+//                            ((Player) fixA.getUserData()).orbPick(toBePicked.id);
+                            if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);
 
                             Gdx.app.log("Picking orb", "");
                         }
@@ -73,11 +74,13 @@ public class WorldContactListener implements ContactListener{
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
                         if (pickOrb | pickOrbAndroid) {
-                            // Updates Player's status to pickingOrb
-                            ((Player) fixA.getUserData()).orbPick();
 
                             // Updates Orb's status to getPicked
-                            ((Orb) fixB.getUserData()).getPicked();
+                            Orb toBePicked = (Orb) fixB.getUserData();
+
+                            // Updates Player's status to pickingOrb
+//                            ((Player) fixA.getUserData()).orbPick(toBePicked.id);
+                            if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);
 
                             MultiplayerGame.manager.get("audio/sounds/pickOrb.mp3", Sound.class).play();
 
@@ -134,14 +137,15 @@ public class WorldContactListener implements ContactListener{
                     if (placeOrb | pickOrbAndroid){
                         if (((Player)fixA.getUserData()).holdingOrb == true) {
                             // Updates Pillar's status to lighted
-                            ((Pillar) fixB.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
+                            Pillar pillar = ((Pillar) fixB.getUserData());
+                            pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
 
-                            ((Player) fixA.getUserData()).orbDrop();
-
-                            Gdx.app.log("Pillar is LIT", "");
+                            Orb orb = ((Player) fixA.getUserData()).orbDrop();
+                            pillar.setmOrb(orb);
+                            Gdx.app.log("Pillar is LIT"+" with orb "+orb.id, "");
                         }
                     }
                 }
@@ -152,13 +156,14 @@ public class WorldContactListener implements ContactListener{
                     if (placeOrb | pickOrbAndroid){
                         if (((Player)fixB.getUserData()).holdingOrb == true) {
                             // Updates Pillar's status to lighted
-                            ((Pillar) fixA.getUserData()).setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
+                            Pillar pillar = ((Pillar) fixA.getUserData());
+                            pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
-                            ((Player) fixB.getUserData()).orbDrop();
-
-                            Gdx.app.log("Pillar is LIT", "");
+                            Orb orb = ((Player) fixB.getUserData()).orbDrop();
+                            pillar.setmOrb(orb);
+                            Gdx.app.log("Pillar is LIT"+" with orb "+orb.id, "");
                         }
                     }
                 }
@@ -173,11 +178,12 @@ public class WorldContactListener implements ContactListener{
                     if (grabOrb | pickOrbAndroid){
                         if (((Player)fixA.getUserData()).holdingOrb == false) {
                             // Updates Pillar's status to lighted
-                            ((Pillar) fixB.getUserData()).setCategoryFilter(MultiplayerGame.PILLAR_BIT);
+                            Pillar pillar = ((Pillar) fixB.getUserData());
+                            pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
-                            ((Player) fixA.getUserData()).orbPick();
+                            ((Player) fixA.getUserData()).orbPick(pillar.releaseOrb());
 
                             Gdx.app.log("Picked orb from pillar", "");
                         }
@@ -191,11 +197,12 @@ public class WorldContactListener implements ContactListener{
                     if (grabOrb | pickOrbAndroid){
                         if (((Player)fixB.getUserData()).holdingOrb == false) {
                             // Updates Pillar's status to lighted
-                            ((Pillar) fixA.getUserData()).setCategoryFilter(MultiplayerGame.PILLAR_BIT);
+                            Pillar pillar = ((Pillar) fixA.getUserData());
+                            pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
-                            ((Player) fixB.getUserData()).orbPick();
+                            ((Player) fixB.getUserData()).orbPick(pillar.releaseOrb());
 
                             Gdx.app.log("Picked orb from pillar", "");
                         }
@@ -222,56 +229,22 @@ public class WorldContactListener implements ContactListener{
 
     }
 
-    private void configureSocket(){
-        socket.on("pickUpOrb", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String orbOwnerID = data.getString("id");
-                }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error getting id");
-                }
-            }
-        }).on("dropOrb", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String orbOwnerID = data.getString("id");
-                }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error getting id");
-                }
-            }
-        }).on("placeOrbOnPillar", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String orbOwnerID = data.getString("id");
-                }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error getting id");
-                }
-            }
-        });
-    }
 
-    private void updateServerOrb(int action){
+    private void updateServerOrb(int action, int id){
 
         JSONObject object = new JSONObject();
         try {
             switch (action) {
                 case PICK_UP_ORB:
-                    object.put("orbID", 0);
+                    object.put("orbID", id);
                     socket.emit("pickUpOrb", object);
                     break;
                 case DROP_ORB:
-                    object.put("orbID", 0);
+                    object.put("orbID", id);
                     socket.emit("dropOrb", object);
                     break;
                 case PLACE_ORB:
-                    object.put("orbID", 0);
-                    object.put("pillarID", 0);
+                    object.put("pillarID", id);
                     socket.emit("placeOrbOnPillar", object);
                     break;
                 default:

@@ -7,6 +7,8 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.MultiplayerGame;
+import com.mygdx.game.Screens.PlayScreen;
+import com.sun.org.apache.xpath.internal.operations.Or;
 
 /**
  * Created by Pin on 04-Feb-17.
@@ -16,6 +18,7 @@ public class Player extends Sprite {
     public World world;
     public Body b2body;
     public boolean holdingOrb = false;
+    public Orb mOrb = null;
 
 
     public Player(World world){
@@ -55,11 +58,22 @@ public class Player extends Sprite {
         // player interaction
     }
 
-    public void orbPick() {
+    public void orbPick(int id) {
         holdingOrb = true;
+        mOrb = PlayScreen.listOfOrbs.get(id);
     }
 
-    public void orbDrop() {
+    public void orbPick(Orb orb) {
+        holdingOrb = true;
+        mOrb = orb;
+    }
+
+    public Orb orbDrop() {
         holdingOrb = false;
+        mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
+        mOrb.getDroped();
+        Orb toReturn = mOrb;
+        mOrb = null;
+        return toReturn;
     }
 }

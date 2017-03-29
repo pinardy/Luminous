@@ -17,7 +17,7 @@ public class Orb extends Object{
     private boolean picked;
     static float startPosX = 500;
     static float startPosY = 600;
-    public int id = 1;
+    public int id = 0;
 
     public Orb(PlayScreen screen, float x, float y) {
         super(screen, x, y);
@@ -25,9 +25,16 @@ public class Orb extends Object{
         setBounds(getX(), getY(), 16, 16);
         setToPicked = false;
         picked = false;
-        int identity = id;
-        id++;
+        id = 0;
+    }
 
+    public Orb(PlayScreen screen, float x, float y, int id) {
+        super(screen, x, y);
+        stateTime = 0;
+        setBounds(getX(), getY(), 16, 16);
+        setToPicked = false;
+        picked = false;
+        id = 0;
     }
 
     public Orb(PlayScreen screen, float x, float y, float posX, float posY) {
@@ -81,5 +88,10 @@ public class Orb extends Object{
 
     public void getPicked() {
         setToPicked = true;
+    }
+
+    public void getDroped(){
+        setToPicked = false;
+        picked = false;
     }
 }

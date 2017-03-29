@@ -46,6 +46,10 @@ import io.socket.emitter.Emitter;
 
 public class PlayScreen implements Screen {
 
+    // multi-player
+    public static final String ID_PLAYER = "id";
+    public static final String ID_ORB = "orbID";
+    public static final String ID_PILLAR = "pillarID";
     private Socket socket;
     private String myID;
     HashMap<String, Vector2> clientPrediction;
@@ -123,7 +127,7 @@ public class PlayScreen implements Screen {
 
         // create an orb in our game world
         orb = new Orb(this, .32f, .32f);
-
+        listOfOrbs.add(orb);
         // play music
         music = MultiplayerGame.manager.get("audio/music/dungeon_peace.mp3", Music.class);
         music.setLooping(true);
@@ -145,7 +149,7 @@ public class PlayScreen implements Screen {
         world.step(1 / 60f, 6, 2);
 
         player.update(dt);
-        orb.update(dt);
+//        orb.update(dt);
         hud.update(dt);
 
         for (int i = 0; i < listOfOrbs.size(); i++){
@@ -365,6 +369,7 @@ public class PlayScreen implements Screen {
             socket = SocketClient.getInstance();
             socket.connect();
             configSocketEvents();
+            configSocketOrb();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -390,6 +395,7 @@ public class PlayScreen implements Screen {
                 try {
                     myID = data.getString("id");
                     Gdx.app.log("SocketIO", "My ID: " + myID);
+                    players.put(myID, player);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error getting id");
                 }
@@ -428,7 +434,7 @@ public class PlayScreen implements Screen {
                     String id = data.getString("id");
                     Double x = data.getDouble("x");
                     Double y = data.getDouble("y");
-                    if (players.get(id) != null){
+                    if (players.get(id) != null && !id.equals(myID)){
                         playerActions.get(id).offer(new Vector2(x.floatValue(), y.floatValue()));
 //                        players.get(id).b2body.setTransform(x.floatValue(), y.floatValue(),players.get(id).b2body.getAngle());
                     }
@@ -455,6 +461,52 @@ public class PlayScreen implements Screen {
                     Gdx.app.log("SocketIO", "error getting id");
                 }
 
+            }
+        });
+    }
+
+    private void configSocketOrb(){
+        socket.on("pickUpOrb", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Gdx.app.log("SocketIO", "picking orb");
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String orbOwnerID = data.getString(ID_PLAYER);
+                    Gdx.app.log("SocketIO", "picking player");
+                    int orbID = data.getInt(ID_ORB);
+                    players.get(orbOwnerID).orbPick(orbID);
+                    listOfOrbs.get(orbID).getPicked();
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error picking up orb");
+                    e.printStackTrace();
+                }
+            }
+        }).on("dropOrb", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                // requires to know the player ID
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String orbOwnerID = data.getString(ID_PLAYER);
+                    players.get(orbOwnerID).orbDrop();
+                    Gdx.app.log("SocketIO", "dropping orb");
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error dropping orb");
+                    e.printStackTrace();
+                }
+            }
+        }).on("placeOrbOnPillar", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String orbOwnerID = data.getString(ID_PLAYER);
+                    Gdx.app.log("SocketIO", "placing orb");
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error placing orb");
+                    e.printStackTrace();
+                }
             }
         });
     }

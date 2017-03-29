@@ -14,7 +14,7 @@ import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Core;
 import com.mygdx.game.Sprites.Pillar;
 import com.mygdx.game.Sprites.Player;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
+//import com.sun.javafx.scene.control.skin.VirtualFlow;
 
 import java.util.ArrayList;
 
@@ -27,7 +27,7 @@ public class B2WorldCreator {
     // Sprites
     private Player player;
     public static ArrayList<Pillar> listOfPillars = new ArrayList<Pillar>();
-    static int id = 1;
+    private static int id = 0;
 
     public B2WorldCreator(PlayScreen screen){
         World world = screen.getWorld();
