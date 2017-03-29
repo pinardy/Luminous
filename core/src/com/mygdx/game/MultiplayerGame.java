@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.Screens.StartScreen;
 
 import java.util.ArrayList;
 
@@ -53,7 +54,7 @@ public class MultiplayerGame extends Game {
         manager.load("audio/sounds/shadowVanish.mp3", Sound.class);
         manager.finishLoading();
 
-        setScreen(new PlayScreen(this));
+        gsetScreen(new StartScreen(this));
     }
 
     @Override

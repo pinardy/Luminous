@@ -34,6 +34,7 @@ public class WorldContactListener implements ContactListener{
     public final int PLACE_ORB = 1003;
     private Socket socket;
     private boolean multiplayer = false;
+    public static int fullVisibility = 0;
     @Override
     public void beginContact(Contact contact) {
         if (multiplayer){
@@ -125,6 +126,7 @@ public class WorldContactListener implements ContactListener{
 
             // =-=-= PLAYER collides with PILLAR =-=-=
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
+                fullVisibility = 1;
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
@@ -206,6 +208,7 @@ public class WorldContactListener implements ContactListener{
 
     @Override
     public void endContact(Contact contact) {
+        fullVisibility = 0;
 //        Gdx.app.log("End contact","");
     }
 

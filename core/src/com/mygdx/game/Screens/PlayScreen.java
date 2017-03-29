@@ -7,12 +7,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
@@ -233,11 +235,30 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1); // colour, alpha
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        //shader to hide visibility
+        renderer.setView(gameCam);
+//        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("Shaders/BasicLightingVertex.txt"),
+//                Gdx.files.internal("Shaders/BasicLightingFragment.txt"));
+
+        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
+                Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
+
+        shader.pedantic = false;
+        if (!shader.isCompiled())
+            throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
+
+        shader.begin();
+        shader.setUniformMatrix("u_worldView", gameCam.combined);
+        //light's origin point
+        shader.setUniformf("u_lightPos", new Vector2(gameCam.position.x,gameCam.position.y));
+        renderer.getBatch().setShader(shader);
         // render game map
         renderer.render();
+        renderer.getBatch().setShader(null); //un-set the shader
+        shader.end();
 
         // render our Box2DDebugLines
-        b2dr.render(world, gameCam.combined);
+//        b2dr.render(world, gameCam.combined);
 
         // render our controller
 //        if (Gdx.app.getType() == Application.ApplicationType.Android)
@@ -248,6 +269,16 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
         hud.stage.draw();
+
+        //to reveal full visibility
+        if (WorldContactListener.fullVisibility==1){
+            // render game map
+            renderer.render();
+            // render our Box2DDebugLines
+            b2dr.render(world, gameCam.combined);
+            controller.draw();
+        }
+
     }
 
     public TiledMap getMap() {
