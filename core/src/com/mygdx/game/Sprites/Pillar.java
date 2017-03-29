@@ -9,14 +9,13 @@ import com.mygdx.game.Screens.PlayScreen;
  */
 
 public class Pillar extends InteractiveTileObject {
-    int id;
+    public int id;
     private Orb mOrb;
     public Pillar(PlayScreen screen, Rectangle bounds, int id) {
         super(screen, bounds);
-        id = id;
+        this.id = id;
         fixture.setUserData(this);
         setCategoryFilter(MultiplayerGame.PILLAR_BIT);
-
     }
 
     public void setmOrb(int id) {

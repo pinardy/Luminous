@@ -347,20 +347,20 @@ public class PlayScreen implements Screen {
                 players.get(id).b2body.setTransform(newPos.x, newPos.y,players.get(id).b2body.getAngle());
             }
         }
-        if (player != null && keyPressed){
-            keyPressed = false;
-			String actionID = ""+System.currentTimeMillis();
-            Vector2 position = new Vector2(player.b2body.getPosition());
-			clientPrediction.put(actionID, position);
-			JSONObject object = new JSONObject();
-			try {
-                object.put("x", position.x);
-                object.put("y", position.y);
-				socket.emit("playerMoved", object);
-			}catch (JSONException e){
-				Gdx.app.log("SocketIO", "Error sending message");
-			}
-        }
+//        if (player != null && keyPressed){
+//            keyPressed = false;
+//			String actionID = ""+System.currentTimeMillis();
+//            Vector2 position = new Vector2(player.b2body.getPosition());
+//			clientPrediction.put(actionID, position);
+//			JSONObject object = new JSONObject();
+//			try {
+//                object.put("x", position.x);
+//                object.put("y", position.y);
+//				socket.emit("playerMoved", object);
+//			}catch (JSONException e){
+//				Gdx.app.log("SocketIO", "Error sending message");
+//			}
+//        }
     }
 
     // Try establishing the TCP connection between the player and the server.
@@ -396,6 +396,17 @@ public class PlayScreen implements Screen {
                     myID = data.getString("id");
                     Gdx.app.log("SocketIO", "My ID: " + myID);
                     players.put(myID, player);
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error getting id");
+                }
+            }
+        }).on("start", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    myID = data.getString("id");
+                    Gdx.app.log("SocketIO", "My ID: " + myID);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error getting id");
                 }
@@ -436,7 +447,6 @@ public class PlayScreen implements Screen {
                     Double y = data.getDouble("y");
                     if (players.get(id) != null && !id.equals(myID)){
                         playerActions.get(id).offer(new Vector2(x.floatValue(), y.floatValue()));
-//                        players.get(id).b2body.setTransform(x.floatValue(), y.floatValue(),players.get(id).b2body.getAngle());
                     }
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error getting id");
@@ -473,7 +483,6 @@ public class PlayScreen implements Screen {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     String orbOwnerID = data.getString(ID_PLAYER);
-                    Gdx.app.log("SocketIO", "picking player");
                     int orbID = data.getInt(ID_ORB);
                     players.get(orbOwnerID).orbPick(orbID);
                     listOfOrbs.get(orbID).getPicked();
@@ -502,7 +511,24 @@ public class PlayScreen implements Screen {
                 JSONObject data = (JSONObject) args[0];
                 try {
                     String orbOwnerID = data.getString(ID_PLAYER);
+                    int pillarID = data.getInt(ID_PILLAR);
+                    Orb orb = players.get(orbOwnerID).orbDrop();
+                    B2WorldCreator.listOfPillars.get(pillarID).setmOrb(orb);
                     Gdx.app.log("SocketIO", "placing orb");
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error placing orb");
+                    e.printStackTrace();
+                }
+            }
+        }).on("pickOrbFromPillar", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String orbOwnerID = data.getString(ID_PLAYER);
+                    int pillarID = data.getInt(ID_PILLAR);
+                    players.get(orbOwnerID).orbPick(B2WorldCreator.listOfPillars.get(pillarID).releaseOrb());
+                    Gdx.app.log("SocketIO", "picking up orb from pillar");
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error placing orb");
                     e.printStackTrace();

@@ -32,6 +32,7 @@ public class WorldContactListener implements ContactListener{
     public final int PICK_UP_ORB = 1001;
     public final int DROP_ORB = 1002;
     public final int PLACE_ORB = 1003;
+    public final int PICK_PILLAR_ORB = 1004;
     private Socket socket;
     private boolean multiplayer = true;
     public static int fullVisibility = 0;
@@ -49,7 +50,7 @@ public class WorldContactListener implements ContactListener{
         int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
 
         switch (cDef){
-            // =-=-= PLAYER collides with ORB =-=-=
+            // =-=-= PLAYER collides with ORB =-=-=  // done multiplayer
             case MultiplayerGame.ORB_BIT | MultiplayerGame.PLAYER_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.ORB_BIT){
                     if (((Player)fixA.getUserData()).holdingOrb == false) {
@@ -61,9 +62,8 @@ public class WorldContactListener implements ContactListener{
                             Orb toBePicked = (Orb) fixA.getUserData();
 
                             // Updates Player's status to pickingOrb
-//                            ((Player) fixA.getUserData()).orbPick(toBePicked.id);
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);
-
+                            else ((Player) fixA.getUserData()).orbPick(toBePicked.id);
                             Gdx.app.log("Picking orb", "");
                         }
                     }
@@ -79,8 +79,8 @@ public class WorldContactListener implements ContactListener{
                             Orb toBePicked = (Orb) fixB.getUserData();
 
                             // Updates Player's status to pickingOrb
-//                            ((Player) fixA.getUserData()).orbPick(toBePicked.id);
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);
+                            else ((Player) fixA.getUserData()).orbPick(toBePicked.id);
 
                             MultiplayerGame.manager.get("audio/sounds/pickOrb.mp3", Sound.class).play();
 
@@ -127,7 +127,7 @@ public class WorldContactListener implements ContactListener{
                 // do nothing
                 break;
 
-            // =-=-= PLAYER collides with PILLAR =-=-=
+            // =-=-= PLAYER collides with PILLAR =-=-=  // multiplayer done
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
                 fullVisibility = 1;
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
@@ -142,10 +142,12 @@ public class WorldContactListener implements ContactListener{
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
-
-                            Orb orb = ((Player) fixA.getUserData()).orbDrop();
-                            pillar.setmOrb(orb);
-                            Gdx.app.log("Pillar is LIT"+" with orb "+orb.id, "");
+                            if (multiplayer) updateServerOrb(PLACE_ORB, pillar.id);
+                            else {
+                                Orb orb = ((Player) fixA.getUserData()).orbDrop();
+                                pillar.setmOrb(orb);
+                            }
+                            Gdx.app.log("Pillar is LIT"+" with orb ", "");
                         }
                     }
                 }
@@ -161,9 +163,12 @@ public class WorldContactListener implements ContactListener{
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
-                            Orb orb = ((Player) fixB.getUserData()).orbDrop();
-                            pillar.setmOrb(orb);
-                            Gdx.app.log("Pillar is LIT"+" with orb "+orb.id, "");
+                            if (multiplayer) updateServerOrb(PLACE_ORB, pillar.id);
+                            else {
+                                Orb orb = ((Player) fixB.getUserData()).orbDrop();
+                                pillar.setmOrb(orb);
+                            }
+                            Gdx.app.log("Pillar is LIT" + " with orb ", "");
                         }
                     }
                 }
@@ -183,7 +188,8 @@ public class WorldContactListener implements ContactListener{
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
-                            ((Player) fixA.getUserData()).orbPick(pillar.releaseOrb());
+                            if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
+                            else ((Player) fixA.getUserData()).orbPick(pillar.releaseOrb());
 
                             Gdx.app.log("Picked orb from pillar", "");
                         }
@@ -202,7 +208,8 @@ public class WorldContactListener implements ContactListener{
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
 
                             // Updates Player's status to not carrying orb
-                            ((Player) fixB.getUserData()).orbPick(pillar.releaseOrb());
+                            if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
+                            else ((Player) fixB.getUserData()).orbPick(pillar.releaseOrb());
 
                             Gdx.app.log("Picked orb from pillar", "");
                         }
@@ -246,6 +253,10 @@ public class WorldContactListener implements ContactListener{
                 case PLACE_ORB:
                     object.put("pillarID", id);
                     socket.emit("placeOrbOnPillar", object);
+                    break;
+                case PICK_PILLAR_ORB:
+                    object.put("pillarID", id);
+                    socket.emit("pickOrbFromPillar", object);
                     break;
                 default:
                     break;
