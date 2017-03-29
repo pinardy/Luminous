@@ -58,6 +58,10 @@ public class StartScreen implements Screen {
         Image joinImg = new Image(new Texture("joinGame.png"));
         joinImg.setSize(108, 48);
 
+        //Only for debugging in single player mode
+        Image singleImg = new Image(new Texture("singleMode.png"));
+        singleImg.setSize(108, 48);
+
         Image helpImg = new Image(new Texture("help.png"));
         helpImg.setSize(108, 48);
 
@@ -66,17 +70,26 @@ public class StartScreen implements Screen {
         table.add(logoImg);
         table.row().pad(5, 5, 100, 5);
         table.add(joinImg).size(joinImg.getWidth(), joinImg.getHeight());
-        table.add().width(100);
+        table.add(singleImg).size(singleImg.getWidth(), singleImg.getHeight());
         table.add(helpImg).size(helpImg.getWidth(), helpImg.getHeight());
 
-
-        joinImg.addListener(new ClickListener() {
+        //Only for debugging in single player mode
+        singleImg.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new PlayScreen((MultiplayerGame) game));
                 dispose();
             };
         });
+
+        //Add logic for connecting to server here
+        joinImg.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+
+            };
+        });
+
     }
 
 
