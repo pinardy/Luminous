@@ -13,8 +13,8 @@ public class SocketClient {
     public static Socket getInstance() {
         if (ourInstance == null){
             try {
-//                ourInstance = IO.socket("http://128.199.74.49:8008");
-			    ourInstance = IO.socket("http://localhost:8008");
+                ourInstance = IO.socket("http://128.199.74.49:8008");
+//			    ourInstance = IO.socket("http://localhost:8008");
             }catch (Exception e){
                 e.printStackTrace();
             }

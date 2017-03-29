@@ -56,7 +56,7 @@ public class PlayScreen implements Screen {
     private HashMap<String, Player> players;
     private HashMap<String, LinkedList<Vector2>> playerActions;
     private boolean keyPressed;
-    private boolean multiplayer = false;
+    private boolean multiplayer;
 
     private MultiplayerGame game;
     private OrthographicCamera gameCam;
@@ -91,12 +91,13 @@ public class PlayScreen implements Screen {
 
     private ShadowManagement sm = null;
 
-    public PlayScreen(MultiplayerGame game) {
+    public PlayScreen(MultiplayerGame game, boolean multiplayer) {
         players = new HashMap<String, Player>();
         playerActions = new HashMap<String, LinkedList<Vector2>>();
         clientPrediction = new HashMap<String, Vector2>();
         keyPressed = false;
-        multiplayer = true;
+        this.multiplayer = multiplayer;
+        WorldContactListener.multiplayer = multiplayer;
 
         this.game = game;
 
@@ -347,20 +348,21 @@ public class PlayScreen implements Screen {
                 players.get(id).b2body.setTransform(newPos.x, newPos.y,players.get(id).b2body.getAngle());
             }
         }
-//        if (player != null && keyPressed){
-//            keyPressed = false;
+        if (player != null && keyPressed){
+            keyPressed = false;
+//            // client prediction;
 //			String actionID = ""+System.currentTimeMillis();
-//            Vector2 position = new Vector2(player.b2body.getPosition());
+            Vector2 position = new Vector2(player.b2body.getPosition());
 //			clientPrediction.put(actionID, position);
-//			JSONObject object = new JSONObject();
-//			try {
-//                object.put("x", position.x);
-//                object.put("y", position.y);
-//				socket.emit("playerMoved", object);
-//			}catch (JSONException e){
-//				Gdx.app.log("SocketIO", "Error sending message");
-//			}
-//        }
+			JSONObject object = new JSONObject();
+			try {
+                object.put("x", position.x);
+                object.put("y", position.y);
+				socket.emit("playerMoved", object);
+			}catch (JSONException e){
+				Gdx.app.log("SocketIO", "Error sending message");
+			}
+        }
     }
 
     // Try establishing the TCP connection between the player and the server.
@@ -400,7 +402,7 @@ public class PlayScreen implements Screen {
                     Gdx.app.log("SocketIO", "error getting id");
                 }
             }
-        }).on("start", new Emitter.Listener() {
+        }).on("startGame", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];

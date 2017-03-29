@@ -34,7 +34,7 @@ public class WorldContactListener implements ContactListener{
     public final int PLACE_ORB = 1003;
     public final int PICK_PILLAR_ORB = 1004;
     private Socket socket;
-    private boolean multiplayer = true;
+    public static boolean multiplayer;
     public static int fullVisibility = 0;
     @Override
     public void beginContact(Contact contact) {
@@ -53,7 +53,7 @@ public class WorldContactListener implements ContactListener{
             // =-=-= PLAYER collides with ORB =-=-=  // done multiplayer
             case MultiplayerGame.ORB_BIT | MultiplayerGame.PLAYER_BIT:
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.ORB_BIT){
-                    if (((Player)fixA.getUserData()).holdingOrb == false) {
+                    if (((Player)fixB.getUserData()).holdingOrb == false) {
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
@@ -63,7 +63,10 @@ public class WorldContactListener implements ContactListener{
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);
-                            else ((Player) fixA.getUserData()).orbPick(toBePicked.id);
+                            else {
+                                ((Player) fixB.getUserData()).orbPick(toBePicked.id);
+                                toBePicked.getPicked();
+                            }
                             Gdx.app.log("Picking orb", "");
                         }
                     }
@@ -80,7 +83,10 @@ public class WorldContactListener implements ContactListener{
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);
-                            else ((Player) fixA.getUserData()).orbPick(toBePicked.id);
+                            else {
+                                ((Player) fixA.getUserData()).orbPick(toBePicked.id);
+                                toBePicked.getPicked();
+                            }
 
                             MultiplayerGame.manager.get("audio/sounds/pickOrb.mp3", Sound.class).play();
 

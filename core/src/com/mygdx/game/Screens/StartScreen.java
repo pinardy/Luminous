@@ -77,7 +77,7 @@ public class StartScreen implements Screen {
         singleImg.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new PlayScreen((MultiplayerGame) game));
+                game.setScreen(new PlayScreen((MultiplayerGame) game, false));
                 dispose();
             };
         });
@@ -86,7 +86,8 @@ public class StartScreen implements Screen {
         joinImg.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                game.setScreen(new PlayScreen((MultiplayerGame) game, true));
+                dispose();
             };
         });
 
