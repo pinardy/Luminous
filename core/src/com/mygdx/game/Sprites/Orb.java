@@ -17,15 +17,17 @@ public class Orb extends Object{
     private boolean picked;
     static float startPosX = 500;
     static float startPosY = 600;
+    public int id = 1;
 
     public Orb(PlayScreen screen, float x, float y) {
         super(screen, x, y);
-//        startPosX = 500;
-//        startPosY = 600;
         stateTime = 0;
         setBounds(getX(), getY(), 16, 16);
         setToPicked = false;
         picked = false;
+        int identity = id;
+        id++;
+
     }
 
     public Orb(PlayScreen screen, float x, float y, float posX, float posY) {

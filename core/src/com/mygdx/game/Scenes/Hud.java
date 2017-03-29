@@ -31,14 +31,14 @@ public class Hud implements Disposable{
     private static Integer health;
 
     // Scene2D widgets
-    private Label countDownLabel;
-    private static Label scoreValue;
-    private static Label healthValue;
-    private Label timeLabel;
-    private Label levelLabel;
-    private Label levelHeader;
-    private Label healthLabel;
     private static Label scoreLabel;
+    private static Label scoreValue;
+    private Label levelHeader;
+    private Label levelLabel;
+    private Label timeLabel;
+    private Label countDownLabel;
+    private Label healthLabel;
+    private static Label healthValue;
 
     public Hud(SpriteBatch sb){
         // define our tracking variables
