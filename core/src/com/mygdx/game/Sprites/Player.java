@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
-import com.sun.org.apache.xpath.internal.operations.Or;
 
 /**
  * Created by Pin on 04-Feb-17.
