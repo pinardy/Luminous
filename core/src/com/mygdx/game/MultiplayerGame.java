@@ -54,7 +54,7 @@ public class MultiplayerGame extends Game {
         manager.load("audio/sounds/shadowVanish.mp3", Sound.class);
         manager.finishLoading();
 
-        gsetScreen(new StartScreen(this));
+        setScreen(new StartScreen(this));
     }
 
     @Override
