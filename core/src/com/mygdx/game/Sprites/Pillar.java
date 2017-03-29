@@ -13,7 +13,7 @@ public class Pillar extends InteractiveTileObject {
     private Orb mOrb;
     public Pillar(PlayScreen screen, Rectangle bounds, int id) {
         super(screen, bounds);
-        idqq = id;
+        id = id;
         fixture.setUserData(this);
         setCategoryFilter(MultiplayerGame.PILLAR_BIT);
 
