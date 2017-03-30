@@ -18,8 +18,8 @@ import com.mygdx.game.Sprites.Player;
 
 import java.util.ArrayList;
 
-/**
- * Created by Pin on 06-Feb-17.
+/** This class instantiates the necessary objects in our game world
+ * These objects include the Pillar and Core
  */
 
 public class B2WorldCreator {
@@ -38,6 +38,11 @@ public class B2WorldCreator {
         PolygonShape shape = new PolygonShape();
         FixtureDef fdef = new FixtureDef();
         Body body;
+
+        /* There are multiple layers created in the tmx file.
+           We extract these layers out from the tmx file and instantiate
+           the objects into our game world  */
+
 
         // pillar object index is 2
         for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){

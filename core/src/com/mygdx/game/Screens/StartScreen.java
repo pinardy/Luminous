@@ -23,8 +23,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Tools.Controller;
 
-/**
- * Created by kennethlimcp on 28/Mar/2017.
+/** StartScreen is the screen users will see when the game app is started
+ * Users can choose to play single-player, multi-player, or read the help section
  */
 
 public class StartScreen implements Screen {

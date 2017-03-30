@@ -6,7 +6,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Screens.StartScreen;
 
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ public class MultiplayerGame extends Game {
     public static final int V_WIDTH = 850;
     public static final int V_HEIGHT = 500;
 
+    // For identifying the type of object
     // powers of 2 so its easier to OR bits tgt
     public static final short DEFAULT_BIT = 1;
     public static final short PLAYER_BIT = 2;
