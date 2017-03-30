@@ -6,8 +6,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
 
-/**
- * Created by Pin on 06-Feb-17.
+
+/** Orb is the 'tool' of the game.
+ * Players can pick up the Orb object
+ * We do not want the Shadow to reach the Core
+ * We prevent this by putting Orbs on the Pillars
+ * This will make the Pillar object lit, thus causing the Shadow to disappear
  */
 
 public class Orb extends Object{
@@ -68,6 +72,7 @@ public class Orb extends Object{
         bdef.type = BodyDef.BodyType.StaticBody;
         b2body = world.createBody(bdef);
 
+        // instantiate the fixture for the Orb object
         FixtureDef fdef = new FixtureDef();
 
         // shape
@@ -75,22 +80,22 @@ public class Orb extends Object{
         shape.setRadius(10);
         fdef.shape = shape;
 
+        // the Orb fixture is categorized as an Orb using ORB_BIT
         fdef.filter.categoryBits = MultiplayerGame.ORB_BIT;
 
-        // The orb can collide with these
+        // an Orb object can collide with these
         fdef.filter.maskBits = MultiplayerGame.PILLAR_BIT
                 | MultiplayerGame.PLAYER_BIT;
 
         // creates the fixture for the body and sets the data to it
         b2body.createFixture(fdef).setUserData(this);
-
     }
 
     public void getPicked() {
         setToPicked = true;
     }
 
-    public void getDroped(){
+    public void getDropped(){
         setToPicked = false;
         picked = false;
     }

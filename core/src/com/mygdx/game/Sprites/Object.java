@@ -5,9 +5,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Screens.PlayScreen;
 
-/**
- * Created by Pin on 06-Feb-17.
- */
 
 // Sprite is a library from LibGDX
 public abstract class Object extends Sprite {
@@ -22,5 +19,6 @@ public abstract class Object extends Sprite {
         defineObject();
     }
 
+    // Every object is defined differently. Hence this method is abstract
     protected abstract void defineObject();
 }

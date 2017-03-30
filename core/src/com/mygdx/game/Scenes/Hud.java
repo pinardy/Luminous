@@ -13,15 +13,15 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 
 /**
- * The Hud class is to display scores for players to see on their screen
- *
- * When the game camera moves, we want the Hud to stay the same.
- * Hence, we are using a separate Viewport for the Hud
+ * The Hud class is to display game information on the screen
+ * Game information includes score, time left, health
  */
 
 public class Hud implements Disposable{
 
     public Stage stage;
+    /* When the game camera moves, we want the Hud to stay the same.
+       Hence, we are using a separate Viewport for the Hud */
     private Viewport viewport;
 
     // score/time tracking variables

@@ -6,9 +6,12 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
 
-/**
- * Created by Pin on 06-Feb-17.
+/** Shadow is the 'enemy' of the game.
+ * We do not want the Shadow to reach the Core
+ * We prevent this by putting Orbs on the Pillars
+ * This will make the Pillar object lit, thus causing the Shadow to disappear
  */
+
 
 public class Shadow extends Object{
 
@@ -30,12 +33,14 @@ public class Shadow extends Object{
     public void update(float dt){
         stateTime += dt;
 
+        // if the Shadow object exists
         if(b2body != null) {
             float speedX = -(getX() - coreX)/speed;
             float speedY = -(getY() - coreY)/speed;
             b2body.setLinearVelocity(speedX, speedY);
         }
 
+        // if the Shadow hits a lit pillar and is alive, we destroy it
         if(hitPillar && alive) {
             world.destroyBody(b2body);
             alive = false;
@@ -53,18 +58,21 @@ public class Shadow extends Object{
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
+        // instantiate the fixture for the Shadow object
         FixtureDef fdef = new FixtureDef();
 
         // shape
         CircleShape shape = new CircleShape();
         shape.setRadius(10);
+        fdef.shape = shape;
 
+        // the Shadow fixture is categorized as an Shadow using SHADOW_BIT
         fdef.filter.categoryBits = MultiplayerGame.SHADOW_BIT;
 
         // The shadow can collide with these
         fdef.filter.maskBits = MultiplayerGame.CORE_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT;
 
-        fdef.shape = shape;
+        // creates the fixture for the body and sets the data to it
         b2body.createFixture(fdef).setUserData(this);
     }
 

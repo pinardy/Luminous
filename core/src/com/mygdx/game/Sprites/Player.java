@@ -9,8 +9,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
 
-/**
- * Created by Pin on 04-Feb-17.
+/** A Player is able to pick up an Orb and place it on a Pillar object
  */
 
 public class Player extends Sprite {
@@ -31,6 +30,7 @@ public class Player extends Sprite {
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
+        // instantiate the fixture for the Player object
         FixtureDef fdef = new FixtureDef();
 
         // shape
@@ -38,6 +38,7 @@ public class Player extends Sprite {
         shape.setRadius(10);
         fdef.shape = shape;
 
+        // The Player fixture is categorized as a Player using PLAYER_BIT
         fdef.filter.categoryBits = MultiplayerGame.PLAYER_BIT;
 
         // The player can collide with these
@@ -48,13 +49,12 @@ public class Player extends Sprite {
                 MultiplayerGame.ORB_BIT |
                 MultiplayerGame.SHADOW_BIT;
 
-        fdef.friction = 10f;
+        // creates the fixture for the body and sets the data to it
         b2body.createFixture(fdef).setUserData(this);
     }
 
 
     public void update(float dt) {
-        // player interaction
     }
 
     public void orbPick(int id) {
@@ -70,7 +70,7 @@ public class Player extends Sprite {
     public Orb orbDrop() {
         holdingOrb = false;
         mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
-        mOrb.getDroped();
+        mOrb.getDropped();
         Orb toReturn = mOrb;
         mOrb = null;
         return toReturn;

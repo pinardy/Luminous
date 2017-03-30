@@ -1,6 +1,5 @@
 package com.mygdx.game.Screens;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -8,7 +7,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -40,8 +38,8 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-/**
- * Created by Pin on 04-Feb-17.
+/** PlayScreen is the container for most of the game.
+ * Graphics are rendered and displayed on the PlayScreen which the user sees
  */
 
 public class PlayScreen implements Screen {
@@ -110,7 +108,7 @@ public class PlayScreen implements Screen {
         hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map_easy.tmx");
+        map = mapLoader.load("map_easy.tmx"); // game world is created in a tmx file
         renderer = new OrthogonalTiledMapRenderer(map);
 
         // initially set our gamcam to be centered correctly at the start of of map
@@ -173,7 +171,7 @@ public class PlayScreen implements Screen {
 
     public void handleInput(float dt) {
 
-        // Keyboard controls
+        // Desktop keyboard controls
         boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
         boolean left = Gdx.input.isKeyPressed(Input.Keys.LEFT);
@@ -185,20 +183,16 @@ public class PlayScreen implements Screen {
         }else {
             keyPressed = true;
         }
-        if (up) {
-//            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
+        if(up) {
             player.b2body.setLinearVelocity(0, 100);
         }
-        if (down) {
-//            player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
+        if(down) {
             player.b2body.setLinearVelocity(0, -100);
         }
-        if (left) {
-//            player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
+        if(left) {
             player.b2body.setLinearVelocity(-100, 0);
         }
-        if (right) {
-//            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
+        if(right) {
             player.b2body.setLinearVelocity(100, 0);
         }
 
@@ -209,25 +203,22 @@ public class PlayScreen implements Screen {
         boolean padLeft = controller.isLeftPressed();
         boolean padRight = controller.isRightPressed();
 
+        // if player is NOT moving, velocity is set to 0
         if (!(padUp | padDown | padLeft | padRight)){
             player.b2body.setLinearVelocity(0, 0);
         }else {
             keyPressed = true;
         }
         if(padUp) {
-//            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(0, 100);
         }
         if(padDown) {
-//            player.b2body.applyLinearImpulse(new Vector2(0, -4f), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(0, -100);
         }
         if(padLeft) {
-//            player.b2body.applyLinearImpulse(new Vector2(-4f, 0), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(-100, 0);
         }
         if(padRight) {
-//            player.b2body.applyLinearImpulse(new Vector2(4f, 0), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(100, 0);
         }
 
@@ -261,9 +252,11 @@ public class PlayScreen implements Screen {
 
         shader.begin();
         shader.setUniformMatrix("u_worldView", gameCam.combined);
+
         //light's origin point
         shader.setUniformf("u_lightPos", new Vector2(gameCam.position.x,gameCam.position.y));
         renderer.getBatch().setShader(shader);
+
         // render game map
         renderer.render();
         renderer.getBatch().setShader(null); //un-set the shader
@@ -273,7 +266,6 @@ public class PlayScreen implements Screen {
 //        b2dr.render(world, gameCam.combined);
 
         // render our controller
-//        if (Gdx.app.getType() == Application.ApplicationType.Android)
         controller.draw();
 
         // tell our game batch to recognise where the gameCam is and render what the camera can see
@@ -356,7 +348,7 @@ public class PlayScreen implements Screen {
         }
         if (player != null && keyPressed){
             keyPressed = false;
-//            // client prediction;
+            // client prediction;
 //			String actionID = ""+System.currentTimeMillis();
             Vector2 position = new Vector2(player.b2body.getPosition());
 //			clientPrediction.put(actionID, position);

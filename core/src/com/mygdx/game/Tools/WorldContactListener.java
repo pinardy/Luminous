@@ -24,8 +24,9 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 
-/**
- * Created by Pin on 21-Feb-17.
+/** WorldContactListener handles the logic for the numerous combinations
+ * of collisions between different objects
+ *
  */
 
 public class WorldContactListener implements ContactListener{
@@ -38,6 +39,7 @@ public class WorldContactListener implements ContactListener{
     public static int fullVisibility = 0;
     private boolean shadowCase = false;
     private boolean sameState = false;
+
     @Override
     public void beginContact(Contact contact) {
         if (multiplayer){
@@ -103,6 +105,7 @@ public class WorldContactListener implements ContactListener{
                 fullVisibility = 1;
                 sameState = true;
                 shadowCase = true;
+
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
                     Hud.reduceHealth();
@@ -142,6 +145,7 @@ public class WorldContactListener implements ContactListener{
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
                 fullVisibility = 1;
                 shadowCase = false;
+
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
@@ -190,6 +194,7 @@ public class WorldContactListener implements ContactListener{
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT:
                 fullVisibility = 1;
                 shadowCase = true;
+
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
@@ -231,7 +236,6 @@ public class WorldContactListener implements ContactListener{
                 }
                 break;
         }
-//        Gdx.app.log("Begin contact","");
     }
 
     @Override
@@ -244,7 +248,6 @@ public class WorldContactListener implements ContactListener{
         else{
             fullVisibility = 0;
         }
-//        Gdx.app.log("End contact","");
     }
 
     @Override
@@ -261,6 +264,7 @@ public class WorldContactListener implements ContactListener{
     private void updateServerOrb(int action, int id){
 
         JSONObject object = new JSONObject();
+
         try {
             switch (action) {
                 case PICK_UP_ORB:
