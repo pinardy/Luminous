@@ -209,6 +209,11 @@ public class PlayScreen implements Screen {
         boolean padLeft = controller.isLeftPressed();
         boolean padRight = controller.isRightPressed();
 
+        if (!(padUp | padDown | padLeft | padRight)){
+            player.b2body.setLinearVelocity(0, 0);
+        }else {
+            keyPressed = true;
+        }
         if(padUp) {
 //            player.b2body.applyLinearImpulse(new Vector2(0, 4f), player.b2body.getWorldCenter(), true);
             player.b2body.setLinearVelocity(0, 100);
