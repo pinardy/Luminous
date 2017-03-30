@@ -100,9 +100,7 @@ public class WorldContactListener implements ContactListener{
 
             // =-=-= SHADOW collides with CORE =-=-=
             case MultiplayerGame.SHADOW_BIT | MultiplayerGame.CORE_BIT:
-                fullVisibility = 1;
                 sameState = true;
-                shadowCase = true;
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
                     Hud.reduceHealth();
@@ -239,6 +237,10 @@ public class WorldContactListener implements ContactListener{
         if (shadowCase && sameState) {
             fullVisibility = 1;
             shadowCase = false;
+            sameState = false;
+        }
+        else if (sameState){
+            //pass
             sameState = false;
         }
         else{
