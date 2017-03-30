@@ -36,6 +36,8 @@ public class WorldContactListener implements ContactListener{
     private Socket socket;
     public static boolean multiplayer;
     public static int fullVisibility = 0;
+    private boolean shadowCase = false;
+    private boolean sameState = false;
     @Override
     public void beginContact(Contact contact) {
         if (multiplayer){
@@ -98,6 +100,9 @@ public class WorldContactListener implements ContactListener{
 
             // =-=-= SHADOW collides with CORE =-=-=
             case MultiplayerGame.SHADOW_BIT | MultiplayerGame.CORE_BIT:
+                fullVisibility = 1;
+                sameState = true;
+                shadowCase = true;
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
                     Hud.reduceHealth();
@@ -136,6 +141,7 @@ public class WorldContactListener implements ContactListener{
             // =-=-= PLAYER collides with PILLAR =-=-=  // multiplayer done
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
                 fullVisibility = 1;
+                shadowCase = false;
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
@@ -182,6 +188,8 @@ public class WorldContactListener implements ContactListener{
 
             // =-=-= PLAYER collides with LIGHTED PILLAR =-=-=
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT:
+                fullVisibility = 1;
+                shadowCase = true;
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
@@ -228,7 +236,14 @@ public class WorldContactListener implements ContactListener{
 
     @Override
     public void endContact(Contact contact) {
-        fullVisibility = 0;
+        if (shadowCase && sameState) {
+            fullVisibility = 1;
+            shadowCase = false;
+            sameState = false;
+        }
+        else{
+            fullVisibility = 0;
+        }
 //        Gdx.app.log("End contact","");
     }
 
