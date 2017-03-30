@@ -37,7 +37,7 @@ public class WorldContactListener implements ContactListener{
     private Socket socket;
     public static boolean multiplayer;
     public static int fullVisibility = 0;
-    private boolean shadowCase = false;
+    private boolean playerPillar = false;
     private boolean sameState = false;
 
     @Override
@@ -120,6 +120,7 @@ public class WorldContactListener implements ContactListener{
 
             // =-=-= SHADOW collides with LIGHTED PILLAR =-=-=
             case MultiplayerGame.SHADOW_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT :
+                sameState = true;
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixA.getUserData()).collided();
                     Hud.addScore(10);
@@ -142,7 +143,7 @@ public class WorldContactListener implements ContactListener{
             // =-=-= PLAYER collides with PILLAR =-=-=  // multiplayer done
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
                 fullVisibility = 1;
-                shadowCase = false;
+                playerPillar = true;
 
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
@@ -191,7 +192,7 @@ public class WorldContactListener implements ContactListener{
             // =-=-= PLAYER collides with LIGHTED PILLAR =-=-=
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT:
                 fullVisibility = 1;
-                shadowCase = true;
+                playerPillar = true;
 
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
@@ -238,9 +239,9 @@ public class WorldContactListener implements ContactListener{
 
     @Override
     public void endContact(Contact contact) {
-        if (shadowCase && sameState) {
+        if (playerPillar && sameState) {
             fullVisibility = 1;
-            shadowCase = false;
+            playerPillar = false;
             sameState = false;
         }
         else if (sameState){
@@ -249,6 +250,7 @@ public class WorldContactListener implements ContactListener{
         }
         else{
             fullVisibility = 0;
+            playerPillar = false;
         }
     }
 
