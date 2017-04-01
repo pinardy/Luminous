@@ -58,7 +58,7 @@ public class StartScreen implements Screen {
         Image joinImg = new Image(new Texture("joinGame.png"));
         joinImg.setSize(108, 48);
 
-        //Only for debugging in single player mode
+        // Only for debugging in single player mode
         Image singleImg = new Image(new Texture("singleMode.png"));
         singleImg.setSize(108, 48);
 

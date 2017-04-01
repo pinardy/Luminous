@@ -26,9 +26,13 @@ public class Hud implements Disposable{
 
     // score/time tracking variables
     private Integer worldTimer;
-    private float timeCount;
-    private static Integer score;
-    private static Integer health;
+    public static float timeCount;
+    public static Integer score;
+    public static Integer health;
+
+    // for checking if game is over
+    public static boolean timeIsUp = false;
+    public static boolean coreIsDead = false;
 
     // Scene2D widgets
     private static Label scoreLabel;
@@ -106,6 +110,18 @@ public class Hud implements Disposable{
         health --;
         healthValue.setText(String.format("%06d", health));
     }
+
+    // for checking if the game time is up
+    public static boolean timesUp(){
+        return timeIsUp;
+    }
+
+    // for checking if the Core's health is 0
+    public static boolean coreDead(){
+        return coreIsDead;
+    }
+
+
 
     @Override
     public void dispose() {
