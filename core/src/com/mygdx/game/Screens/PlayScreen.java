@@ -112,7 +112,7 @@ public class PlayScreen implements Screen {
         hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map_easy.tmx"); // game world is created in a tmx file
+        map = mapLoader.load("map_easy_edited.tmx"); // game world is created in a tmx file
         renderer = new OrthogonalTiledMapRenderer(map);
 
         // initially set our gamcam to be centered correctly at the start of of map
@@ -298,6 +298,12 @@ public class PlayScreen implements Screen {
             hud.stage.draw();
         }
 
+        // Game Over
+        if (gameOver()){
+            game.setScreen(new GameOverScreen(game));
+            dispose();
+        }
+
     }
 
     public TiledMap getMap() {
@@ -336,6 +342,14 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
+    }
+
+    // for checking if game is over
+    public boolean gameOver(){
+        if(Hud.timeIsUp | Hud.coreIsDead){
+            return true;
+        }
+        return false;
     }
 
     public void updateMyPosition(String idAction, float x, float y){

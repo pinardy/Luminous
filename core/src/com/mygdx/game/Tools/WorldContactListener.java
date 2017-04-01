@@ -110,12 +110,19 @@ public class WorldContactListener implements ContactListener{
                     ((Shadow) fixA.getUserData()).collided();
                     Hud.reduceHealth();
                     MultiplayerGame.manager.get("audio/sounds/evilCrack.mp3", Sound.class).play();
+                    if (Hud.health == 0){
+                        Hud.coreIsDead = true;
+                    }
                     Gdx.app.log("Shadow hits core","fixA");
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixB.getUserData()).collided();
                     Hud.reduceHealth();
                     MultiplayerGame.manager.get("audio/sounds/evilCrack.mp3", Sound.class).play();
+
+                    if (Hud.health == 0){
+                        Hud.coreIsDead = true;
+                    }
                     Gdx.app.log("Shadow hits core","fixB");
                 }
                 break;
@@ -142,7 +149,7 @@ public class WorldContactListener implements ContactListener{
                 // do nothing
                 break;
 
-            // =-=-= PLAYER collides with PILLAR =-=-=  // multiplayer done
+            // =-=-= PLAYER collides with PILLAR =-=-=  //
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
                 fullVisibility = 1;
                 playerPillar = true;

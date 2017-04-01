@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
+import com.mygdx.game.Scenes.Hud;
 
 
 public class GameOverScreen implements Screen {
@@ -33,9 +34,13 @@ public class GameOverScreen implements Screen {
         table.setFillParent(true);
 
         Label gameOverLabel = new Label("GAME OVER", font);
+        Label scoreLabel = new Label("Score: ", font);
+        Label scoreValue = new Label(String.valueOf(Hud.score), font);
 
         table.add(gameOverLabel).expandX();
         table.row();
+        table.add(scoreLabel);
+        table.add(scoreValue).pad(5);
 
         stage.addActor(table);
     }
@@ -48,7 +53,7 @@ public class GameOverScreen implements Screen {
     @Override
     public void render(float delta) {
         if(Gdx.input.justTouched()) {
-            game.setScreen(new PlayScreen((MultiplayerGame) game, false));
+            game.setScreen(new StartScreen(game));
             dispose();
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);
