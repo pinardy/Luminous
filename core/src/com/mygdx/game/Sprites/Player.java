@@ -70,7 +70,7 @@ public class Player extends Sprite {
     public Orb orbDrop() {
         holdingOrb = false;
         mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
-        mOrb.getDropped();
+        mOrb.dropOrb();
         Orb toReturn = mOrb;
         mOrb = null;
         return toReturn;

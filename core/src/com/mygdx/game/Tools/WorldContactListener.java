@@ -68,9 +68,9 @@ public class WorldContactListener implements ContactListener{
                             Orb toBePicked = (Orb) fixA.getUserData();
 
                             // Updates Player's status to pickingOrb
-                            if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);
+                            if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
                             else {
-                                ((Player) fixB.getUserData()).orbPick(toBePicked.id);
+                                ((Player) fixB.getUserData()).orbPick(toBePicked.getID());
                                 toBePicked.getPicked();
                             }
                             Gdx.app.log("Picking orb", "");
@@ -88,9 +88,9 @@ public class WorldContactListener implements ContactListener{
                             Orb toBePicked = (Orb) fixB.getUserData();
 
                             // Updates Player's status to pickingOrb
-                            if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);
+                            if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
                             else {
-                                ((Player) fixA.getUserData()).orbPick(toBePicked.id);
+                                ((Player) fixA.getUserData()).orbPick(toBePicked.getID());
                                 toBePicked.getPicked();
                             }
 
