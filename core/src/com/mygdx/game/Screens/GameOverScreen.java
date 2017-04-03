@@ -17,10 +17,9 @@ import com.mygdx.game.Scenes.Hud;
 
 
 public class GameOverScreen implements Screen {
+    private Game game;
     private Viewport viewport;
     private Stage stage;
-
-    private Game game;
 
     public GameOverScreen(Game game){
         this.game = game;
@@ -54,6 +53,7 @@ public class GameOverScreen implements Screen {
     public void render(float delta) {
         if(Gdx.input.justTouched()) {
             game.setScreen(new StartScreen(game));
+            Hud.health = 5;
             dispose();
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);
