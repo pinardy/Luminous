@@ -21,7 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 
 
 /** WorldContactListener handles the logic for the numerous combinations
@@ -64,14 +63,14 @@ public class WorldContactListener implements ContactListener{
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
                         indicateOrb = true;
                         if (pickOrb | pickOrbAndroid) {
-                            // Updates Orb's status to getPicked
+                            // Updates Orb's status to setToPick
                             Orb toBePicked = (Orb) fixA.getUserData();
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
                             else {
                                 ((Player) fixB.getUserData()).orbPick(toBePicked.getID());
-                                toBePicked.getPicked();
+                                toBePicked.setToPick();
                             }
                             Gdx.app.log("Picking orb", "");
                         }
@@ -84,14 +83,14 @@ public class WorldContactListener implements ContactListener{
                         indicateOrb = true;
                         if (pickOrb | pickOrbAndroid) {
 
-                            // Updates Orb's status to getPicked
+                            // Updates Orb's status to setToPick
                             Orb toBePicked = (Orb) fixB.getUserData();
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
                             else {
                                 ((Player) fixA.getUserData()).orbPick(toBePicked.getID());
-                                toBePicked.getPicked();
+                                toBePicked.setToPick();
                             }
 
                             MultiplayerGame.manager.get("audio/sounds/pickOrb.mp3", Sound.class).play();

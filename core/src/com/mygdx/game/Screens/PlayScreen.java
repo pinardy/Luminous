@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
@@ -496,7 +495,7 @@ public class PlayScreen implements Screen {
                     String orbOwnerID = data.getString(ID_PLAYER);
                     int orbID = data.getInt(ID_ORB);
                     players.get(orbOwnerID).orbPick(orbID);
-                    listOfOrbs.get(orbID).getPicked();
+                    listOfOrbs.get(orbID).setToPick();
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error picking up orb");
                     e.printStackTrace();

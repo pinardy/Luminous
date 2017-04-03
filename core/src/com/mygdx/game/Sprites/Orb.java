@@ -17,7 +17,7 @@ import com.mygdx.game.Screens.PlayScreen;
 public class Orb extends Object{
 
     private float stateTime;
-    private boolean setToPicked;
+    private boolean ToPick;
     private boolean picked;
     static float startPosX = 500;
     static float startPosY = 600;
@@ -27,7 +27,7 @@ public class Orb extends Object{
         super(screen, x, y);
         stateTime = 0;
         setBounds(getX(), getY(), 16, 16);
-        setToPicked = false;
+        ToPick = false;
         picked = false;
         this.id = 0;
     }
@@ -41,16 +41,15 @@ public class Orb extends Object{
         this(screen, x, y);
         startPosX = posX;
         startPosY = posY;
-        picked = false;
     }
 
     public void update(float dt){
         stateTime += dt;
-        if (setToPicked && !picked){
+        if (getToPick() && !getPicked()){
             world.destroyBody(b2body);
-            picked = true;
+            setPicked();
         }
-        else if (!picked) {
+        else if (!getPicked()) {
             // move a bit over half the width of the sprite, and down half the height
             setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         }
@@ -83,12 +82,24 @@ public class Orb extends Object{
         b2body.createFixture(fdef).setUserData(this);
     }
 
-    public void getPicked() {
-        setToPicked = true;
+    public boolean getToPick() {
+        return ToPick;
+    }
+
+    public void setToPick() {
+        ToPick = true;
+    }
+
+    public boolean getPicked() {
+        return picked;
+    }
+
+    private void setPicked() {
+        picked = true;
     }
 
     public void dropOrb(){
-        setToPicked = false;
+        ToPick = false;
         picked = false;
     }
 
