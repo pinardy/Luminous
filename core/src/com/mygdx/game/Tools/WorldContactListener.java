@@ -39,6 +39,8 @@ public class WorldContactListener implements ContactListener{
     public static int fullVisibility = 0;
     private boolean playerPillar = false;
     private boolean sameState = false;
+    public static boolean indicateOrb = false;
+    private boolean playerOrbPillar = false;
 
     @Override
     public void beginContact(Contact contact) {
@@ -60,7 +62,7 @@ public class WorldContactListener implements ContactListener{
                     if (((Player)fixB.getUserData()).holdingOrb == false) {
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
-
+                        indicateOrb = true;
                         if (pickOrb | pickOrbAndroid) {
                             // Updates Orb's status to getPicked
                             Orb toBePicked = (Orb) fixA.getUserData();
@@ -79,7 +81,7 @@ public class WorldContactListener implements ContactListener{
                     if (((Player) fixA.getUserData()).holdingOrb == false) {
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
-
+                        indicateOrb = true;
                         if (pickOrb | pickOrbAndroid) {
 
                             // Updates Orb's status to getPicked
@@ -163,6 +165,7 @@ public class WorldContactListener implements ContactListener{
                                 pillar.setmOrb(orb);
                             }
                             Gdx.app.log("Pillar is LIT"+" with orb ", "");
+                            indicateOrb = false;
                         }
                     }
                 }
@@ -184,6 +187,7 @@ public class WorldContactListener implements ContactListener{
                                 pillar.setmOrb(orb);
                             }
                             Gdx.app.log("Pillar is LIT" + " with orb ", "");
+                            indicateOrb = false;
                         }
                     }
                 }
@@ -204,7 +208,8 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixB.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-
+                            indicateOrb = true;
+                            playerOrbPillar = true;
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
                             else ((Player) fixA.getUserData()).orbPick(pillar.releaseOrb());
@@ -224,7 +229,8 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixA.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-
+                            indicateOrb = true;
+                            playerOrbPillar = true;
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
                             else ((Player) fixB.getUserData()).orbPick(pillar.releaseOrb());
@@ -251,6 +257,10 @@ public class WorldContactListener implements ContactListener{
         else{
             fullVisibility = 0;
             playerPillar = false;
+        }
+
+        if (playerOrbPillar){
+            playerOrbPillar = false;
         }
     }
 

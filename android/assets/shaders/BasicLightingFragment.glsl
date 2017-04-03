@@ -24,5 +24,5 @@ void main() {
 
     //scaling from dist to maximum dropOffDist
     //the further away, the darker it gets
-    FragColor = v_color * texture(u_texture, v_texCoords) * (dropoffDist / max(1.0,dist));
+    FragColor = v_color*texture(u_texture, v_texCoords) * (dropoffDist / max(1.0,dist));
 }

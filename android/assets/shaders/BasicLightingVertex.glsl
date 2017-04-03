@@ -4,6 +4,7 @@ in vec4 a_position;
 in vec4 a_color;
 in vec2 a_texCoord0;
 
+uniform vec4 u_worldColor;
 uniform mat4 u_worldView;
 uniform vec2 u_lightPos; //player's pos
 
@@ -13,7 +14,11 @@ out vec2 v_lightPos;
 out vec4 v_position;
 
 void main() {
+
     v_color = a_color;
+    //hardcode for purple glow
+    //v_color = vec4(1.0,0.0,1.0,1.0);
+    v_color = u_worldColor;
     v_lightPos = u_lightPos;
     v_position.xy = a_position.xy;
     v_texCoords = a_texCoord0;

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -245,13 +247,17 @@ public class PlayScreen implements Screen {
 
         ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
                 Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
-
         shader.pedantic = false;
         if (!shader.isCompiled())
             throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
 
         shader.begin();
         shader.setUniformMatrix("u_worldView", gameCam.combined);
+        shader.setUniformf("u_worldColor", Color.WHITE);
+
+        if (WorldContactListener.indicateOrb == true){
+            shader.setUniformf("u_worldColor", Color.GOLD);
+        }
 
         //light's origin point
         shader.setUniformf("u_lightPos", new Vector2(gameCam.position.x,gameCam.position.y));
