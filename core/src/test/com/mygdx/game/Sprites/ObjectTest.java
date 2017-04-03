@@ -18,7 +18,9 @@ public class ObjectTest extends TestCase {
     ObjectMethod o;
 
 
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
+
         PlayScreen playScreen = Mockito.mock(PlayScreen.class);
         float testX = 1;
         float testY = 1;
