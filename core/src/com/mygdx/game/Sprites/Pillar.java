@@ -12,15 +12,18 @@ import com.mygdx.game.Screens.PlayScreen;
 public class Pillar extends InteractiveTileObject {
     public int id;
     private Orb mOrb;
+    private PlayScreen screen;
+
     public Pillar(PlayScreen screen, Rectangle bounds, int id) {
         super(screen, bounds);
         this.id = id;
+        this.screen = screen;
         fixture.setUserData(this);
         setCategoryFilter(MultiplayerGame.PILLAR_BIT);
     }
 
     public void setmOrb(int id) {
-        this.mOrb = PlayScreen.listOfOrbs.get(id);
+        this.mOrb = screen.getOrbFromList(id);
     }
 
     public void setmOrb(Orb mOrb) {
