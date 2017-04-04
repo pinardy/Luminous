@@ -12,19 +12,30 @@ import com.mygdx.game.Screens.PlayScreen;
 /** A Player is able to pick up an Orb and place it on a Pillar object
  */
 
-public class Player extends Sprite {
-    public World world;
-    public Body b2body;
+public class Player extends Object {
     public boolean holdingOrb = false;
     public Orb mOrb = null;
+    int startPosX;
+    int startPosY;
 
-
-    public Player(World world){
-        this.world = world;
-        definePlayer();
+    public Player(World world) {
+        this(world, (float)500, (float)500);
     }
 
-    public void definePlayer() {
+    public Player(World world, float x, float y) {
+        super(world, x, y);
+        this.startPosX = 500;
+        this.startPosY = 500;
+    }
+
+    public Player(World world, float x, float y, int startPosX, int startPosY) {
+        super(world, x, y);
+        this.startPosX = startPosX;
+        this.startPosY = startPosY;
+    }
+
+    @Override
+    public void defineObject() {
         BodyDef bdef = new BodyDef();
         bdef.position.set(500, 500);
         bdef.type = BodyDef.BodyType.DynamicBody;
