@@ -88,7 +88,7 @@ public class Player extends Object {
 
     public Orb orbDrop() {
         setHoldingOrb(false);
-        
+
         mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
         mOrb.dropOrb();
         Orb toReturn = mOrb;
