@@ -17,6 +17,16 @@ public class OrbTest extends TestCase {
     private float x;
     private float y;
 
+    // For identifying the type of object
+    // powers of 2 so its easier to OR bits tgt
+    final short DEFAULT_BIT = 1;
+    final short PLAYER_BIT = 2;
+    final short PILLAR_BIT = 4;
+    final short CORE_BIT = 8;
+    final short ORB_BIT = 16;
+    final short SHADOW_BIT = 32;
+    final short LIGHTEDPILLAR_BIT = 64;
+
 
     public void setUp() throws Exception {
         super.setUp();
@@ -95,4 +105,13 @@ public class OrbTest extends TestCase {
         assertTrue(orb.getPicked());
     }
 
+    public void testCategoryBits() throws Exception {
+        Orb orb = new Orb(playScreen, x, y);
+        assertEquals(orb.getFilterData().categoryBits, ORB_BIT);
+    }
+
+    public void testMaskBits() throws Exception {
+        Orb orb = new Orb(playScreen, x, y);
+        assertEquals(orb.getFilterData().maskBits, PILLAR_BIT | PLAYER_BIT);
+    }
 }
