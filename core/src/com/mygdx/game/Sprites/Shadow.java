@@ -11,8 +11,6 @@ import com.mygdx.game.Screens.PlayScreen;
  * We prevent this by putting Orbs on the Pillars
  * This will make the Pillar object lit, thus causing the Shadow to disappear
  */
-
-
 public class Shadow extends Object{
 
     private float stateTime;
@@ -51,6 +49,14 @@ public class Shadow extends Object{
         b2body.setActive(active);
     }
 
+    public void collided() {
+        hitPillar = true;
+    }
+
+    public boolean isAlive() {
+        return alive;
+    }
+
     @Override
     protected void defineObject() {
         BodyDef bdef = new BodyDef();
@@ -75,11 +81,4 @@ public class Shadow extends Object{
         fixture.setUserData(this);
     }
 
-    public void collided() {
-        hitPillar = true;
-    }
-
-    public boolean isAlive() {
-        return alive;
-    }
 }
