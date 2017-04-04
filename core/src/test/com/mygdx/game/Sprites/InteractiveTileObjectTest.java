@@ -63,7 +63,7 @@ public class InteractiveTileObjectTest extends TestCase {
         ito = null;
     }
 
-    //This will indirect test get method as well
+    //This will indirectly test get method as well
     @Test
     public void testDefaultCategoryFilter() throws Exception {
 
