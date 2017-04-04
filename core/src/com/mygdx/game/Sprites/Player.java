@@ -13,8 +13,8 @@ import com.mygdx.game.Screens.PlayScreen;
  */
 
 public class Player extends Object {
-    public boolean holdingOrb = false;
-    public Orb mOrb = null;
+    public boolean holdingOrb;
+    public Orb mOrb;
     int startPosX;
     int startPosY;
 
@@ -30,6 +30,9 @@ public class Player extends Object {
         super(world, x, y);
         this.startPosX = startPosX;
         this.startPosY = startPosY;
+
+        holdingOrb = false;
+        mOrb = null;
     }
 
     @Override
