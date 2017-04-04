@@ -13,7 +13,7 @@ import com.mygdx.game.Screens.PlayScreen;
  */
 
 public class Player extends Object {
-    public boolean holdingOrb;
+    private boolean holdingOrb;
     public Orb mOrb;
     int startPosX;
     int startPosY;
@@ -78,6 +78,9 @@ public class Player extends Object {
         mOrb = orb;
     }
 
+    public boolean isHoldingOrb() {
+        return holdingOrb;
+    }
     public Orb orbDrop() {
         holdingOrb = false;
         mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
