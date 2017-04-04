@@ -81,6 +81,19 @@ public class PlayScreen implements Screen {
     // List of Orbs
     public static ArrayList<Orb> listOfOrbs = new ArrayList<Orb>();
 
+
+    private ArrayList<Orb> getListOfOrbs() {
+        return listOfOrbs;
+    }
+
+    public Orb getOrbFromList(int id) {
+        return listOfOrbs.get(id);
+    }
+
+    private void addToListOfOrbs(Orb o) {
+        listOfOrbs.add(o);
+    }
+
     // Music
     private Music music;
 
@@ -248,32 +261,28 @@ public class PlayScreen implements Screen {
         renderer.setView(gameCam);
 //        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("Shaders/BasicLightingVertex.txt"),
 //                Gdx.files.internal("Shaders/BasicLightingFragment.txt"));
+        
+//        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
+//                Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
+//
+//        shader.pedantic = false;
+//        if (!shader.isCompiled())
+//            throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
 
-        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
-                Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
-        shader.pedantic = false;
-        if (!shader.isCompiled())
-            throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
-
-        shader.begin();
-        shader.setUniformMatrix("u_worldView", gameCam.combined);
-        shader.setUniformf("u_worldColor", Color.WHITE);
-
-        if (WorldContactListener.indicateOrb == true){
-            shader.setUniformf("u_worldColor", Color.GOLD);
-        }
-
-        //light's origin point
-        shader.setUniformf("u_lightPos", new Vector2(gameCam.position.x,gameCam.position.y));
-        renderer.getBatch().setShader(shader);
-
-        // render game map
-        renderer.render();
-        renderer.getBatch().setShader(null); //un-set the shader
-        shader.end();
+//        shader.begin();
+//        shader.setUniformMatrix("u_worldView", gameCam.combined);
+//
+//        //light's origin point
+//        shader.setUniformf("u_lightPos", new Vector2(gameCam.position.x,gameCam.position.y));
+//        renderer.getBatch().setShader(shader);
+//
+//        // render game map
+//        renderer.render();
+//        renderer.getBatch().setShader(null); //un-set the shader
+//        shader.end();
 
         // render our Box2DDebugLines
-//        b2dr.render(world, gameCam.combined);
+        b2dr.render(world, gameCam.combined);
 
         // render our controller
         controller.draw();
@@ -495,7 +504,7 @@ public class PlayScreen implements Screen {
                     String orbOwnerID = data.getString(ID_PLAYER);
                     int orbID = data.getInt(ID_ORB);
                     players.get(orbOwnerID).orbPick(orbID);
-                    listOfOrbs.get(orbID).setToPick();
+                    getListOfOrbs().get(orbID).setToPick();
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error picking up orb");
                     e.printStackTrace();
