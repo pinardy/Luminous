@@ -172,45 +172,22 @@ public class PlayScreen implements Screen {
 
 
     public void handleInput(float dt) {
+        keyboardMovement();
+        androidMovement();
+    }
 
-        // Desktop keyboard controls
-        boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
-        boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
-        boolean left = Gdx.input.isKeyPressed(Input.Keys.LEFT);
-        boolean right = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-
-        // if player is NOT moving, velocity is set to 0
-        if (!(up | down | left | right)){
-            player.b2body.setLinearVelocity(0, 0);
-        }else {
-            keyPressed = true;
-        }
-        if(up) {
-            player.b2body.setLinearVelocity(0, 100);
-        }
-        if(down) {
-            player.b2body.setLinearVelocity(0, -100);
-        }
-        if(left) {
-            player.b2body.setLinearVelocity(-100, 0);
-        }
-        if(right) {
-            player.b2body.setLinearVelocity(100, 0);
-        }
-
-
+    private void androidMovement() {
         // Virtual gamepad
         boolean padUp = controller.isUpPressed();
         boolean padDown = controller.isDownPressed();
         boolean padLeft = controller.isLeftPressed();
         boolean padRight = controller.isRightPressed();
 
-        // if player is NOT moving, velocity is set to 0
-        if (!(padUp | padDown | padLeft | padRight)){
-            player.b2body.setLinearVelocity(0, 0);
-        }else {
+        // if a directional button is pressed, keyPressed is set to true
+        if (padUp | padDown | padLeft | padRight){
             keyPressed = true;
         }
+        // directional movements
         if(padUp) {
             player.b2body.setLinearVelocity(0, 100);
         }
@@ -223,7 +200,35 @@ public class PlayScreen implements Screen {
         if(padRight) {
             player.b2body.setLinearVelocity(100, 0);
         }
+    }
 
+    private void keyboardMovement(){
+        // Desktop keyboard controls
+        boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
+        boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+        boolean left = Gdx.input.isKeyPressed(Input.Keys.LEFT);
+        boolean right = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
+
+        // if player is NOT moving, velocity is set to 0
+        if (!(up | down | left | right)){
+            player.b2body.setLinearVelocity(0, 0);
+        }else {
+            keyPressed = true;
+        }
+
+        // directional movements
+        if(up) {
+            player.b2body.setLinearVelocity(0, 100);
+        }
+        if(down) {
+            player.b2body.setLinearVelocity(0, -100);
+        }
+        if(left) {
+            player.b2body.setLinearVelocity(-100, 0);
+        }
+        if(right) {
+            player.b2body.setLinearVelocity(100, 0);
+        }
     }
 
     @Override
