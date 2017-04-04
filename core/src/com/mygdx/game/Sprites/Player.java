@@ -69,20 +69,26 @@ public class Player extends Object {
     }
 
     public void orbPick(int id) {
-        holdingOrb = true;
+        setHoldingOrb(true);
         mOrb = PlayScreen.listOfOrbs.get(id);
     }
 
     public void orbPick(Orb orb) {
-        holdingOrb = true;
+        setHoldingOrb(true);
         mOrb = orb;
     }
 
     public boolean isHoldingOrb() {
         return holdingOrb;
     }
+
+    private void setHoldingOrb(boolean state) {
+        holdingOrb = state;
+    }
+
     public Orb orbDrop() {
-        holdingOrb = false;
+        setHoldingOrb(false);
+        
         mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
         mOrb.dropOrb();
         Orb toReturn = mOrb;
