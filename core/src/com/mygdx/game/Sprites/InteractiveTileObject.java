@@ -18,14 +18,16 @@ public abstract class InteractiveTileObject {
     protected Rectangle bounds;
     protected Body body;
     protected PlayScreen screen;
-
     protected Fixture fixture;
+    protected Filter filter;
+
 
     public InteractiveTileObject(PlayScreen screen, Rectangle bounds){
         this.world = screen.getWorld();
         this.map = screen.getMap();
         this.bounds = bounds;
         this.screen = screen;
+        this.filter = new Filter();
 
         BodyDef bdef = new BodyDef();
         FixtureDef fdef = new FixtureDef();
@@ -42,11 +44,13 @@ public abstract class InteractiveTileObject {
         fixture = body.createFixture(fdef);
     }
 
+
     public void setCategoryFilter(short filterBit){
-        Filter filter = new Filter();
         filter.categoryBits = filterBit;
         fixture.setFilterData(filter);
     }
 
-
+    public Filter getCategoryFilter() {
+        return fixture.getFilterData();
+    }
 }
