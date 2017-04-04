@@ -63,23 +63,21 @@ public class Orb extends Object{
         bdef.type = BodyDef.BodyType.StaticBody;
         b2body = world.createBody(bdef);
 
-        // instantiate the fixture for the Orb object
-        FixtureDef fdef = new FixtureDef();
-
         // shape
         CircleShape shape = new CircleShape();
         shape.setRadius(10);
         fdef.shape = shape;
 
+        // creates the fixture for the body and sets the data to it
+        fixture = b2body.createFixture(fdef);
+
         // the Orb fixture is categorized as an Orb using ORB_BIT
-        fdef.filter.categoryBits = MultiplayerGame.ORB_BIT;
+        setCategoryFilter(MultiplayerGame.ORB_BIT);
 
         // an Orb object can collide with these
-        fdef.filter.maskBits = MultiplayerGame.PILLAR_BIT
-                | MultiplayerGame.PLAYER_BIT;
+        setMaskFilter((short) (MultiplayerGame.PILLAR_BIT | MultiplayerGame.PLAYER_BIT));
 
-        // creates the fixture for the body and sets the data to it
-        b2body.createFixture(fdef).setUserData(this);
+        fixture.setUserData(this);
     }
 
     public boolean getToPick() {

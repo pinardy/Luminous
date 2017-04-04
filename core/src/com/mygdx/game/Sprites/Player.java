@@ -23,9 +23,7 @@ public class Player extends Object {
     }
 
     public Player(World world, float x, float y) {
-        super(world, x, y);
-        this.startPosX = 500;
-        this.startPosY = 500;
+        this(world, x, y, 500, 500);
     }
 
     public Player(World world, float x, float y, int startPosX, int startPosY) {
@@ -41,27 +39,26 @@ public class Player extends Object {
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
-        // instantiate the fixture for the Player object
-        FixtureDef fdef = new FixtureDef();
-
         // shape
         CircleShape shape = new CircleShape();
         shape.setRadius(10);
         fdef.shape = shape;
 
+        // creates the fixture for the body and sets the data to it
+        fixture = b2body.createFixture(fdef);
+
         // The Player fixture is categorized as a Player using PLAYER_BIT
-        fdef.filter.categoryBits = MultiplayerGame.PLAYER_BIT;
+        setCategoryFilter(MultiplayerGame.PLAYER_BIT);
 
         // The player can collide with these
-        fdef.filter.maskBits = MultiplayerGame.DEFAULT_BIT |
-                MultiplayerGame.PILLAR_BIT |
-                MultiplayerGame.LIGHTEDPILLAR_BIT |
-                MultiplayerGame.CORE_BIT |
-                MultiplayerGame.ORB_BIT |
-                MultiplayerGame.SHADOW_BIT;
+        setMaskFilter((short) ( MultiplayerGame.DEFAULT_BIT |
+                                MultiplayerGame.PILLAR_BIT |
+                                MultiplayerGame.LIGHTEDPILLAR_BIT |
+                                MultiplayerGame.CORE_BIT |
+                                MultiplayerGame.ORB_BIT |
+                                MultiplayerGame.SHADOW_BIT));
 
-        // creates the fixture for the body and sets the data to it
-        b2body.createFixture(fdef).setUserData(this);
+        fixture.setUserData(this);
     }
 
 

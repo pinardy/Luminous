@@ -58,22 +58,21 @@ public class Shadow extends Object{
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
-        // instantiate the fixture for the Shadow object
-        FixtureDef fdef = new FixtureDef();
-
         // shape
         CircleShape shape = new CircleShape();
         shape.setRadius(10);
         fdef.shape = shape;
 
+        // creates the fixture for the body and sets the data to it
+        fixture = b2body.createFixture(fdef);
+
         // the Shadow fixture is categorized as an Shadow using SHADOW_BIT
-        fdef.filter.categoryBits = MultiplayerGame.SHADOW_BIT;
+        setCategoryFilter(MultiplayerGame.SHADOW_BIT);
 
         // The shadow can collide with these
-        fdef.filter.maskBits = MultiplayerGame.CORE_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT;
+        setMaskFilter((short) (MultiplayerGame.CORE_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT));
 
-        // creates the fixture for the body and sets the data to it
-        b2body.createFixture(fdef).setUserData(this);
+        fixture.setUserData(this);
     }
 
     public void collided() {
