@@ -19,6 +19,16 @@ public class InteractiveTileObjectTest extends TestCase {
     private PlayScreen playScreen;
     private Rectangle rectangle;
 
+    // For identifying the type of object
+    // powers of 2 so its easier to OR bits tgt
+    final short DEFAULT_BIT = 1;
+    final short PLAYER_BIT = 2;
+    final short PILLAR_BIT = 4;
+    final short CORE_BIT = 8;
+    final short ORB_BIT = 16;
+    final short SHADOW_BIT = 32;
+    final short LIGHTEDPILLAR_BIT = 64;
+
     public void setUp() throws Exception {
         super.setUp();
 
@@ -57,16 +67,6 @@ public class InteractiveTileObjectTest extends TestCase {
     @Test
     public void testDefaultCategoryFilter() throws Exception {
 
-        // For identifying the type of object
-        // powers of 2 so its easier to OR bits tgt
-        final short DEFAULT_BIT = 1;
-        final short PLAYER_BIT = 2;
-        final short PILLAR_BIT = 4;
-        final short CORE_BIT = 8;
-        final short ORB_BIT = 16;
-        final short SHADOW_BIT = 32;
-        final short LIGHTEDPILLAR_BIT = 64;
-
         Filter f = ito.getCategoryFilter();
 
         assertEquals(f.categoryBits, DEFAULT_BIT);
@@ -79,15 +79,6 @@ public class InteractiveTileObjectTest extends TestCase {
 
     @Test
     public void testSetCategoryFilter() throws Exception {
-        // For identifying the type of object
-        // powers of 2 so its easier to OR bits tgt
-        final short DEFAULT_BIT = 1;
-        final short PLAYER_BIT = 2;
-        final short PILLAR_BIT = 4;
-        final short CORE_BIT = 8;
-        final short ORB_BIT = 16;
-        final short SHADOW_BIT = 32;
-        final short LIGHTEDPILLAR_BIT = 64;
 
         ito.setCategoryFilter(PLAYER_BIT);
         Filter f = ito.getCategoryFilter();
