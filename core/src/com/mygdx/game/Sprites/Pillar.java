@@ -22,6 +22,10 @@ public class Pillar extends InteractiveTileObject {
         setCategoryFilter(MultiplayerGame.PILLAR_BIT);
     }
 
+    public Orb getmOrb() {
+        return this.mOrb;
+    }
+
     public void setmOrb(int id) {
         this.mOrb = screen.getOrbFromList(id);
     }
