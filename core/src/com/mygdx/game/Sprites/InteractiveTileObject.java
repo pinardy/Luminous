@@ -50,7 +50,7 @@ public abstract class InteractiveTileObject {
         fixture.setFilterData(filter);
     }
 
-    public Filter getCategoryFilter() {
+    public Filter getFilterData() {
         return fixture.getFilterData();
     }
 }
