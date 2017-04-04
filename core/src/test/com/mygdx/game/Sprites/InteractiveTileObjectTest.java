@@ -52,8 +52,8 @@ public class InteractiveTileObjectTest extends TestCase {
             }
 
             @Override
-            public Filter getCategoryFilter() {
-                return super.getCategoryFilter();
+            public Filter getFilterData() {
+                return super.getFilterData();
             }
         };
 
@@ -67,12 +67,12 @@ public class InteractiveTileObjectTest extends TestCase {
     @Test
     public void testDefaultCategoryFilter() throws Exception {
 
-        Filter f = ito.getCategoryFilter();
+        Filter f = ito.getFilterData();
 
         assertEquals(f.categoryBits, DEFAULT_BIT);
 
         ito.setCategoryFilter(PILLAR_BIT);
-        f = ito.getCategoryFilter();
+        f = ito.getFilterData();
         assertEquals(f.categoryBits, PILLAR_BIT);
 
     }
@@ -81,27 +81,27 @@ public class InteractiveTileObjectTest extends TestCase {
     public void testSetCategoryFilter() throws Exception {
 
         ito.setCategoryFilter(PLAYER_BIT);
-        Filter f = ito.getCategoryFilter();
+        Filter f = ito.getFilterData();
         assertEquals(f.categoryBits, PLAYER_BIT);
 
         f = null;
         ito.setCategoryFilter(CORE_BIT);
-        f = ito.getCategoryFilter();
+        f = ito.getFilterData();
         assertEquals(f.categoryBits, CORE_BIT);
 
         f = null;
         ito.setCategoryFilter(ORB_BIT);
-        f = ito.getCategoryFilter();
+        f = ito.getFilterData();
         assertEquals(f.categoryBits, ORB_BIT);
 
         f = null;
         ito.setCategoryFilter(SHADOW_BIT);
-        f = ito.getCategoryFilter();
+        f = ito.getFilterData();
         assertEquals(f.categoryBits, SHADOW_BIT);
 
         f = null;
         ito.setCategoryFilter(LIGHTEDPILLAR_BIT);
-        f = ito.getCategoryFilter();
+        f = ito.getFilterData();
         assertEquals(f.categoryBits, LIGHTEDPILLAR_BIT);
     }
 }

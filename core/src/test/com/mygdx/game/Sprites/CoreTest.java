@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.World;
-import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
 
 import junit.framework.TestCase;
@@ -42,7 +41,7 @@ public class CoreTest extends TestCase {
 
         Core core = new Core(playScreen, rectangle);
 
-        Filter f = core.getCategoryFilter();
+        Filter f = core.getFilterData();
         assertEquals(f.categoryBits, CORE_BIT);
     }
 }
