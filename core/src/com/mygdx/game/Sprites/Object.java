@@ -12,6 +12,13 @@ public abstract class Object extends Sprite {
     protected PlayScreen screen;
     public Body b2body;
 
+    public Object(World world, float x, float y){
+        this.world = world;
+        this.screen = screen;
+        setPosition(x, y);
+        defineObject();
+    }
+
     public Object(PlayScreen screen, float x, float y){
         this.world = screen.getWorld();
         this.screen = screen;
