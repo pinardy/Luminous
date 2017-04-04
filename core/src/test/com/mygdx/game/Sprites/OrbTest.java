@@ -11,10 +11,6 @@ import static org.mockito.BDDMockito.given;
 /* Created by kennethlimcp on 02/Apr/2017.
  */
 
-final class FinalClass {
-    final String finalMethod() { return "something"; }
-}
-
 public class OrbTest extends TestCase {
     private PlayScreen playScreen;
     private Orb orb;
