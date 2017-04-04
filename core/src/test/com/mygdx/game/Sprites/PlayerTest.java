@@ -52,6 +52,12 @@ public class PlayerTest extends TestCase {
 
     //TODO - need to figure out how to override the call to PlayScreen
     public void testOrbPickUsingID() throws Exception {
+        Orb orb1 = Mockito.mock(Orb.class);
+
+        PlayScreen.listOfOrbs.add(orb1);
+        player.orbPick(orb1);
+
+        assertEquals(player.getHoldingOrb(), orb1);
 
     }
 

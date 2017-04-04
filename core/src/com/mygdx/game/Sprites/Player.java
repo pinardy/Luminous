@@ -82,6 +82,10 @@ public class Player extends Object {
         return holdingOrb;
     }
 
+    public Orb getHoldingOrb() {
+        return this.mOrb;
+    }
+
     private void setHoldingOrb(boolean state) {
         holdingOrb = state;
     }
