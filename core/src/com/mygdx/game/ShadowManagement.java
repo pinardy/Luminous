@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Shadow;
+
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -12,6 +14,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public class ShadowManagement extends Thread {
+    private ArrayList<Shadow> serverShadows = new ArrayList<Shadow>();
+
     private MultiplayerGame game = null;
     private CopyOnWriteArrayList<Shadow> shadows = new CopyOnWriteArrayList<Shadow>();
     private final Object shadowsLock = new Object();
@@ -66,5 +70,9 @@ public class ShadowManagement extends Thread {
                 s.update(dt);
             }
         }
+    }
+
+    public void addServerShadows(Shadow shadow){
+        serverShadows.add(shadow);
     }
 }

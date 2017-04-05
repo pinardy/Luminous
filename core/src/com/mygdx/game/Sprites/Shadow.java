@@ -14,6 +14,7 @@ import com.mygdx.game.Screens.PlayScreen;
 
 
 public class Shadow extends Object{
+    private int serverTime;
 
     private float stateTime;
     private float coreX = MultiplayerGame.corePosition.getX() + MultiplayerGame.corePosition.getWidth()/2;
@@ -24,6 +25,16 @@ public class Shadow extends Object{
 
     public Shadow(PlayScreen screen, float x, float y) {
         super(screen, x, y);
+        stateTime = 0;
+        hitPillar = false;
+        alive = true;
+        setBounds(getX(), getY(), 16, 16);
+    }
+
+    // construct from server
+    public Shadow(PlayScreen screen, float x, float y, int time) {
+        super(screen, x, y);
+        serverTime = time;
         stateTime = 0;
         hitPillar = false;
         alive = true;

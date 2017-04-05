@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -24,6 +25,7 @@ import com.mygdx.game.ShadowManagement;
 import com.mygdx.game.SocketClient;
 import com.mygdx.game.Sprites.Orb;
 import com.mygdx.game.Sprites.Player;
+import com.mygdx.game.Sprites.Shadow;
 import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.Controller;
 import com.mygdx.game.Tools.WorldContactListener;
@@ -139,6 +141,7 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
+        // multi-player initialization
         if (multiplayer) connectSocket();
         sm = new ShadowManagement(game);
         sm.start();
@@ -390,6 +393,36 @@ public class PlayScreen implements Screen {
         return (Math.abs(a-b) < 0.001);
     }
 
+    private void initiateShadows(JSONArray shadows){
+        try {
+            for (int i = 0; i < shadows.length(); i++) {
+                JSONObject shadow = shadows.getJSONObject(i);
+                Rectangle r = game.getPillarPositions().get(shadow.getInt("direction"));
+                sm.addServerShadows(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY(), shadow.getInt("time")));
+            }
+        }catch (JSONException e){
+            Gdx.app.log("SocketIO", "Error parsing shadow json");
+        }
+    }
+
+    private void initiateOrbs(JSONArray orbs){
+        try {
+            for (int i = 0; i < orbs.length(); i++) {
+                JSONObject orb = orbs.getJSONObject(i);
+                Double x = orb.getDouble("x");
+                Double y = orb.getDouble("y");
+                listOfOrbs.add(new Orb(this, x.floatValue(), y.floatValue(), orb.getInt("id")));
+            }
+        }catch (JSONException e){
+            Gdx.app.log("SocketIO", "Error parsing orb json");
+        }
+
+    }
+
+    private void initiateGameStatus(JSONObject gameStatus){
+
+    }
+
     // Configure socket events after TCP connection has been established.
     public void configSocketEvents(){
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -416,10 +449,12 @@ public class PlayScreen implements Screen {
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
                 try {
-                    myID = data.getString("id");
-                    Gdx.app.log("SocketIO", "My ID: " + myID);
+                    JSONArray shadows = data.getJSONArray("shadows");
+                    JSONArray orbs = data.getJSONArray("orbs");
+                    JSONObject status = data.getJSONObject("gameStatus");
+                    Gdx.app.log("SocketIO", "Game starts");
                 }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error getting id");
+                    Gdx.app.log("SocketIO", "error starting game");
                 }
             }
         }).on("newPlayer", new Emitter.Listener() {
@@ -432,7 +467,7 @@ public class PlayScreen implements Screen {
                     playerActions.put(id, new LinkedList<Vector2>());
                     Gdx.app.log("SocketIO", "New player has id: " + id);
                 }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error getting id");
+                    Gdx.app.log("SocketIO", "error getting new player");
                 }
 
             }
