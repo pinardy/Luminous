@@ -31,6 +31,16 @@ public class StartScreen implements Screen {
     private Game game;
     private Viewport viewport;
     private Stage stage;
+    public boolean hasJoined = false;
+
+    //TODO: Change these variables to read from server
+    static int capacity = 2;
+    static int numOfPlayers = 0;
+    static int playersLeftToJoin = capacity - numOfPlayers;
+
+    static Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
+    static Label numOfPlayersLabel = new Label("", font);
+    static Label connectedLabel = new Label("", font);
 
     public StartScreen(final Game game){
         this.game = game;
@@ -39,8 +49,6 @@ public class StartScreen implements Screen {
 
         //enable the listener for buttons
         Gdx.input.setInputProcessor(stage);
-
-        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
         Table table = new Table();
         table.bottom();
@@ -52,6 +60,7 @@ public class StartScreen implements Screen {
     }
 
     private void createContent(Table table) {
+
         Image logoImg = new Image(new Texture("luminousicon.png"));
         logoImg.setSize(243, 240);
 
@@ -68,10 +77,15 @@ public class StartScreen implements Screen {
         table.row().pad(5, 5, 5, 5);
         table.add();
         table.add(logoImg);
-        table.row().pad(5, 5, 100, 5);
+        table.row().pad(5, 5, 50, 5);
         table.add(joinImg).size(joinImg.getWidth(), joinImg.getHeight());
         table.add(singleImg).size(singleImg.getWidth(), singleImg.getHeight());
         table.add(helpImg).size(helpImg.getWidth(), helpImg.getHeight());
+
+        table.row().pad(5, 5, 5, 5);
+        table.add(connectedLabel);
+        table.row().pad(5, 5, 5, 5);
+        table.add(numOfPlayersLabel);
 
         //Only for debugging in single player mode
         singleImg.addListener(new ClickListener() {
@@ -86,11 +100,28 @@ public class StartScreen implements Screen {
         joinImg.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new PlayScreen((MultiplayerGame) game, true));
-                dispose();
-            };
+                if (playersLeft() == 0){
+                    game.setScreen(new PlayScreen((MultiplayerGame) game, true));
+                    dispose();
+                }
+                if (!hasJoined) {
+                    //TODO: Join the server
+
+                    hasJoined = true;
+                    //TODO: Update player count (capacity, numOfPlayers)
+
+
+                    //TODO: Set the labels accordingly
+                    numOfPlayersLabel.setText("Waiting for " + playersLeftToJoin + " more players");
+                    connectedLabel.setText("Connected to server!");
+                }
+            }
         });
 
+    }
+
+    public int playersLeft(){
+        return playersLeftToJoin;
     }
 
 
