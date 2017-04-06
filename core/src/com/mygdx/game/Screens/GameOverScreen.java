@@ -53,7 +53,11 @@ public class GameOverScreen implements Screen {
     public void render(float delta) {
         if(Gdx.input.justTouched()) {
             game.setScreen(new StartScreen(game));
+            // resets the game variables
             Hud.health = 5;
+            Hud.worldTimer = 300;
+            Hud.timeIsUp = false;
+            Hud.coreIsDead = false;
             dispose();
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);

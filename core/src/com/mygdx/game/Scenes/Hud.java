@@ -25,7 +25,7 @@ public class Hud implements Disposable{
     private Viewport viewport;
 
     // score/time tracking variables
-    private Integer worldTimer;
+    public static Integer worldTimer;
     public static float timeCount;
     public static Integer score;
     public static Integer health;
