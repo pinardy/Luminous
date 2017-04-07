@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Shadow;
@@ -20,6 +21,8 @@ public class ShadowManagement extends Thread {
     private CopyOnWriteArrayList<Shadow> shadows = new CopyOnWriteArrayList<Shadow>();
     private final Object shadowsLock = new Object();
     private boolean multiPlayer;
+    private float shadowX = 0f;
+    private float shadowY = 0f;
 
     public ShadowManagement(MultiplayerGame game) {
         this.game = game;
@@ -76,6 +79,13 @@ public class ShadowManagement extends Thread {
                 s.update(dt);
             }
         }
+    }
+
+    public Sprite getShadows() {
+        for (Shadow x : shadows) {
+            return x;
+        }
+        return null;
     }
 
     public void addServerShadows(Shadow shadow){

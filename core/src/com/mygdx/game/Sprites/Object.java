@@ -13,6 +13,7 @@ public abstract class Object extends Sprite {
     public Body b2body;
 
     public Object(PlayScreen screen, float x, float y){
+        super(screen.getAtlas().findRegion("shadowman")); //temporary
         this.world = screen.getWorld();
         this.screen = screen;
         setPosition(x, y);
