@@ -83,8 +83,10 @@ public class StartScreen implements Screen {
         table.add(helpImg).size(helpImg.getWidth(), helpImg.getHeight());
 
         table.row().pad(5, 5, 5, 5);
+        table.add();
         table.add(connectedLabel);
         table.row().pad(5, 5, 5, 5);
+        table.add();
         table.add(numOfPlayersLabel);
 
         //Only for debugging in single player mode
