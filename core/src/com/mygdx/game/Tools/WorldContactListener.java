@@ -62,10 +62,11 @@ public class WorldContactListener implements ContactListener{
                     if (((Player)fixB.getUserData()).holdingOrb == false) {
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
-                        indicateOrb = true;
+
                         if (pickOrb | pickOrbAndroid) {
                             // Updates Orb's status to getPicked
                             Orb toBePicked = (Orb) fixA.getUserData();
+                            indicateOrb = true;
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);
@@ -81,11 +82,11 @@ public class WorldContactListener implements ContactListener{
                     if (((Player) fixA.getUserData()).holdingOrb == false) {
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
-                        indicateOrb = true;
-                        if (pickOrb | pickOrbAndroid) {
 
+                        if (pickOrb | pickOrbAndroid) {
                             // Updates Orb's status to getPicked
                             Orb toBePicked = (Orb) fixB.getUserData();
+                            indicateOrb = true;
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.id);

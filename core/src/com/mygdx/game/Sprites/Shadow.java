@@ -1,5 +1,6 @@
 package com.mygdx.game.Sprites;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -22,13 +23,18 @@ public class Shadow extends Object{
     private float speed = 10;
     private boolean hitPillar;
     private boolean alive;
+    private TextureRegion shadowMan;
 
     public Shadow(PlayScreen screen, float x, float y) {
         super(screen, x, y);
         stateTime = 0;
         hitPillar = false;
         alive = true;
-        setBounds(getX(), getY(), 16, 16);
+
+        shadowMan = new TextureRegion(getTexture(), 0,0,16,16);
+//        setBounds(getX(), getY(), 16, 16);
+        setBounds(0,0,16,16);
+        setRegion(shadowMan);
     }
 
     // construct from server
@@ -43,6 +49,8 @@ public class Shadow extends Object{
 
     public void update(float dt){
         stateTime += dt;
+        setPosition(b2body.getPosition().x - getWidth()/2,
+                b2body.getPosition().y - getHeight()/2);
 
         // if the Shadow object exists
         if(b2body != null) {

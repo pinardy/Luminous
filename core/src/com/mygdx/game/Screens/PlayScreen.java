@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
+import com.mygdx.game.Scenes.SpriteSheet;
 import com.mygdx.game.ShadowManagement;
 import com.mygdx.game.SocketClient;
 import com.mygdx.game.Sprites.Orb;
@@ -80,6 +82,7 @@ public class PlayScreen implements Screen {
     // Sprites
     public static Player player;
     private Orb orb;
+    private TextureAtlas atlas;
 
     // List of Orbs
     public static ArrayList<Orb> listOfOrbs = new ArrayList<Orb>();
@@ -100,6 +103,7 @@ public class PlayScreen implements Screen {
         keyPressed = false;
         this.multiplayer = multiplayer;
         WorldContactListener.multiplayer = multiplayer;
+        atlas = new TextureAtlas("shadowman.pack");
 
         this.game = game;
 
@@ -245,13 +249,11 @@ public class PlayScreen implements Screen {
         update(dt);
 
         // clear game screen with black
-        Gdx.gl.glClearColor(0, 0, 0, 1); // colour, alpha
+        Gdx.gl.glClearColor(0, 0, 0, 0); // colour, alpha
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //shader to hide visibility
         renderer.setView(gameCam);
-//        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("Shaders/BasicLightingVertex.txt"),
-//                Gdx.files.internal("Shaders/BasicLightingFragment.txt"));
 
         ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
                 Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
@@ -282,8 +284,21 @@ public class PlayScreen implements Screen {
         // render our controller
         controller.draw();
 
+
         // tell our game batch to recognise where the gameCam is and render what the camera can see
         game.batch.setProjectionMatrix(gameCam.combined);
+
+        //render shadow if player is certain distance from shadow
+        float xDistance = Math.abs(gameCam.position.x - sm.getShadows().getX());
+        float yDistance = Math.abs(gameCam.position.y - sm.getShadows().getY());
+
+        if (xDistance <= 50.0f && yDistance <=50.0f){
+            game.batch.begin();
+            if(sm.getShadows()!=null)
+                sm.getShadows().draw(game.batch);
+            game.batch.end();
+        }
+
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
         hud.stage.draw();
@@ -296,7 +311,17 @@ public class PlayScreen implements Screen {
             b2dr.render(world, gameCam.combined);
             controller.draw();
             hud.stage.draw();
+
+            // tell our game batch to recognise where the gameCam is and render what the camera can see
+            game.batch.setProjectionMatrix(gameCam.combined);
+            game.batch.begin();
+            if(sm.getShadows()!=null){
+                sm.getShadows().draw(game.batch);
+            }
+            game.batch.end();
+            game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         }
+
 
         // Game Over
         if (gameOver()){
@@ -595,5 +620,9 @@ public class PlayScreen implements Screen {
                 }
             }
         });
+    }
+
+    public TextureAtlas getAtlas(){
+        return atlas;
     }
 }
