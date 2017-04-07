@@ -19,9 +19,15 @@ public class ShadowManagement extends Thread {
     private MultiplayerGame game = null;
     private CopyOnWriteArrayList<Shadow> shadows = new CopyOnWriteArrayList<Shadow>();
     private final Object shadowsLock = new Object();
+    private boolean multiPlayer;
 
     public ShadowManagement(MultiplayerGame game) {
         this.game = game;
+    }
+
+    public ShadowManagement(MultiplayerGame game, boolean multiPlayer) {
+        this.game = game;
+        this.multiPlayer = multiPlayer;
     }
 
     @Override

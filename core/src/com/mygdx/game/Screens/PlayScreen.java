@@ -125,12 +125,14 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
         creator = new B2WorldCreator(this);
 
-        // create a player in our game world
-        player = new Player(world);
+        if (!multiplayer) {
+            // create a player in our game world
+            player = new Player(world);
 
-        // create an orb in our game world
-        orb = new Orb(this, .32f, .32f);
-        listOfOrbs.add(orb);
+            // create an orb in our game world
+            orb = new Orb(this, .32f, .32f);
+            listOfOrbs.add(orb);
+        }
         // play music
         music = MultiplayerGame.manager.get("audio/music/dungeon_peace.mp3", Music.class);
         music.setLooping(true);
@@ -143,7 +145,7 @@ public class PlayScreen implements Screen {
 
         // multi-player initialization
         if (multiplayer) connectSocket();
-        sm = new ShadowManagement(game);
+        sm = new ShadowManagement(game, multiplayer);
         sm.start();
     }
 
@@ -395,9 +397,10 @@ public class PlayScreen implements Screen {
     public void connectSocket(){
         try {
             socket = SocketClient.getInstance();
-            socket.connect();
+            if (!socket.connected()) socket.connect();
             configSocketEvents();
             configSocketOrb();
+            initializeFromServer();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -407,7 +410,7 @@ public class PlayScreen implements Screen {
         return (Math.abs(a-b) < 0.001);
     }
 
-    private void initiateShadows(JSONArray shadows){
+    private void initializeShadows(JSONArray shadows){
         try {
             for (int i = 0; i < shadows.length(); i++) {
                 JSONObject shadow = shadows.getJSONObject(i);
@@ -419,7 +422,7 @@ public class PlayScreen implements Screen {
         }
     }
 
-    private void initiateOrbs(JSONArray orbs){
+    private void initializeOrbs(JSONArray orbs){
         try {
             for (int i = 0; i < orbs.length(); i++) {
                 JSONObject orb = orbs.getJSONObject(i);
@@ -430,62 +433,86 @@ public class PlayScreen implements Screen {
         }catch (JSONException e){
             Gdx.app.log("SocketIO", "Error parsing orb json");
         }
-
     }
 
-    private void initiateGameStatus(JSONObject gameStatus){
+    private void initializePlayers(JSONArray onlineplayers){
+        try {
+            for (int i = 0; i < onlineplayers.length(); i++) {
+                JSONObject onlinePlayer = onlineplayers.getJSONObject(i);
+                String id = onlinePlayer.getString("id");
+                Double x = onlinePlayer.getDouble("x");
+                Double y = onlinePlayer.getDouble("y");
+                if (id.equals(SocketClient.myID)) {
+                    player = new Player(world, x.floatValue(), y.floatValue(), id);
+                    players.put(id, player);
+                }
+                else {
+                    players.put(id, new Player(world, x.floatValue(), y.floatValue(), id));
+                    playerActions.put(id, new LinkedList<Vector2>());
+                }
+            }
+        }catch (JSONException e){
+            Gdx.app.log("SocketIO", "Error parsing orb json");
+        }
+    }
 
+    private void initializeGameStatus(JSONObject gameStatus){
+        try {
+            int duration = gameStatus.getInt("time");
+            int health = gameStatus.getInt("health");
+            int level = gameStatus.getInt("level");
+            hud.initializeStatus(duration, health, level);
+        }catch (JSONException e){
+            Gdx.app.log("SocketIO", "Error parsing game status");
+            e.printStackTrace();
+        }
+    }
+
+    private void initializeFromServer(){
+        initializePlayers(SocketClient.players);
+        initializeOrbs(SocketClient.orbs);
+//        initializeShadows(SocketClient.shadows);
+        initializeGameStatus(SocketClient.status);
+        socket.emit("finished");
     }
 
     // Configure socket events after TCP connection has been established.
     public void configSocketEvents(){
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Gdx.app.log("SocketIO", "Connected");
-            }
-        });
-
-        socket.on("socketID", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    myID = data.getString("id");
-                    Gdx.app.log("SocketIO", "My ID: " + myID);
-                    players.put(myID, player);
-                }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error getting id");
-                }
-            }
-        }).on("startGame", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    JSONArray shadows = data.getJSONArray("shadows");
-                    JSONArray orbs = data.getJSONArray("orbs");
-                    JSONObject status = data.getJSONObject("gameStatus");
-                    Gdx.app.log("SocketIO", "Game starts");
-                }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error starting game");
-                }
-            }
-        }).on("newPlayer", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String id = data.getString("id");
-                    players.put(id, new Player(world));
-                    playerActions.put(id, new LinkedList<Vector2>());
-                    Gdx.app.log("SocketIO", "New player has id: " + id);
-                }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error getting new player");
-                }
-
-            }
-        }).on("playerDisconnected", new Emitter.Listener() {
+//        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                Gdx.app.log("SocketIO", "Connected");
+//            }
+//        });
+//
+//        socket.on("socketID", new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                JSONObject data = (JSONObject) args[0];
+//                try {
+//                    myID = data.getString("id");
+//                    Gdx.app.log("SocketIO", "My ID: " + myID);
+//                    players.put(myID, player);
+//                }catch (Exception e){
+//                    Gdx.app.log("SocketIO", "error getting id");
+//                }
+//            }
+//        }).on("newPlayer", new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                JSONObject data = (JSONObject) args[0];
+//                try {
+//                    String id = data.getString("id");
+//                    players.put(id, new Player(world));
+//                    playerActions.put(id, new LinkedList<Vector2>());
+//                    Gdx.app.log("SocketIO", "New player has id: " + id);
+//                }catch (Exception e){
+//                    Gdx.app.log("SocketIO", "error getting new player");
+//                }
+//
+//            }
+//        });
+        socket.on("playerDisconnected", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject data = (JSONObject) args[0];
@@ -513,37 +540,38 @@ public class PlayScreen implements Screen {
                     e.printStackTrace();
                 }
             }
-        }).on("getPlayers", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONArray onlinePlayers = (JSONArray) args[0];
-                try {
-                    for (int i = 0; i < onlinePlayers.length(); i++){
-                        Player coopPlayer = new Player(world);
-                        Vector2 position = new Vector2();
-                        position.x = ((Double) onlinePlayers.getJSONObject(i).getDouble("x")).floatValue();
-                        position.y = ((Double) onlinePlayers.getJSONObject(i).getDouble("y")).floatValue();
-                        coopPlayer.b2body.setTransform(position.x, position.y, coopPlayer.b2body.getAngle());
-                        players.put(onlinePlayers.getJSONObject(i).getString("id"), coopPlayer);
-                        playerActions.put(onlinePlayers.getJSONObject(i).getString("id"), new LinkedList<Vector2>());
-                    }
-                }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error getting id");
-                }
-
-            }
         });
+//        socket.on("getPlayers", new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                JSONArray onlinePlayers = (JSONArray) args[0];
+//                try {
+//                    for (int i = 0; i < onlinePlayers.length(); i++){
+//                        Player coopPlayer = new Player(world);
+//                        Vector2 position = new Vector2();
+//                        position.x = ((Double) onlinePlayers.getJSONObject(i).getDouble("x")).floatValue();
+//                        position.y = ((Double) onlinePlayers.getJSONObject(i).getDouble("y")).floatValue();
+//                        coopPlayer.b2body.setTransform(position.x, position.y, coopPlayer.b2body.getAngle());
+//                        players.put(onlinePlayers.getJSONObject(i).getString("id"), coopPlayer);
+//                        playerActions.put(onlinePlayers.getJSONObject(i).getString("id"), new LinkedList<Vector2>());
+//                    }
+//                }catch (Exception e){
+//                    Gdx.app.log("SocketIO", "error getting id");
+//                }
+//
+//            }
+//        });
     }
 
     private void configSocketOrb(){
         socket.on("pickUpOrb", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Gdx.app.log("SocketIO", "picking orb");
                 JSONObject data = (JSONObject) args[0];
                 try {
                     String orbOwnerID = data.getString(ID_PLAYER);
                     int orbID = data.getInt(ID_ORB);
+                    Gdx.app.log("SocketIO", "picking orb "+orbID);
                     players.get(orbOwnerID).orbPick(orbID);
                     listOfOrbs.get(orbID).getPicked();
                 }catch (Exception e){
@@ -551,20 +579,20 @@ public class PlayScreen implements Screen {
                     e.printStackTrace();
                 }
             }
-        }).on("dropOrb", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                // requires to know the player ID
-                JSONObject data = (JSONObject) args[0];
-                try {
-                    String orbOwnerID = data.getString(ID_PLAYER);
-                    players.get(orbOwnerID).orbDrop();
-                    Gdx.app.log("SocketIO", "dropping orb");
-                }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error dropping orb");
-                    e.printStackTrace();
-                }
-            }
+//        }).on("dropOrb", new Emitter.Listener() {
+//            @Override
+//            public void call(Object... args) {
+//                // requires to know the player ID
+//                JSONObject data = (JSONObject) args[0];
+//                try {
+//                    String orbOwnerID = data.getString(ID_PLAYER);
+//                    players.get(orbOwnerID).orbDrop();
+//                    Gdx.app.log("SocketIO", "dropping orb");
+//                }catch (Exception e){
+//                    Gdx.app.log("SocketIO", "error dropping orb");
+//                    e.printStackTrace();
+//                }
+//            }
         }).on("placeOrbOnPillar", new Emitter.Listener() {
             @Override
             public void call(Object... args) {

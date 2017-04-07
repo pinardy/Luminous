@@ -17,16 +17,24 @@ public class Player extends Sprite {
     public Body b2body;
     public boolean holdingOrb = false;
     public Orb mOrb = null;
+    public String id;
 
 
     public Player(World world){
         this.world = world;
-        definePlayer();
+        definePlayer(500, 500);
     }
 
-    public void definePlayer() {
+    public Player(World world, float x, float y, String id){
+        this.world = world;
+        this.id = id;
+        definePlayer(x, y);
+    }
+
+    // initialize the player at position (x, y) in the map
+    public void definePlayer(float x, float y) {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(500, 500);
+        bdef.position.set(x, y);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -67,9 +75,10 @@ public class Player extends Sprite {
         mOrb = orb;
     }
 
+    // Drop the orb and return it
     public Orb orbDrop() {
         holdingOrb = false;
-        mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
+//        mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
         mOrb.getDropped();
         Orb toReturn = mOrb;
         mOrb = null;

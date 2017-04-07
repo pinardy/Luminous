@@ -25,14 +25,15 @@ public class Hud implements Disposable{
     private Viewport viewport;
 
     // score/time tracking variables
-    public static Integer worldTimer;
+    public static int worldTimer;
     public static float timeCount;
-    public static Integer score;
-    public static Integer health;
+    public static int score;
+    public static int health;
+    public static int level;
 
     // for checking if game is over
-    public static boolean timeIsUp = false;
-    public static boolean coreIsDead = false;
+    public static boolean timeIsUp;
+    public static boolean coreIsDead;
 
     // Scene2D widgets
     private static Label scoreLabel;
@@ -46,10 +47,7 @@ public class Hud implements Disposable{
 
     public Hud(SpriteBatch sb){
         // define our tracking variables
-        worldTimer = 300;
-        timeCount = 0;
-        score = 0;
-        health = 5;
+        initializeStatus();
 
         // setup the HUD viewport using a new camera separate from our gamecam
         // define our stage using that viewport and our game's SpriteBatch
@@ -126,5 +124,26 @@ public class Hud implements Disposable{
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    // Initialize the game status in default single player mode
+    public void initializeStatus(){
+        worldTimer = 300;
+        timeCount = 0;
+        score = 0;
+        health = 5;
+        timeIsUp = false;
+        coreIsDead = false;
+    }
+
+    // Initialize the game status with specified settings (mostly used from server.
+    public void initializeStatus(int duration, int newHealth, int newLevel){
+        worldTimer = duration;
+        level = newLevel;
+        health = newHealth;
+        timeCount = 0;
+        score = 0;
+        timeIsUp = false;
+        coreIsDead = false;
     }
 }
