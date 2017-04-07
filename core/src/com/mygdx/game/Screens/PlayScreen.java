@@ -93,6 +93,9 @@ public class PlayScreen implements Screen {
     // Controller
     public static Controller controller;
 
+    //distance between shadow and player
+    private float xDistance;
+    private float yDistance;
 
     private ShadowManagement sm = null;
 
@@ -289,14 +292,14 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
 
         //render shadow if player is certain distance from shadow
-        float xDistance = Math.abs(gameCam.position.x - sm.getShadows().getX());
-        float yDistance = Math.abs(gameCam.position.y - sm.getShadows().getY());
-
-        if (xDistance <= 50.0f && yDistance <=50.0f){
-            game.batch.begin();
-            if(sm.getShadows()!=null)
+        if(sm.getShadows()!=null) {
+            xDistance = Math.abs(gameCam.position.x - sm.getShadows().getX());
+            yDistance = Math.abs(gameCam.position.y - sm.getShadows().getY());
+            if (xDistance <= 50.0f && yDistance <=50.0f){
+                game.batch.begin();
                 sm.getShadows().draw(game.batch);
-            game.batch.end();
+                game.batch.end();
+            }
         }
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
