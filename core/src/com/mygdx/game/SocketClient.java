@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.math.Vector2;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,8 +24,8 @@ public class SocketClient {
     public static Socket getInstance() {
         if (ourInstance == null){
             try {
-//                ourInstance = IO.socket("http://128.199.74.49:8008");
-			    ourInstance = IO.socket("http://localhost:8008");
+                ourInstance = IO.socket("http://128.199.74.49:8008");
+//			    ourInstance = IO.socket("http://localhost:8008");
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -32,5 +34,18 @@ public class SocketClient {
     }
 
     private SocketClient() {
+    }
+}
+
+class ServerShadow{
+    Vector2 position;
+    int serverTime;
+    ServerShadow(Vector2 position, int time){
+        this.position = position;
+        this.serverTime = time;
+    }
+
+    public int getServerTime() {
+        return serverTime;
     }
 }

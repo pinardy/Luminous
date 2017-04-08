@@ -44,7 +44,9 @@ public class Shadow extends Object{
         stateTime = 0;
         hitPillar = false;
         alive = true;
+        shadowMan = new TextureRegion(getTexture(), 0,0,16,16);
         setBounds(getX(), getY(), 16, 16);
+        setRegion(shadowMan);
     }
 
     public void update(float dt){
@@ -101,5 +103,9 @@ public class Shadow extends Object{
 
     public boolean isAlive() {
         return alive;
+    }
+
+    public int getServerTime() {
+        return serverTime;
     }
 }

@@ -32,12 +32,12 @@ public class Orb extends Object{
         id = 0;
     }
 
-    public Orb(PlayScreen screen, float x, float y, int id) {
+    public Orb(PlayScreen screen, float x, float y, float posX, float posY, int id) {
         super(screen, x, y);
         stateTime = 0;
         setBounds(getX(), getY(), 16, 16);
-        startPosX = x;
-        startPosY = y;
+        startPosX = posX;
+        startPosY = posY;
         setToPicked = false;
         picked = false;
         this.id = id;

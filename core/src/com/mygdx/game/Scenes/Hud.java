@@ -30,6 +30,7 @@ public class Hud implements Disposable{
     public static int score;
     public static int health;
     public static int level;
+    public static int timePassed;
 
     // for checking if game is over
     public static boolean timeIsUp;
@@ -94,6 +95,7 @@ public class Hud implements Disposable{
         timeCount += dt;
         if (timeCount >= 1) { // 1 second
             worldTimer--; // our world timer is 1 second less
+            timePassed++;
             countDownLabel.setText(String.format("%03d", worldTimer));
             timeCount = 0;
         }
@@ -134,6 +136,7 @@ public class Hud implements Disposable{
         health = 5;
         timeIsUp = false;
         coreIsDead = false;
+        timePassed = 0;
     }
 
     // Initialize the game status with specified settings (mostly used from server.
@@ -145,5 +148,6 @@ public class Hud implements Disposable{
         score = 0;
         timeIsUp = false;
         coreIsDead = false;
+        timePassed = 0;
     }
 }

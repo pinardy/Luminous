@@ -46,7 +46,6 @@ public class WorldContactListener implements ContactListener{
     public void beginContact(Contact contact) {
         if (multiplayer){
             socket = SocketClient.getInstance();
-//            configureSocketOrb();
         }
 
         Fixture fixA = contact.getFixtureA();

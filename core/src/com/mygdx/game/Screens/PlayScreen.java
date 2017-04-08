@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -26,6 +27,7 @@ import com.mygdx.game.Scenes.SpriteSheet;
 import com.mygdx.game.ShadowManagement;
 import com.mygdx.game.SocketClient;
 import com.mygdx.game.Sprites.Orb;
+import com.mygdx.game.Sprites.Pillar;
 import com.mygdx.game.Sprites.Player;
 import com.mygdx.game.Sprites.Shadow;
 import com.mygdx.game.Tools.B2WorldCreator;
@@ -150,10 +152,12 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener());
 
+        sm = new ShadowManagement(game, multiplayer);
+        sm.calculateShadowStartPosition();
+        sm.start();
+
         // multi-player initialization
         if (multiplayer) connectSocket();
-        sm = new ShadowManagement(game, multiplayer);
-        sm.start();
     }
 
     public void update(float dt) {
@@ -270,7 +274,7 @@ public class PlayScreen implements Screen {
         shader.setUniformMatrix("u_worldView", gameCam.combined);
         shader.setUniformf("u_worldColor", Color.WHITE);
 
-        if (WorldContactListener.indicateOrb == true){
+        if (WorldContactListener.indicateOrb){
             shader.setUniformf("u_worldColor", Color.GOLD);
         }
 
@@ -443,7 +447,7 @@ public class PlayScreen implements Screen {
             for (int i = 0; i < shadows.length(); i++) {
                 JSONObject shadow = shadows.getJSONObject(i);
                 Rectangle r = game.getPillarPositions().get(shadow.getInt("direction"));
-                sm.addServerShadows(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY(), shadow.getInt("time")));
+                sm.addServerShadows(new Shadow(this, r.getX(), r.getY(), shadow.getInt("time")));
             }
         }catch (JSONException e){
             Gdx.app.log("SocketIO", "Error parsing shadow json");
@@ -456,7 +460,7 @@ public class PlayScreen implements Screen {
                 JSONObject orb = orbs.getJSONObject(i);
                 Double x = orb.getDouble("x");
                 Double y = orb.getDouble("y");
-                listOfOrbs.add(new Orb(this, x.floatValue(), y.floatValue(), orb.getInt("id")));
+                listOfOrbs.add(new Orb(this, .32f, .32f, x.floatValue(), y.floatValue(), orb.getInt("id")));
             }
         }catch (JSONException e){
             Gdx.app.log("SocketIO", "Error parsing orb json");
@@ -499,7 +503,7 @@ public class PlayScreen implements Screen {
     private void initializeFromServer(){
         initializePlayers(SocketClient.players);
         initializeOrbs(SocketClient.orbs);
-//        initializeShadows(SocketClient.shadows);
+        initializeShadows(SocketClient.shadows);
         initializeGameStatus(SocketClient.status);
         socket.emit("finished");
     }
@@ -629,7 +633,10 @@ public class PlayScreen implements Screen {
                     String orbOwnerID = data.getString(ID_PLAYER);
                     int pillarID = data.getInt(ID_PILLAR);
                     Orb orb = players.get(orbOwnerID).orbDrop();
-                    B2WorldCreator.listOfPillars.get(pillarID).setmOrb(orb);
+                    Pillar pillar = B2WorldCreator.listOfPillars.get(pillarID);
+                    pillar.setmOrb(orb);
+                    pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
+                    MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                     Gdx.app.log("SocketIO", "placing orb");
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error placing orb");
@@ -643,7 +650,10 @@ public class PlayScreen implements Screen {
                 try {
                     String orbOwnerID = data.getString(ID_PLAYER);
                     int pillarID = data.getInt(ID_PILLAR);
-                    players.get(orbOwnerID).orbPick(B2WorldCreator.listOfPillars.get(pillarID).releaseOrb());
+                    Pillar pillar = B2WorldCreator.listOfPillars.get(pillarID);
+                    players.get(orbOwnerID).orbPick(pillar.releaseOrb());
+                    pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
+                    MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                     Gdx.app.log("SocketIO", "picking up orb from pillar");
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error placing orb");
