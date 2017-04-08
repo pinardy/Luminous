@@ -70,6 +70,7 @@ public class StartScreen implements Screen {
 
     private void createContent(Table table) {
 
+        // images of buttons
         Image logoImg = new Image(new Texture("luminousicon.png"));
         logoImg.setSize(243, 240);
 
@@ -120,6 +121,14 @@ public class StartScreen implements Screen {
                     numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
                     connectedLabel.setText("Connected to server!");
                 }
+            }
+        });
+
+        helpImg.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new HelpScreen(game));
+                dispose();
             }
         });
     }
