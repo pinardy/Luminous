@@ -89,13 +89,10 @@ public class PlayScreen implements Screen {
     // List of Orbs
     public static ArrayList<Orb> listOfOrbs = new ArrayList<Orb>();
 
-    // Music
-    private Music music;
-
     // Controller
     public static Controller controller;
 
-    //distance between shadow and player
+    // distance between shadow and player
     private float xDistance;
     private float yDistance;
 
@@ -142,10 +139,6 @@ public class PlayScreen implements Screen {
             orb = new Orb(this, .32f, .32f);
             listOfOrbs.add(orb);
         }
-        // play music
-        music = MultiplayerGame.manager.get("audio/music/dungeon_peace.mp3", Music.class);
-        music.setLooping(true);
-        music.play();
 
         // controller
         controller = new Controller();

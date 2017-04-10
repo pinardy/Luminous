@@ -3,6 +3,7 @@ package com.mygdx.game.Screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -46,6 +47,9 @@ public class StartScreen implements Screen {
     private static int numOfPlayers = 0;
     private boolean ready;
 
+    // Music
+    private Music music;
+
     static Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
     static Label numOfPlayersLabel = new Label("", font);
     static Label connectedLabel = new Label("", font);
@@ -66,6 +70,11 @@ public class StartScreen implements Screen {
         ready = false;
 
         stage.addActor(table);
+
+        // play music
+        music = MultiplayerGame.manager.get("audio/music/dungeon_peace.mp3", Music.class);
+        music.setLooping(true);
+        music.play();
     }
 
     private void createContent(Table table) {
@@ -84,6 +93,7 @@ public class StartScreen implements Screen {
         Image helpImg = new Image(new Texture("help.png"));
         helpImg.setSize(108, 48);
 
+        // Arrangement of the labels using a table
         table.row().pad(5, 5, 5, 5);
         table.add();
         table.add(logoImg);

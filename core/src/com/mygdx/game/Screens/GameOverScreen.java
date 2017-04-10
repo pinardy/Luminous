@@ -6,8 +6,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -33,15 +35,25 @@ public class GameOverScreen implements Screen {
         table.center();
         table.setFillParent(true);
 
-        Label gameOverLabel = new Label("GAME OVER", font);
+        // labels to be displayed on screen
         Label scoreLabel = new Label("Score: ", font);
+        Label tapLabel = new Label("Tap anywhere to go back to the main menu", font);
         Label scoreValue = new Label(String.valueOf(Hud.score), font);
 
-        table.add(gameOverLabel).expandX();
+        // image for "Game Over"
+        Image gameOverImg = new Image(new Texture("gameover.png"));
+        gameOverImg.setSize(250, 48);
+
+        // Arrangement of the labels using a table
+        table.add(gameOverImg).size(gameOverImg.getWidth(), gameOverImg.getHeight());
         table.row();
         table.add(scoreLabel);
+        table.row();
         table.add(scoreValue).pad(5);
+        table.row();
+        table.add(tapLabel);
 
+        // add the table to the stage
         stage.addActor(table);
     }
 
