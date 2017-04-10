@@ -24,6 +24,8 @@ public class Shadow extends Object{
     private boolean hitPillar;
     private boolean alive;
     private TextureRegion shadowMan;
+    private float creationX;
+    private float creationY;
 
     public Shadow(PlayScreen screen, float x, float y) {
         super(screen, x, y);
@@ -54,10 +56,12 @@ public class Shadow extends Object{
         setPosition(b2body.getPosition().x - getWidth()/2,
                 b2body.getPosition().y - getHeight()/2);
 
+
+
         // if the Shadow object exists
         if(b2body != null) {
-            float speedX = -(getX() - coreX)/speed;
-            float speedY = -(getY() - coreY)/speed;
+            float speedX = -(creationX - coreX)/(speed);
+            float speedY = -(creationY - coreY)/(speed);
             b2body.setLinearVelocity(speedX, speedY);
         }
 
@@ -76,6 +80,8 @@ public class Shadow extends Object{
     protected void defineObject() {
         BodyDef bdef = new BodyDef();
         bdef.position.set(getX(), getY());
+        creationX = getX();
+        creationY = getY();
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
