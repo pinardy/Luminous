@@ -40,6 +40,9 @@ public class WorldContactListener implements ContactListener{
     private boolean playerPillar = false;
     private boolean sameState = false;
     public static boolean indicateOrb = false;
+    public static boolean indicateOrbOnPillar = false;
+    public static float lightedPillarX;
+    public static float lightedPillarY;
     private boolean playerOrbPillar = false;
 
     @Override
@@ -164,6 +167,9 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixB.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
+                            indicateOrbOnPillar = true;
+                            lightedPillarX = pillar.positionX();
+                            lightedPillarY = pillar.positionY();
 
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PLACE_ORB, pillar.id);
@@ -186,6 +192,9 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixA.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
+                            indicateOrbOnPillar = true;
+                            lightedPillarX = pillar.positionX();
+                            lightedPillarY = pillar.positionY();
 
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PLACE_ORB, pillar.id);
@@ -217,6 +226,8 @@ public class WorldContactListener implements ContactListener{
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                             indicateOrb = true;
                             playerOrbPillar = true;
+                            indicateOrbOnPillar = false;
+
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
                             else ((Player) fixA.getUserData()).orbPick(pillar.releaseOrb());
@@ -238,6 +249,8 @@ public class WorldContactListener implements ContactListener{
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                             indicateOrb = true;
                             playerOrbPillar = true;
+                            indicateOrbOnPillar = false;
+
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
                             else ((Player) fixB.getUserData()).orbPick(pillar.releaseOrb());

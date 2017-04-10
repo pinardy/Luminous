@@ -19,6 +19,16 @@ public class Pillar extends InteractiveTileObject {
         setCategoryFilter(MultiplayerGame.PILLAR_BIT);
     }
 
+    public float positionX(){
+        float positionX = this.fixture.getBody().getPosition().x;
+        return positionX;
+    }
+
+    public float positionY(){
+        float positionY =  this.fixture.getBody().getPosition().y;
+        return positionY;
+    }
+
     public void setmOrb(int id) {
         this.mOrb = PlayScreen.listOfOrbs.get(id);
     }
