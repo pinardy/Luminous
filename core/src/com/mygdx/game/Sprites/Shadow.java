@@ -1,9 +1,11 @@
 package com.mygdx.game.Sprites;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
 
@@ -26,6 +28,7 @@ public class Shadow extends Object{
     private TextureRegion shadowMan;
     private float creationX;
     private float creationY;
+    private Animation<TextureRegion> shadowRun;
 
     public Shadow(PlayScreen screen, float x, float y) {
         super(screen, x, y);
@@ -34,9 +37,14 @@ public class Shadow extends Object{
         alive = true;
 
         shadowMan = new TextureRegion(getTexture(), 0,0,16,16);
-//        setBounds(getX(), getY(), 16, 16);
         setBounds(0,0,16,16);
         setRegion(shadowMan);
+
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+        for (int i = 0; i < 12; i++){
+            frames.add(new TextureRegion(getTexture(), i*32, 0, 32, 57));
+        }
+        shadowRun = new Animation(0.1f, frames);
     }
 
     // construct from server
@@ -53,9 +61,12 @@ public class Shadow extends Object{
 
     public void update(float dt){
         stateTime += dt;
+
+        //to render graphics on fixture
         setPosition(b2body.getPosition().x - getWidth()/2,
                 b2body.getPosition().y - getHeight()/2);
-
+        //for animation
+        setRegion(shadowRun.getKeyFrame(stateTime, true)); //boolean for looping
 
 
         // if the Shadow object exists

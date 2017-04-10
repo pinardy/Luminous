@@ -294,8 +294,9 @@ public class PlayScreen implements Screen {
         if(sm.getShadows()!=null) {
             xDistance = Math.abs(gameCam.position.x - sm.getShadows().getX());
             yDistance = Math.abs(gameCam.position.y - sm.getShadows().getY());
-            if (xDistance <= 50.0f && yDistance <=50.0f){
+            if (xDistance <= 60.0f && yDistance <=60.0f){
                 game.batch.begin();
+                sm.getShadows().setSize(30, 40);
                 sm.getShadows().draw(game.batch);
                 game.batch.end();
             }
@@ -318,6 +319,7 @@ public class PlayScreen implements Screen {
             game.batch.setProjectionMatrix(gameCam.combined);
             game.batch.begin();
             if(sm.getShadows()!=null){
+                sm.getShadows().setSize(30,40);
                 sm.getShadows().draw(game.batch);
             }
             game.batch.end();
