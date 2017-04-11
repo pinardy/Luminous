@@ -13,6 +13,7 @@ public class Pillar extends InteractiveTileObject {
     public int id;
     private Orb mOrb;
     private PlayScreen screen;
+    private boolean hasOrb;
 
     public Pillar(PlayScreen screen, Rectangle bounds, int id) {
         super(screen, bounds);
@@ -38,15 +39,21 @@ public class Pillar extends InteractiveTileObject {
 
     public void setmOrb(int id) {
         this.mOrb = screen.getOrbFromList(id);
+        hasOrb = true;
     }
 
     public void setmOrb(Orb mOrb) {
         this.mOrb = mOrb;
+        hasOrb = true;
     }
 
     public Orb releaseOrb() {
         Orb toReturn = mOrb;
         mOrb = null;
+        hasOrb = false;
         return toReturn;
+    }
+    public boolean hasOrb(){
+        return hasOrb;
     }
 }
