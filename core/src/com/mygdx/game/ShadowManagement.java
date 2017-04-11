@@ -33,9 +33,8 @@ public class ShadowManagement extends Thread {
     }
 
     public ShadowManagement(MultiplayerGame game, boolean multiPlayer) {
-        this.game = game;
+        this(game);
         this.multiPlayer = multiPlayer;
-        serverShadows = new LinkedList<Shadow>();
     }
 
     @Override

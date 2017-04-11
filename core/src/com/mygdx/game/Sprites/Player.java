@@ -37,7 +37,6 @@ public class Player extends Object {
         this.startPosX = startPosX;
         this.startPosY = startPosY;
         this.holdingOrb = false;
-        this.mOrb = null;
         this.id = "0";
         defineObject();
     }

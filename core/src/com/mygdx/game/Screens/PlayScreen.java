@@ -282,7 +282,7 @@ public class PlayScreen implements Screen {
             if(sm.getShadows()!=null){
                 sm.getShadows().setSize(30,40);
                 sm.getShadows().draw(game.batch);
-                orb.draw(game.batch);
+                if (!multiplayer) orb.draw(game.batch);
             }
             game.batch.end();
             game.batch.setProjectionMatrix(hud.stage.getCamera().combined);

@@ -26,8 +26,7 @@ public class B2WorldCreator {
 
     // Sprites
     private Player player;
-    public static ArrayList<Pillar> listOfPillars = new ArrayList<Pillar>();
-    private static int id = 0;
+    public static ArrayList<Pillar> listOfPillars;
 
     public B2WorldCreator(PlayScreen screen){
         World world = screen.getWorld();
@@ -45,10 +44,11 @@ public class B2WorldCreator {
 
 
         // pillar object index is 2
+        int id = 0;
+        listOfPillars = new ArrayList<Pillar>();
         for(MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)){
             Rectangle rect = ((RectangleMapObject) object).getRectangle();
             MultiplayerGame.pillarPositions.add(rect);
-
             // instantiate a new Pillar object for its location in the map
             Pillar pillar = new Pillar(screen, rect, id);
             listOfPillars.add(pillar);

@@ -32,28 +32,32 @@ io.on("connection", function(socket){
     // player wants to join a room
     socket.on("room", function (data) {
         console.log("Player wants to join room with size "+data);
-        var size = data;
-        for (var i = 0; i < rooms.length; i++){
-            if (rooms[i].size == size){
-                foundRoom = rooms[i].addPlayer(socket.id);
-                console.log("Found existing room!");
-                if (!!foundRoom) break;
+        try {
+            var size = data;
+            for (var i = 0; i < rooms.length; i++) {
+                if (rooms[i].size == size) {
+                    foundRoom = rooms[i].addPlayer(socket.id);
+                    console.log("Found existing room!");
+                    if (!!foundRoom) break;
+                }
             }
-        }
-        if (!foundRoom){
-            console.log("Creating room!");
-            foundRoom = new Room(Math.random(), size);
-            foundRoom.addPlayer(socket.id);
-            rooms.push(foundRoom);
-            foundRoom.game = new GameStruct(foundRoom.id);
-        }
-        socket.join(foundRoom.id);
-        if (foundRoom.host === undefined) foundRoom.host = socket.id;
-        socket.broadcast.to(foundRoom.id).emit("newPlayer", {id: socket.id});
-        socket.emit("socketID", { id: socket.id, numOfPlayers: foundRoom.numOfPlayers});
+            if (!foundRoom) {
+                console.log("Creating room!");
+                foundRoom = new Room(Math.random(), size);
+                foundRoom.addPlayer(socket.id);
+                rooms.push(foundRoom);
+                foundRoom.game = new GameStruct(foundRoom.id);
+            }
+            socket.join(foundRoom.id);
+            if (foundRoom.host === undefined) foundRoom.host = socket.id;
+            socket.broadcast.to(foundRoom.id).emit("newPlayer", {id: socket.id});
+            socket.emit("socketID", {id: socket.id, numOfPlayers: foundRoom.numOfPlayers});
 
-        if (foundRoom.numOfPlayers == foundRoom.size){
-            startGame(io, foundRoom);
+            if (foundRoom.numOfPlayers == foundRoom.size) {
+                startGame(io, foundRoom);
+            }
+        }catch (err){
+            console.log(err);
         }
     });
 
@@ -62,15 +66,19 @@ io.on("connection", function(socket){
     // socket.broadcast.emit("newPlayer", { id: socket.id });
 
     socket.on('playerMoved', function(data){
-        var players = foundRoom.game.players;
-        data.id = socket.id;
-        for (var i = 0; i < players.length; i++){
-            if (players[i].id == socket.id){
-                players[i].x = data.x;
-                players[i].y = data.y;
-                socket.broadcast.to(foundRoom.id).emit("playerMoved", data);
-                break;
+        try {
+            var players = foundRoom.game.players;
+            data.id = socket.id;
+            for (var i = 0; i < players.length; i++) {
+                if (players[i].id == socket.id) {
+                    players[i].x = data.x;
+                    players[i].y = data.y;
+                    socket.broadcast.to(foundRoom.id).emit("playerMoved", data);
+                    break;
+                }
             }
+        }catch (err){
+            console.log(err);
         }
     });
 
@@ -80,122 +88,139 @@ io.on("connection", function(socket){
 
     socket.on('pickUpOrb', function(data){
         console.log("Player wants to pickUpOrb");
-        const orbID = data.orbID;
-        var players = foundRoom.game.players;
-        var orbsOfLight = foundRoom.game.orbsOfLight;
-        for (var i = 0; i < players.length; i++){
-            if (players[i].id == socket.id && players[i].orbID === undefined){
-                if (orbsOfLight[orbID].owner === undefined){
-                    console.log("pick permission granted");
-                    orbsOfLight[orbID].owner = socket.id;
-                    players[i].orbID = orbID;
-                    data.id = socket.id;
-                    io.to(foundRoom.id).emit("pickUpOrb", data);
+        try {
+            const orbID = data.orbID;
+            var players = foundRoom.game.players;
+            var orbsOfLight = foundRoom.game.orbsOfLight;
+            for (var i = 0; i < players.length; i++) {
+                if (players[i].id == socket.id && players[i].orbID === undefined) {
+                    if (orbsOfLight[orbID].owner === undefined) {
+                        console.log("pick permission granted");
+                        orbsOfLight[orbID].owner = socket.id;
+                        players[i].orbID = orbID;
+                        data.id = socket.id;
+                        io.to(foundRoom.id).emit("pickUpOrb", data);
+                    }
+                    break;
                 }
-                break;
             }
+        }catch (err){
+            console.log(err);
         }
     });
 
     socket.on('dropOrb', function(data){
         console.log("dropOrb");
-        const orbID = data.orbID;
-        var players = foundRoom.game.players;
-        var orbsOfLight = foundRoom.game.orbsOfLight;
-        for (var i = 0; i < players.length; i++){
-            if (players[i].id == socket.id && players[i].orbID !== undefined){
-                for (var j = 0; j < orbsOfLight.length; j++){
-                    if (orbsOfLight[j].id == orbID && orbsOfLight[j].owner === undefined){
-                        orbsOfLight[j].owner = undefined;
-                        orbsOfLight[j].x = players[i].x;
-                        orbsOfLight[j].y = players[i].y;
-                        data.x = orbsOfLight[j].x;
-                        data.y = orbsOfLight[j].y;
-                        data.id = socket.id;
-                        io.to(foundRoom.id).emit("dropOrb", data);
-                        break;
+        try {
+            const orbID = data.orbID;
+            var players = foundRoom.game.players;
+            var orbsOfLight = foundRoom.game.orbsOfLight;
+            for (var i = 0; i < players.length; i++) {
+                if (players[i].id == socket.id && players[i].orbID !== undefined) {
+                    for (var j = 0; j < orbsOfLight.length; j++) {
+                        if (orbsOfLight[j].id == orbID && orbsOfLight[j].owner === undefined) {
+                            orbsOfLight[j].owner = undefined;
+                            orbsOfLight[j].x = players[i].x;
+                            orbsOfLight[j].y = players[i].y;
+                            data.x = orbsOfLight[j].x;
+                            data.y = orbsOfLight[j].y;
+                            data.id = socket.id;
+                            io.to(foundRoom.id).emit("dropOrb", data);
+                            break;
+                        }
                     }
+                    break;
                 }
-                break;
             }
+        }catch (err){
+            console.log(err);
         }
     });
 
     socket.on('placeOrbOnPillar', function(data){
         console.log("placeOrbOnPillar");
-        const pillarID = data.pillarID;
-        var players = foundRoom.game.players;
-        var orbsOfLight = foundRoom.game.orbsOfLight;
-        var pillars = foundRoom.game.pillars;
-        if (pillars[pillarID].orbID !== undefined){
-            console.log("pillar already has orb")
-            return;
-        }
-        for (var i = 0; i < players.length; i++){
-            if (players[i].id == socket.id){
-                if (players[i].orbID !== undefined) {
-                    const orbID = players[i].orbID;
-                    if (orbsOfLight[orbID].owner == socket.id) {
-                        orbsOfLight[orbID].owner = undefined;
-                        players[i].orbID = undefined;
-                        pillars[pillarID].orbID = orbID;
-                        data.id = socket.id;
-                        io.to(foundRoom.id).emit("placeOrbOnPillar", data);
-                    }
-                }
-                break;
+        try {
+            const pillarID = data.pillarID;
+            var players = foundRoom.game.players;
+            var orbsOfLight = foundRoom.game.orbsOfLight;
+            var pillars = foundRoom.game.pillars;
+            if (pillars[pillarID].orbID !== undefined) {
+                console.log("pillar already has orb")
+                return;
             }
+            for (var i = 0; i < players.length; i++) {
+                if (players[i].id == socket.id) {
+                    if (players[i].orbID !== undefined) {
+                        const orbID = players[i].orbID;
+                        if (orbsOfLight[orbID].owner == socket.id) {
+                            orbsOfLight[orbID].owner = undefined;
+                            players[i].orbID = undefined;
+                            pillars[pillarID].orbID = orbID;
+                            data.id = socket.id;
+                            io.to(foundRoom.id).emit("placeOrbOnPillar", data);
+                        }
+                    }
+                    break;
+                }
+            }
+        }catch (err){
+            console.log(err);
         }
     });
 
     socket.on('pickOrbFromPillar', function(data){
         console.log("pickOrbFromPillar");
-        var players = foundRoom.game.players;
-        var orbsOfLight = foundRoom.game.orbsOfLight;
-        var pillars = foundRoom.game.pillars;
-        for (var i = 0; i < players.length; i++){
-            if (players[i].id == socket.id){
-                if (players[i].orbID === undefined) {
-                    const pillarID = data.pillarID;
-                    const orbID = pillars[pillarID].orbID;
-                    if (orbsOfLight[orbID].owner === undefined) {
-                        orbsOfLight[orbID].owner = socket.id;
-                        players[i].orbID = orbID;
-                        pillars[pillarID].orbID = undefined;
-                        data.id = socket.id;
-                        io.to(foundRoom.id).emit("pickOrbFromPillar", data);
+        try {
+            var players = foundRoom.game.players;
+            var orbsOfLight = foundRoom.game.orbsOfLight;
+            var pillars = foundRoom.game.pillars;
+            for (var i = 0; i < players.length; i++){
+                if (players[i].id == socket.id){
+                    if (players[i].orbID === undefined) {
+                        const pillarID = data.pillarID;
+                        const orbID = pillars[pillarID].orbID;
+                        if (orbsOfLight[orbID].owner === undefined) {
+                            orbsOfLight[orbID].owner = socket.id;
+                            players[i].orbID = orbID;
+                            pillars[pillarID].orbID = undefined;
+                            data.id = socket.id;
+                            io.to(foundRoom.id).emit("pickOrbFromPillar", data);
+                        }
                     }
+                    break;
                 }
-                break;
             }
+        }catch (err){
+            console.log(err);
         }
     });
 
     socket.on('disconnect', function(){
         console.log("Player disconnected");
-        if (foundRoom != null) {
-            var players = foundRoom.game.players;
-            socket.broadcast.to(foundRoom.id).emit("playerDisconnected", {id: socket.id});
-            for (var i = 0; i < players.length; i++) {
-                if (players[i].id == socket.id) {
-                    players.splice(i, 1);
-                    break;
-                }
-            }
-            if (players.length == 0) {
-                for (i = 0; i < rooms.length; i++) {
-                    if (rooms[i].id == foundRoom.id) {
-                        rooms.splice(i, 1);
-                        console.log("destroy room");
+        try {
+            if (foundRoom != null) {
+                var players = foundRoom.game.players;
+                socket.broadcast.to(foundRoom.id).emit("playerDisconnected", {id: socket.id});
+                for (var i = 0; i < players.length; i++) {
+                    if (players[i].id == socket.id) {
+                        players.splice(i, 1);
                         break;
                     }
                 }
+                if (players.length == 0) {
+                    for (i = 0; i < rooms.length; i++) {
+                        if (rooms[i].id == foundRoom.id) {
+                            rooms.splice(i, 1);
+                            console.log("destroy room");
+                            break;
+                        }
+                    }
+                }
             }
+        }catch (err){
+            console.log(err);
         }
     });
-
-    // players.push(new Player(socket.id, 500, 500));
-    // orbsOfLight.push(new OrbOfLight(0, 500, 600));
 });
 
 server.listen(8008, function(){

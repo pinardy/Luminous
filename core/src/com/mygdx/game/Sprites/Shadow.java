@@ -49,14 +49,8 @@ public class Shadow extends Object{
 
     // construct from server
     public Shadow(PlayScreen screen, float x, float y, int time) {
-        super(screen, x, y);
+        this(screen, x, y);
         serverTime = time;
-        stateTime = 0;
-        hitPillar = false;
-        alive = true;
-        shadowMan = new TextureRegion(getTexture(), 0,0,16,16);
-        setBounds(getX(), getY(), 16, 16);
-        setRegion(shadowMan);
     }
 
     public void update(float dt){
