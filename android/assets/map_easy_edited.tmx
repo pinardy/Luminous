@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="14" tileheight="14" nextobjectid="31">
+ <tileset firstgid="1" name="ff6MapTileZozo" tilewidth="15" tileheight="15" spacing="1" margin="1" tilecount="256" columns="16">
+  <image source="ff6MapTileZozo.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Background" width="70" height="70">
+  <data encoding="base64" compression="zlib">
+   eJzt2kFOwzAQQNEcBrEEFmxYAD0BsAXBARBHYUUD3KUrjsM1mEiuZFlObDcumXH+4qmVGiXjiV1PRtl1XbcDAAAAgH9wJs6dCwXxaHEjbp2Ngni0IC9xd+LeeVAQDwCbfhXEoNHcvHwpGMNcPwpisKb3vqfq3U8F8dZQulaGuu7d2SiIfwmxtVWal1b+u1PjCOvdYY1tFcRdy3fi92Ev+VAQpxX7XIXzamo/sz6fmB/599qfF7H73h9wTqum5r31NZFSe/+0th/n9mPHjgv3rVdxIk7F2xGve2ypvmPvHZdTr12JS+c6cd2c8y3VF8297tQ4/DUyJy+x/W6pvOT2Y3OPexRP4lm8TOQvdb5t4XW16IPPnGNbULO+SD1TtCy399ZSjvbrwB976XxK1S/W6pu5Wujh1pBTh7X4bBQK+7Vjdc7a580h/d2W/ovHjNVhaxj7INw/1jLuVB6WPo915AFALbynGsf7mOSlhLW+IwAAAAAAAOr6A6GrlKs=
+  </data>
+ </layer>
+ <layer name="Graphics" width="70" height="70">
+  <data encoding="base64" compression="zlib">
+   eJztwQEBAAAAgiD/r25IQAEAAAAAAAAAAAAAAAAAAAAAAACvBkyQAAE=
+  </data>
+ </layer>
+ <objectgroup name="Pillar">
+  <object id="2" name="Pillar_W" x="297.333" y="448.667" width="28" height="28"/>
+  <object id="3" name="Pillar_N" x="435.333" y="308.333" width="28" height="28"/>
+  <object id="4" name="Pillar_E" x="575" y="448.333" width="28" height="28"/>
+  <object id="5" name="Pillar_S" x="434.333" y="574.333" width="28" height="28"/>
+ </objectgroup>
+ <objectgroup name="Core">
+  <object id="30" x="422.5" y="434" width="52.5" height="56"/>
+ </objectgroup>
+</map>

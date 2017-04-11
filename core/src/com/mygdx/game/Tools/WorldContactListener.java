@@ -39,13 +39,15 @@ public class WorldContactListener implements ContactListener{
     private boolean playerPillar = false;
     private boolean sameState = false;
     public static boolean indicateOrb = false;
+    public static boolean indicateOrbOnPillar = false;
+    public static float lightedPillarX;
+    public static float lightedPillarY;
     private boolean playerOrbPillar = false;
 
     @Override
     public void beginContact(Contact contact) {
         if (multiplayer){
             socket = SocketClient.getInstance();
-//            configureSocketOrb();
         }
 
         Fixture fixA = contact.getFixtureA();
@@ -61,10 +63,11 @@ public class WorldContactListener implements ContactListener{
                     if (((Player) fixB.getUserData()).isHoldingOrb() == false) {
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
-                        indicateOrb = true;
+
                         if (pickOrb | pickOrbAndroid) {
                             // Updates Orb's status to setToPick
                             Orb toBePicked = (Orb) fixA.getUserData();
+                            indicateOrb = true;
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
@@ -80,11 +83,12 @@ public class WorldContactListener implements ContactListener{
                     if (((Player) fixA.getUserData()).isHoldingOrb() == false) {
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
-                        indicateOrb = true;
-                        if (pickOrb | pickOrbAndroid) {
 
-                            // Updates Orb's status to setToPick
+
+                        if (pickOrb | pickOrbAndroid) {
+                            // Updates Orb's status to getPicked
                             Orb toBePicked = (Orb) fixB.getUserData();
+                            indicateOrb = true;
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
@@ -109,12 +113,19 @@ public class WorldContactListener implements ContactListener{
                     ((Shadow) fixA.getUserData()).collided();
                     Hud.reduceHealth();
                     MultiplayerGame.manager.get("audio/sounds/evilCrack.mp3", Sound.class).play();
+                    if (Hud.health == 0){
+                        Hud.coreIsDead = true;
+                    }
                     Gdx.app.log("Shadow hits core","fixA");
                 }
                 else if (fixB.getFilterData().categoryBits == MultiplayerGame.SHADOW_BIT){
                     ((Shadow) fixB.getUserData()).collided();
                     Hud.reduceHealth();
                     MultiplayerGame.manager.get("audio/sounds/evilCrack.mp3", Sound.class).play();
+
+                    if (Hud.health == 0){
+                        Hud.coreIsDead = true;
+                    }
                     Gdx.app.log("Shadow hits core","fixB");
                 }
                 break;
@@ -141,7 +152,7 @@ public class WorldContactListener implements ContactListener{
                 // do nothing
                 break;
 
-            // =-=-= PLAYER collides with PILLAR =-=-=  // multiplayer done
+            // =-=-= PLAYER collides with PILLAR =-=-=  //
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
                 fullVisibility = 1;
                 playerPillar = true;
@@ -156,6 +167,9 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixB.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
+                            indicateOrbOnPillar = true;
+                            lightedPillarX = pillar.positionX();
+                            lightedPillarY = pillar.positionY();
 
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PLACE_ORB, pillar.id);
@@ -178,6 +192,9 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixA.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
+                            indicateOrbOnPillar = true;
+                            lightedPillarX = pillar.positionX();
+                            lightedPillarY = pillar.positionY();
 
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PLACE_ORB, pillar.id);
@@ -209,6 +226,8 @@ public class WorldContactListener implements ContactListener{
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                             indicateOrb = true;
                             playerOrbPillar = true;
+                            indicateOrbOnPillar = false;
+
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
                             else ((Player) fixA.getUserData()).orbPick(pillar.releaseOrb());
@@ -230,6 +249,8 @@ public class WorldContactListener implements ContactListener{
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                             indicateOrb = true;
                             playerOrbPillar = true;
+                            indicateOrbOnPillar = false;
+
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
                             else ((Player) fixB.getUserData()).orbPick(pillar.releaseOrb());

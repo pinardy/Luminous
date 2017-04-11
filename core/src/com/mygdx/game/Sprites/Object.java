@@ -18,23 +18,25 @@ public abstract class Object extends Sprite {
     protected Fixture fixture;
     protected Filter filter;
 
+    //TODO: Figure how to overload the constructors
     public Object(World world, float x, float y){
         fdef = new FixtureDef();
         this.filter = new Filter();
 
         this.world = world;
         setPosition(x, y);
-        defineObject();
     }
 
     public Object(PlayScreen screen, float x, float y){
+        super(screen.getAtlas().findRegion("shadowman")); //temporary
+
         fdef = new FixtureDef();
         this.filter = new Filter();
 
         this.world = screen.getWorld();
-        this.screen = screen;
         setPosition(x, y);
         defineObject();
+
     }
 
     // Every object is defined differently. Hence this method is abstract

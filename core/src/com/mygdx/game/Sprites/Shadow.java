@@ -1,8 +1,11 @@
 package com.mygdx.game.Sprites;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
 
@@ -12,6 +15,7 @@ import com.mygdx.game.Screens.PlayScreen;
  * This will make the Pillar object lit, thus causing the Shadow to disappear
  */
 public class Shadow extends Object{
+    private int serverTime;
 
     private float stateTime;
     private float coreX = MultiplayerGame.corePosition.getX() + MultiplayerGame.corePosition.getWidth()/2;
@@ -20,21 +24,55 @@ public class Shadow extends Object{
     private boolean hitPillar;
     private boolean alive;
 
+    //graphics
+    private TextureRegion shadowMan;
+    private float creationX;
+    private float creationY;
+    private Animation<TextureRegion> shadowRun;
+
     public Shadow(PlayScreen screen, float x, float y) {
         super(screen, x, y);
         stateTime = 0;
         hitPillar = false;
         alive = true;
+
+        shadowMan = new TextureRegion(getTexture(), 0,0,16,16);
+        setBounds(0,0,16,16);
+        setRegion(shadowMan);
+
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+        for (int i = 0; i < 12; i++){
+            frames.add(new TextureRegion(getTexture(), i*32, 0, 32, 57));
+        }
+        shadowRun = new Animation(0.1f, frames);
+    }
+
+    // construct from server
+    public Shadow(PlayScreen screen, float x, float y, int time) {
+        super(screen, x, y);
+        serverTime = time;
+        stateTime = 0;
+        hitPillar = false;
+        alive = true;
+        shadowMan = new TextureRegion(getTexture(), 0,0,16,16);
         setBounds(getX(), getY(), 16, 16);
+        setRegion(shadowMan);
     }
 
     public void update(float dt){
         stateTime += dt;
 
+        //to render graphics on fixture
+        setPosition(b2body.getPosition().x - getWidth()/2,
+                b2body.getPosition().y - getHeight()/2);
+        //for animation
+        setRegion(shadowRun.getKeyFrame(stateTime, true)); //boolean for looping
+
+
         // if the Shadow object exists
         if(b2body != null) {
-            float speedX = -(getX() - coreX)/speed;
-            float speedY = -(getY() - coreY)/speed;
+            float speedX = -(creationX - coreX)/(speed);
+            float speedY = -(creationY - coreY)/(speed);
             b2body.setLinearVelocity(speedX, speedY);
         }
 
@@ -61,6 +99,8 @@ public class Shadow extends Object{
     protected void defineObject() {
         BodyDef bdef = new BodyDef();
         bdef.position.set(getX(), getY());
+        creationX = getX();
+        creationY = getY();
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -81,4 +121,7 @@ public class Shadow extends Object{
         fixture.setUserData(this);
     }
 
+    public int getServerTime() {
+        return serverTime;
+    }
 }

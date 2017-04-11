@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="70" height="70" tilewidth="14" tileheight="14" nextobjectid="43">
+ <tileset firstgid="1" name="ff6MapTileZozo" tilewidth="15" tileheight="15" spacing="1" margin="1" tilecount="256" columns="16">
+  <image source="ff6MapTileZozo.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Background" width="70" height="70">
+  <data encoding="base64" compression="zlib">
+   eJzt2kFOwzAQQNEcBrEEFmxYAD0BsAW1B0AchRVN6V264jhcg4nkSJHl2NM6oWPnL5666GgSu7ZmbPXQNM0BAAAAAAKuxLVzs4B8Wg/i0VktIF8t4zjXvDyJZ+dlAfkAlOHXwDtYlDsv3wbGkOvHwDtYFOs7W2VcZ6eMs67fK11/9emsIvFTx1kXGkdoby1tXrR9px/X7bFtRj5r9onvu1ryZeA9S9HPlV/DY/UstJ5KwvrQ/9bDdRH63dsTcpYqtu5L3xMpU599SjtLafvOsTi/br2LC3EpPmZ87txS94TtIE7Th92JW+c+8Vxt/2f5fjc2juEeyZmXUL2zfr+rjXsVb2ItNpH5S+XbHvlcK1rvUxNbgyn7i9SZombau7ea5qjfB8OxH7ueUv1Laf1NrhrucP9LTWejsb5zp4zz103p97s97nfnGa9fh2qZF7/v9OvHfiROm+/c4zvVVHV0afWYeQDgs/6/Uqv3mLXlq2Uc1u8xa8kHAAAAAACAef0Bcx1cMg==
+  </data>
+ </layer>
+ <layer name="Graphics" width="70" height="70">
+  <data encoding="base64" compression="zlib">
+   eJztwQEBAAAAgiD/r25IQAEAAAAAAAAAAAAAAAAAAAAAAACvBkyQAAE=
+  </data>
+ </layer>
+ <objectgroup name="Pillar">
+  <object id="2" name="Pillar_W" x="294.333" y="448" width="28" height="28"/>
+  <object id="3" name="Pillar_N" x="435.333" y="308.333" width="28" height="28"/>
+  <object id="4" name="Pillar_E" x="575" y="448.333" width="28" height="28"/>
+  <object id="5" name="Pillar_S" x="434.333" y="587.333" width="28" height="28"/>
+  <object id="34" name="Pillar_NE" x="574.667" y="307.333" width="27.3333" height="28"/>
+  <object id="37" name="Pillar_NW" x="295.333" y="307.333" width="27.3333" height="29.3333"/>
+  <object id="38" name="Pillar_SW" x="295" y="587.666" width="26" height="28"/>
+  <object id="39" name="Pillar_SE" x="575.667" y="587.333" width="25.3333" height="28"/>
+ </objectgroup>
+ <objectgroup name="Core">
+  <object id="30" x="422.5" y="434" width="52.5" height="56"/>
+ </objectgroup>
+</map>

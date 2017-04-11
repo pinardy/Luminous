@@ -1,9 +1,15 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Sprites.Shadow;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -12,25 +18,44 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 
 public class ShadowManagement extends Thread {
+    private Queue<Shadow> serverShadows;
+    private boolean multiPlayer;
+
     private MultiplayerGame game = null;
     private CopyOnWriteArrayList<Shadow> shadows = new CopyOnWriteArrayList<Shadow>();
     private final Object shadowsLock = new Object();
+    private float shadowX = 0f;
+    private float shadowY = 0f;
 
     public ShadowManagement(MultiplayerGame game) {
         this.game = game;
+        serverShadows = new LinkedList<Shadow>();
+    }
+
+    public ShadowManagement(MultiplayerGame game, boolean multiPlayer) {
+        this.game = game;
+        this.multiPlayer = multiPlayer;
+        serverShadows = new LinkedList<Shadow>();
     }
 
     @Override
     public void run() {
-        calculateShadowStartPosition();
+//        calculateShadowStartPosition();
         Random rand = new Random();
 
         while (true) {
-            if (shadows.size() == 0) {
-                int randomShadow = rand.nextInt(game.getPillarPositions().size());
-                Rectangle r = game.getPillarPositions().get(randomShadow);
-                shadows.add(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY()));
-                Gdx.app.log("Spawning new shadow","sm thread");
+            if (multiPlayer) {
+                while (serverShadows.peek() != null && serverShadows.peek().getServerTime() <= Hud.timePassed) {
+                    shadows.add(serverShadows.poll());
+                    Gdx.app.log("Spawning new shadow", "sm thread");
+                }
+            }else {
+                if (shadows.size() == 0) {
+                    int randomShadow = rand.nextInt(game.getPillarPositions().size());
+                    Rectangle r = game.getPillarPositions().get(randomShadow);
+                    shadows.add(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY()));
+                    Gdx.app.log("Spawning new shadow", "sm thread");
+                }
             }
 
             synchronized (shadowsLock) {
@@ -43,7 +68,7 @@ public class ShadowManagement extends Thread {
         }
     }
 
-    private void calculateShadowStartPosition() {
+    public void calculateShadowStartPosition() {
         float coreX = game.corePosition.getX() + game.corePosition.getWidth()/2;
         float coreY = game.corePosition.getY() + game.corePosition.getHeight()/2;
 
@@ -66,5 +91,18 @@ public class ShadowManagement extends Thread {
                 s.update(dt);
             }
         }
+    }
+
+    public Sprite getShadows() {
+        for (Shadow x : shadows) {
+            return x;
+        }
+        return null;
+    }
+
+
+
+    public void addServerShadows(Shadow shadow){
+        serverShadows.offer(shadow);
     }
 }

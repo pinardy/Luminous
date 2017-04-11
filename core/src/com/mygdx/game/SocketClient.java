@@ -1,5 +1,10 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.math.Vector2;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
@@ -9,6 +14,12 @@ import io.socket.client.Socket;
 
 public class SocketClient {
     private static Socket ourInstance;
+    public static String myID;
+    public static JSONArray shadows;
+    public static JSONArray orbs;
+    public static JSONObject status;
+    public static JSONArray players;
+    public static JSONArray pillars;
 
     public static Socket getInstance() {
         if (ourInstance == null){
@@ -23,5 +34,18 @@ public class SocketClient {
     }
 
     private SocketClient() {
+    }
+}
+
+class ServerShadow{
+    Vector2 position;
+    int serverTime;
+    ServerShadow(Vector2 position, int time){
+        this.position = position;
+        this.serverTime = time;
+    }
+
+    public int getServerTime() {
+        return serverTime;
     }
 }

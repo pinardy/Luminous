@@ -18,42 +18,28 @@ import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
 
 
-public class GameOverScreen implements Screen {
+public class HelpScreen implements Screen {
     private Game game;
     private Viewport viewport;
     private Stage stage;
 
-    public GameOverScreen(Game game){
+    public HelpScreen(Game game){
         this.game = game;
         viewport = new FitViewport(MultiplayerGame.V_WIDTH, MultiplayerGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((MultiplayerGame) game).batch);
-
-        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
 
         // centering of the container for our items to display
         Table table = new Table();
         table.center();
         table.setFillParent(true);
 
-        // labels to be displayed on screen
-        Label scoreLabel = new Label("Score: ", font);
-        Label tapLabel = new Label("Tap anywhere to go back to the main menu", font);
-        Label scoreValue = new Label(String.valueOf(Hud.score), font);
+        // image of instructions
+        Image instructions = new Image(new Texture("instructions.png"));
+        instructions.setSize(700, 500);
 
-        // image for "Game Over"
-        Image gameOverImg = new Image(new Texture("gameover.png"));
-        gameOverImg.setSize(250, 48);
+        // add image of instructions to table
+        table.add(instructions).size(instructions.getWidth(), instructions.getHeight());
 
-        // Arrangement of the labels using a table
-        table.add(gameOverImg).size(gameOverImg.getWidth(), gameOverImg.getHeight());
-        table.row();
-        table.add(scoreLabel);
-        table.row();
-        table.add(scoreValue).pad(5);
-        table.row();
-        table.add(tapLabel);
-
-        // add the table to the stage
         stage.addActor(table);
     }
 
@@ -66,11 +52,6 @@ public class GameOverScreen implements Screen {
     public void render(float delta) {
         if(Gdx.input.justTouched()) {
             game.setScreen(new StartScreen(game));
-            // resets the game variables
-            Hud.health = 5;
-            Hud.worldTimer = 300;
-            Hud.timeIsUp = false;
-            Hud.coreIsDead = false;
             dispose();
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);

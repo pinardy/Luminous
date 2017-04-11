@@ -17,6 +17,7 @@ public class Player extends Object {
     public Orb mOrb;
     int startPosX;
     int startPosY;
+    String id;
 
     public Player(World world) {
         this(world, (float)500, (float)500);
@@ -26,19 +27,25 @@ public class Player extends Object {
         this(world, x, y, 500, 500);
     }
 
+    public Player(World world, float x, float y, String id) {
+        this(world, x, y, 500, 500);
+        this.id = id;
+    }
+
     public Player(World world, float x, float y, int startPosX, int startPosY) {
         super(world, x, y);
         this.startPosX = startPosX;
         this.startPosY = startPosY;
-
-        holdingOrb = false;
-        mOrb = null;
+        this.holdingOrb = false;
+        this.mOrb = null;
+        this.id = "0";
+        defineObject();
     }
 
     @Override
     public void defineObject() {
         BodyDef bdef = new BodyDef();
-        bdef.position.set(500, 500);
+        bdef.position.set(startPosX, startPosY);
         bdef.type = BodyDef.BodyType.DynamicBody;
         b2body = world.createBody(bdef);
 
@@ -92,8 +99,7 @@ public class Player extends Object {
 
     public Orb orbDrop() {
         setHoldingOrb(false);
-
-        mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
+//        mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
         mOrb.dropOrb();
         Orb toReturn = mOrb;
         mOrb = null;
