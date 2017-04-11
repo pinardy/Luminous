@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.Tools.WorldContactListener;
 
 
 /** Orb is the 'tool' of the game.
@@ -121,4 +122,20 @@ public class Orb extends Object{
     public int getID() {
         return this.id;
     }
+
+//    public void setHangingOnPillar(int x){
+//        if (x==0){
+//            hangingOnPillar = false;
+//        }else if(x==1){
+//            hangingOnPillar = true;
+//        }
+//    }
+
+
+    public boolean onFloor(){
+        if (WorldContactListener.indicateOrb|| WorldContactListener.indicateOrbOnPillar) //whenever orb is held on player or hanging on pillar
+            return false;
+        return true;
+    }
+
 }

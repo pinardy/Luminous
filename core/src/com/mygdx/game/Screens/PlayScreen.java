@@ -273,7 +273,7 @@ public class PlayScreen implements Screen {
         //Full visibility
         if (WorldContactListener.fullVisibility==1){
             renderer.render();
-            b2dr.render(world, gameCam.combined); //render fixture outlines
+//            b2dr.render(world, gameCam.combined); //render fixture outlines
 
             // tell our game batch to recognise where the gameCam is and render what the camera can see
             //render shadows
@@ -282,7 +282,12 @@ public class PlayScreen implements Screen {
             if(sm.getShadows()!=null){
                 sm.getShadows().setSize(30,40);
                 sm.getShadows().draw(game.batch);
-                if (!multiplayer) orb.draw(game.batch);
+                if (!multiplayer){
+                    if (orb.onFloor()){
+                        orb.setSize(20,20);
+                        orb.draw(game.batch);
+                    }
+                }
             }
             game.batch.end();
             game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -355,6 +360,16 @@ public class PlayScreen implements Screen {
                     game.batch.begin();
                     sm.getShadows().setSize(30, 40);
                     sm.getShadows().draw(game.batch);
+                    game.batch.end();
+                }
+            }
+            xDistance = Math.abs(gameCam.position.x - orb.getX());
+            yDistance = Math.abs(gameCam.position.y - orb.getY());
+            if (xDistance <= 60.0f && yDistance <= 60.0f) {
+                if (orb.onFloor()) {
+                    game.batch.begin();
+                    orb.setSize(20, 20);
+                    orb.draw(game.batch);
                     game.batch.end();
                 }
             }
