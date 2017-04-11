@@ -287,6 +287,13 @@ public class PlayScreen implements Screen {
                         orb.setSize(20,20);
                         orb.draw(game.batch);
                     }
+                }else{
+                    for (int x = 0; x < listOfOrbs.size() ; x++){
+                        if (listOfOrbs.get(x).onFloor()) {
+                            listOfOrbs.get(x).setSize(20, 20);
+                            listOfOrbs.get(x).draw(game.batch);
+                        }
+                    }
                 }
             }
             game.batch.end();
@@ -311,46 +318,34 @@ public class PlayScreen implements Screen {
             controller.draw();
         } else {
             //in the dark - game starting state
+            //render glow on pillar when map is not fully visible
+            //render glow for player moving around (gold when holding orb)
 
             // tell our game batch to recognise where the gameCam is and render what the camera can see
             game.batch.setProjectionMatrix(gameCam.combined);
-
-            //render glow on pillar when map is not fully visible
-            if (WorldContactListener.indicateOrbOnPillar) {
-
-                ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/pillarLightingVertex.glsl"),
-                        Gdx.files.internal("shaders/pillarLightingFragment.glsl"));
-                pillarGlow.pedantic = false;
-                if (!pillarGlow.isCompiled())
-                    throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
-                pillarGlow.begin();
-                pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
-                pillarGlow.setUniformf("u_worldColor", Color.GOLD);
-                pillarGlow.setUniformf("u_lightPos", new Vector2(WorldContactListener.lightedPillarX,
-                        WorldContactListener.lightedPillarY)); //light's origin position
-                renderer.getBatch().setShader(pillarGlow);
-                renderer.render();
-                renderer.getBatch().setShader(null); //un-set the shader
-                pillarGlow.end();
-            }
-
-            //black shader to hide visibility - glow on player
-            ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
+            ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
                     Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
-            shader.pedantic = false;
-            if (!shader.isCompiled())
-                throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
-            shader.begin();
-            shader.setUniformMatrix("u_worldView", gameCam.combined);
-            shader.setUniformf("u_worldColor", Color.WHITE);
-            if (WorldContactListener.indicateOrb) {
-                shader.setUniformf("u_worldColor", Color.GOLD);
+            pillarGlow.pedantic = false;
+            if (!pillarGlow.isCompiled())
+                throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
+            pillarGlow.begin();
+            pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
+            if(WorldContactListener.indicateOrbOnPillar) {
+                pillarGlow.setUniformf("u_worldColorPillar", Color.GOLD); //indicate light on pillar
+            }else{
+                pillarGlow.setUniformf("u_worldColorPillar", Color.alpha(0)); //pillar as per normal
             }
-            shader.setUniformf("u_lightPos", new Vector2(gameCam.position.x, gameCam.position.y));
-            renderer.getBatch().setShader(shader);
+            pillarGlow.setUniformf("u_lightPosPillar", new Vector2(WorldContactListener.lightedPillarX,
+                    WorldContactListener.lightedPillarY)); //light's origin position
+            pillarGlow.setUniformf("u_worldColorPlayer", Color.WHITE);
+            if (WorldContactListener.indicateOrb) {
+                pillarGlow.setUniformf("u_worldColorPlayer", Color.GOLD);
+            }
+            pillarGlow.setUniformf("u_lightPosPlayer", new Vector2(gameCam.position.x, gameCam.position.y));
+            renderer.getBatch().setShader(pillarGlow);
             renderer.render();
             renderer.getBatch().setShader(null); //un-set the shader
-            shader.end();
+            pillarGlow.end();
 
             //render shadow if player is certain distance from shadow
             if (sm.getShadows() != null) {
@@ -363,16 +358,32 @@ public class PlayScreen implements Screen {
                     game.batch.end();
                 }
             }
-            xDistance = Math.abs(gameCam.position.x - orb.getX());
-            yDistance = Math.abs(gameCam.position.y - orb.getY());
-            if (xDistance <= 60.0f && yDistance <= 60.0f) {
-                if (orb.onFloor()) {
-                    game.batch.begin();
-                    orb.setSize(20, 20);
-                    orb.draw(game.batch);
-                    game.batch.end();
+            if (!multiplayer) { //in singleplayer mode
+                xDistance = Math.abs(gameCam.position.x - orb.getX());
+                yDistance = Math.abs(gameCam.position.y - orb.getY());
+                if (xDistance <= 60.0f && yDistance <= 60.0f) {
+                    if (orb.onFloor()) {
+                        game.batch.begin();
+                        orb.setSize(20, 20);
+                        orb.draw(game.batch);
+                        game.batch.end();
+                    }
+                }
+            }else{ //in multiplayer mode
+                for (int x = 0; x < listOfOrbs.size() ; x++){
+                    xDistance = Math.abs(gameCam.position.x - listOfOrbs.get(x).getX());
+                    yDistance = Math.abs(gameCam.position.y - listOfOrbs.get(x).getY());
+                    if (xDistance <= 60.0f && yDistance <= 60.0f) {
+                        if (listOfOrbs.get(x).onFloor()) {
+                            game.batch.begin();
+                            listOfOrbs.get(x).setSize(20, 20);
+                            listOfOrbs.get(x).draw(game.batch);
+                            game.batch.end();
+                        }
+                    }
                 }
             }
+
 
             controller.draw();
         }

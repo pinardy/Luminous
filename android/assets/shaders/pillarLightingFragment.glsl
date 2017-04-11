@@ -14,13 +14,13 @@ uniform sampler2D u_texture;
 void main() {
 
     //dealing with in-game coordinates
-    float dropoffDist = 120.0;
+    float dropoffDist = 150.0;
     float dist = 0.0;
 
     //distance btw light and actual vertex
     dist = pow(abs(v_lightPos.x - v_position.x) , 2.0);
     dist += pow(abs(v_lightPos.y - v_position.y) , 2.0);
-    dist = dist * 30.0f;
+    dist = dist * 80.0f;
     dist = sqrt(dist);
 
     //scaling from dist to maximum dropOffDist

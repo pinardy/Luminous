@@ -43,13 +43,10 @@ public class Orb extends Object{
     public Orb(PlayScreen screen, float x, float y, int id) {
         this(screen, x, y);
         this.id = 0;
-
     }
-
 
     public Orb(PlayScreen screen, float x, float y, float posX, float posY, int id) {
         this(screen, x, y, posX, posY);
-
         this.id = id;
     }
 
@@ -69,9 +66,6 @@ public class Orb extends Object{
             // move a bit over half the width of the sprite, and down half the height
             setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         }
-
-
-
     }
 
     @Override
@@ -122,15 +116,6 @@ public class Orb extends Object{
     public int getID() {
         return this.id;
     }
-
-//    public void setHangingOnPillar(int x){
-//        if (x==0){
-//            hangingOnPillar = false;
-//        }else if(x==1){
-//            hangingOnPillar = true;
-//        }
-//    }
-
 
     public boolean onFloor(){
         if (WorldContactListener.indicateOrb|| WorldContactListener.indicateOrbOnPillar) //whenever orb is held on player or hanging on pillar

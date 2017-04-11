@@ -168,7 +168,6 @@ public class WorldContactListener implements ContactListener{
                             pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                             indicateOrbOnPillar = true;
-
                             lightedPillarX = pillar.positionX();
                             lightedPillarY = pillar.positionY();
 
