@@ -1,5 +1,6 @@
 package com.mygdx.game.Scenes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -98,6 +99,7 @@ public class Hud implements Disposable{
             timePassed++;
             countDownLabel.setText(String.format("%03d", worldTimer));
             timeCount = 0;
+            Gdx.app.log("Time passed: ", ""+timePassed);
         }
     }
 

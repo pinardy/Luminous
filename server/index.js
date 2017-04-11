@@ -42,8 +42,10 @@ io.on("connection", function(socket){
             for (var i = 0; i < rooms.length; i++) {
                 if (rooms[i].size == size) {
                     foundRoom = rooms[i].addPlayer(socket.id);
-                    console.log("Found existing room!");
-                    if (!!foundRoom) break;
+                    if (!!foundRoom){
+                        console.log("Found existing room!");
+                        break;
+                    }
                 }
             }
             if (!foundRoom) {
@@ -189,6 +191,7 @@ io.on("connection", function(socket){
                             players[i].orbID = orbID;
                             pillars[pillarID].orbID = undefined;
                             data.id = socket.id;
+                            data.orbID = orbID;
                             io.to(foundRoom.id).emit("pickOrbFromPillar", data);
                         }
                     }

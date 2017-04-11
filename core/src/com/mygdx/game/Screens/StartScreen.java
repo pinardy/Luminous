@@ -40,6 +40,7 @@ public class StartScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private Socket socket;
+    public static boolean hasJoin;
 
     //TODO: Change these variables to read from server
     private static int capacity = 2;
@@ -123,12 +124,16 @@ public class StartScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (!SocketClient.isConnected()) {
                     //TODO: Join the server
-                    //TODO: Update player count (capacity, numOfPlayers)
                     connectSocket();
-                    //TODO: Set the labels accordingly
-                    numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
-                    connectedLabel.setText("Connected to server!");
+                    socket.emit("room", capacity);
+                }else {
+                    socket.emit("room", capacity);
                 }
+                //TODO: add leave room
+                // socket.emit("leave", 0);
+                //TODO: Set the labels accordingly
+                numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
+                connectedLabel.setText("Connected to server!");
             }
         });
 
@@ -202,7 +207,6 @@ public class StartScreen implements Screen {
             socket = SocketClient.getInstance();
             socket.connect();
             configSocketEvents();
-            socket.emit("room", capacity);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -246,6 +250,9 @@ public class StartScreen implements Screen {
         }).on("start", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
+                hasJoin = true;
+                numOfPlayersLabel.setText("");
+                connectedLabel.setText("");
                 JSONObject data = (JSONObject) args[0];
                 try {
                     SocketClient.shadows = data.getJSONArray("shadows");

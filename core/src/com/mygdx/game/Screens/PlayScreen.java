@@ -719,7 +719,7 @@ public class PlayScreen implements Screen {
                     Gdx.app.log("SocketIO", "picking up orb from pillar");
                     getListOfOrbs().get(orbID).setOrbNotOnFloor(1);
                 }catch (Exception e){
-                    Gdx.app.log("SocketIO", "error placing orb");
+                    Gdx.app.log("SocketIO", "error picking orb");
                     e.printStackTrace();
                 }
             }
