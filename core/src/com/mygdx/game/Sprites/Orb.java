@@ -21,6 +21,7 @@ public class Orb extends Object{
     private float stateTime;
     private boolean ToPick;
     private boolean picked;
+    private static boolean orbNotOnFloor;
     static float startPosX = 500;
     static float startPosY = 600;
     private int id;
@@ -117,9 +118,24 @@ public class Orb extends Object{
         return this.id;
     }
 
+    public void setOrbNotOnFloor(int x){
+        if (x==0)
+            orbNotOnFloor = false;
+        else
+            orbNotOnFloor = true;
+    }
+
     public boolean onFloor(){
-        if (WorldContactListener.indicateOrb|| WorldContactListener.indicateOrbOnPillar) //whenever orb is held on player or hanging on pillar
-            return false;
+        if (!WorldContactListener.multiplayer) {
+            if (WorldContactListener.indicateOrb ||
+                    WorldContactListener.indicateOrbOnPillar) { //whenever orb is held on player or hanging on pillar
+                return false;
+            }
+        }else{//in multiplayer mode
+            if (orbNotOnFloor){
+                return false;
+            }
+        }
         return true;
     }
 

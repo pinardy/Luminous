@@ -665,6 +665,7 @@ public class PlayScreen implements Screen {
                     Gdx.app.log("SocketIO", "picking orb "+orbID);
                     players.get(orbOwnerID).orbPick(orbID);
                     getListOfOrbs().get(orbID).setToPick();
+                    getListOfOrbs().get(orbID).setOrbNotOnFloor(1);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error picking up orb");
                     e.printStackTrace();
@@ -697,6 +698,7 @@ public class PlayScreen implements Screen {
                     pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                     MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                     Gdx.app.log("SocketIO", "placing orb");
+                    orb.setOrbNotOnFloor(1);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error placing orb");
                     e.printStackTrace();
@@ -711,9 +713,11 @@ public class PlayScreen implements Screen {
                     int pillarID = data.getInt(ID_PILLAR);
                     Pillar pillar = B2WorldCreator.listOfPillars.get(pillarID);
                     players.get(orbOwnerID).orbPick(pillar.releaseOrb());
+                    int orbID = data.getInt(ID_ORB);
                     pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                     MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                     Gdx.app.log("SocketIO", "picking up orb from pillar");
+                    getListOfOrbs().get(orbID).setOrbNotOnFloor(1);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error placing orb");
                     e.printStackTrace();

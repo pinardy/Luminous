@@ -35,14 +35,16 @@ public class WorldContactListener implements ContactListener{
     public final int PICK_PILLAR_ORB = 1004;
     private Socket socket;
     public static boolean multiplayer;
+
+    //for shaders
     public static int fullVisibility = 0;
-    private boolean playerPillar = false;
-    private boolean sameState = false;
+    public static boolean playerPillar = false;
+    public static boolean sameState = false;
     public static boolean indicateOrb = false;
     public static boolean indicateOrbOnPillar = false;
     public static float lightedPillarX;
     public static float lightedPillarY;
-    private boolean playerOrbPillar = false;
+    public static boolean playerOrbPillar = false;
 
     @Override
     public void beginContact(Contact contact) {
