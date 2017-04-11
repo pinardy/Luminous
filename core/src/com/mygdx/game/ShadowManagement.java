@@ -13,6 +13,8 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import sun.security.provider.SHA;
+
 /**
  * Created by kennethlimcp on 08/Mar/2017.
  */
@@ -97,6 +99,14 @@ public class ShadowManagement extends Thread {
             return x;
         }
         return null;
+    }
+
+    public ArrayList<Shadow> getMShadows(){
+        ArrayList<Shadow> sprites = new ArrayList<Shadow>();
+        for (Shadow x : shadows){
+            sprites.add(x);
+        }
+        return sprites ;
     }
 
 

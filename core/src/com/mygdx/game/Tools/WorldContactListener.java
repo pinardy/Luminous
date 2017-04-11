@@ -20,6 +20,8 @@ import com.mygdx.game.Sprites.Shadow;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Map;
+
 import io.socket.client.Socket;
 
 
@@ -34,17 +36,18 @@ public class WorldContactListener implements ContactListener{
     public final int PLACE_ORB = 1003;
     public final int PICK_PILLAR_ORB = 1004;
     private Socket socket;
+    public static String selfPlayer;
     public static boolean multiplayer;
 
     //for shaders
     public static int fullVisibility = 0;
-    public static boolean playerPillar = false;
-    public static boolean sameState = false;
+    public boolean playerPillar = false;
+    public boolean sameState = false;
     public static boolean indicateOrb = false;
     public static boolean indicateOrbOnPillar = false;
     public static float lightedPillarX;
     public static float lightedPillarY;
-    public static boolean playerOrbPillar = false;
+    public boolean playerOrbPillar = false;
 
     @Override
     public void beginContact(Contact contact) {
@@ -69,7 +72,7 @@ public class WorldContactListener implements ContactListener{
                         if (pickOrb | pickOrbAndroid) {
                             // Updates Orb's status to setToPick
                             Orb toBePicked = (Orb) fixA.getUserData();
-                            indicateOrb = true;
+//                            indicateOrb = true;
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
@@ -86,11 +89,10 @@ public class WorldContactListener implements ContactListener{
                         boolean pickOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                         boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
-
                         if (pickOrb | pickOrbAndroid) {
                             // Updates Orb's status to getPicked
                             Orb toBePicked = (Orb) fixB.getUserData();
-                            indicateOrb = true;
+//                            indicateOrb = true;
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
@@ -156,12 +158,17 @@ public class WorldContactListener implements ContactListener{
 
             // =-=-= PLAYER collides with PILLAR =-=-=  //
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT:
-                fullVisibility = 1;
-                playerPillar = true;
 
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
+
+                    //fixA is player in this case:
+                    selfPlayer = ((Player) fixA.getUserData()).getID();
+                    if (selfPlayer == PlayScreen.player.getID()){
+                        fullVisibility = 1;
+                        playerPillar = true;
+                    }
 
                     if (placeOrb | pickOrbAndroid){
                         if (((Player) fixA.getUserData()).isHoldingOrb() == true) {
@@ -169,7 +176,7 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixB.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-                            indicateOrbOnPillar = true;
+//                            indicateOrbOnPillar = true;
                             lightedPillarX = pillar.positionX();
                             lightedPillarY = pillar.positionY();
 
@@ -180,7 +187,7 @@ public class WorldContactListener implements ContactListener{
                                 pillar.setmOrb(orb);
                             }
                             Gdx.app.log("Pillar is LIT"+" with orb ", "");
-                            indicateOrb = false;
+//                            indicateOrb = false;
                         }
                     }
                 }
@@ -188,13 +195,20 @@ public class WorldContactListener implements ContactListener{
                     boolean placeOrb = Gdx.input.isKeyPressed(Input.Keys.A);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
+                    //fixB is player in this case:
+                    selfPlayer = ((Player) fixB.getUserData()).getID();
+                    if (selfPlayer == PlayScreen.player.getID()){
+                        fullVisibility = 1;
+                        playerPillar = true;
+                    }
+
                     if (placeOrb | pickOrbAndroid){
                         if (((Player) fixB.getUserData()).isHoldingOrb() == true) {
                             // Updates Pillar's status to lighted
                             Pillar pillar = ((Pillar) fixA.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-                            indicateOrbOnPillar = true;
+//                            indicateOrbOnPillar = true;
                             lightedPillarX = pillar.positionX();
                             lightedPillarY = pillar.positionY();
 
@@ -205,7 +219,7 @@ public class WorldContactListener implements ContactListener{
                                 pillar.setmOrb(orb);
                             }
                             Gdx.app.log("Pillar is LIT" + " with orb ", "");
-                            indicateOrb = false;
+//                            indicateOrb = false;
                         }
                     }
                 }
@@ -213,12 +227,17 @@ public class WorldContactListener implements ContactListener{
 
             // =-=-= PLAYER collides with LIGHTED PILLAR =-=-=
             case MultiplayerGame.PLAYER_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT:
-                fullVisibility = 1;
-                playerPillar = true;
 
                 if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT){
                     boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
+
+                    //fixA is player in this case:
+                    selfPlayer = ((Player) fixA.getUserData()).getID();
+                    if (selfPlayer == PlayScreen.player.getID()){
+                        fullVisibility = 1;
+                        playerPillar = true;
+                    }
 
                     if (grabOrb | pickOrbAndroid){
                         if (((Player) fixA.getUserData()).isHoldingOrb() == false) {
@@ -226,9 +245,9 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixB.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-                            indicateOrb = true;
+//                            indicateOrb = true;
                             playerOrbPillar = true;
-                            indicateOrbOnPillar = false;
+//                            indicateOrbOnPillar = false;
 
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
@@ -242,6 +261,12 @@ public class WorldContactListener implements ContactListener{
                     boolean grabOrb = Gdx.input.isKeyPressed(Input.Keys.S);
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
+                    //fixB is player in this case:
+                    selfPlayer = ((Player) fixB.getUserData()).getID();
+                    if (selfPlayer == PlayScreen.player.getID()){
+                        fullVisibility = 1;
+                        playerPillar = true;
+                    }
 
                     if (grabOrb | pickOrbAndroid){
                         if (((Player) fixB.getUserData()).isHoldingOrb() == false) {
@@ -249,9 +274,13 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixA.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-                            indicateOrb = true;
-                            playerOrbPillar = true;
-                            indicateOrbOnPillar = false;
+//                            indicateOrb = true;
+
+                            //check if it is that player
+                            if (selfPlayer == PlayScreen.player.getID()){
+                                playerOrbPillar = true;
+                            }
+//                            indicateOrbOnPillar = false;
 
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
@@ -267,22 +296,27 @@ public class WorldContactListener implements ContactListener{
 
     @Override
     public void endContact(Contact contact) {
-        if (playerPillar && sameState) {
-            fullVisibility = 1;
-            playerPillar = false;
-            sameState = false;
-        }
-        else if (sameState){
-            //pass
-            sameState = false;
-        }
-        else{
-            fullVisibility = 0;
-            playerPillar = false;
-        }
+        boolean endContact = true;
+        if(WorldContactListener.selfPlayer!=null)
+            endContact = endContact = (!multiplayer) ||
+                    (multiplayer && WorldContactListener.selfPlayer.equals(PlayScreen.player.getID()));
 
-        if (playerOrbPillar){
-            playerOrbPillar = false;
+        if (endContact) {
+            if (playerPillar && sameState) {
+                fullVisibility = 1;
+                playerPillar = false;
+                sameState = false;
+            } else if (sameState) {
+                //pass
+                sameState = false;
+            } else {
+                fullVisibility = 0;
+                playerPillar = false;
+            }
+
+            if (playerOrbPillar) {
+                playerOrbPillar = false;
+            }
         }
     }
 
