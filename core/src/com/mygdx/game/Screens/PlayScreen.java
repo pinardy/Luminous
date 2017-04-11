@@ -105,7 +105,7 @@ public class PlayScreen implements Screen {
         keyPressed = false;
         this.multiplayer = multiplayer;
         WorldContactListener.multiplayer = multiplayer;
-        atlas = new TextureAtlas("shadowman.pack");
+        atlas = new TextureAtlas("shadowman.atlas");
 
         this.game = game;
 
@@ -256,159 +256,97 @@ public class PlayScreen implements Screen {
 
         renderer.setView(gameCam);
 
-        //to reveal full visibility
+        //Full visibility
         if (WorldContactListener.fullVisibility==1){
-            // render game map
             renderer.render();
-            // render our Box2DDebugLines
-            b2dr.render(world, gameCam.combined);
-            controller.draw();
-            hud.stage.draw();
+            b2dr.render(world, gameCam.combined); //render fixture outlines
 
             // tell our game batch to recognise where the gameCam is and render what the camera can see
+            //render shadows
             game.batch.setProjectionMatrix(gameCam.combined);
             game.batch.begin();
             if(sm.getShadows()!=null){
                 sm.getShadows().setSize(30,40);
                 sm.getShadows().draw(game.batch);
+                orb.draw(game.batch);
             }
             game.batch.end();
             game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
             //render glow on pillar when map is lit
             if (WorldContactListener.indicateOrbOnPillar){
-                ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
-                        Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
+                ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/pillarLightingVertex.glsl"),
+                        Gdx.files.internal("shaders/pillarLightingFragment.glsl"));
                 pillarGlow.pedantic = false;
                 if (!pillarGlow.isCompiled())
                     throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
-
                 pillarGlow.begin();
                 pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
                 pillarGlow.setUniformf("u_worldColor", Color.GOLD);
-
-                //light's origin point
                 pillarGlow.setUniformf("u_lightPos", new Vector2(WorldContactListener.lightedPillarX, WorldContactListener.lightedPillarY));
                 renderer.getBatch().setShader(pillarGlow);
-
-                // render game map
                 renderer.render();
                 renderer.getBatch().setShader(null); //un-set the shader
                 pillarGlow.end();
             }
-        }
-
-        //shader to hide visibility
-        ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
-                Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
-        shader.pedantic = false;
-        if (!shader.isCompiled())
-            throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
-
-        shader.begin();
-        shader.setUniformMatrix("u_worldView", gameCam.combined);
-        shader.setUniformf("u_worldColor", Color.WHITE);
-
-        if (WorldContactListener.indicateOrb){
-            shader.setUniformf("u_worldColor", Color.GOLD);
-        }
-
-        //light's origin point
-        shader.setUniformf("u_lightPos", new Vector2(gameCam.position.x,gameCam.position.y));
-        renderer.getBatch().setShader(shader);
-
-        // render game map
-        renderer.render();
-        renderer.getBatch().setShader(null); //un-set the shader
-        shader.end();
-
-        // render our Box2DDebugLines
-//        b2dr.render(world, gameCam.combined);
-
-        // render our controller
-        controller.draw();
-
-
-        // tell our game batch to recognise where the gameCam is and render what the camera can see
-        game.batch.setProjectionMatrix(gameCam.combined);
-
-        //render shadow if player is certain distance from shadow
-        if(sm.getShadows()!=null) {
-            xDistance = Math.abs(gameCam.position.x - sm.getShadows().getX());
-            yDistance = Math.abs(gameCam.position.y - sm.getShadows().getY());
-            if (xDistance <= 60.0f && yDistance <=60.0f){
-                game.batch.begin();
-                sm.getShadows().setSize(30, 40);
-                sm.getShadows().draw(game.batch);
-                game.batch.end();
-            }
-        }
-
-        //render glow on pillar when map is not fully visible
-        if (WorldContactListener.indicateOrbOnPillar){
-
-            ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
-                    Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
-            pillarGlow.pedantic = false;
-            if (!pillarGlow.isCompiled())
-                throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
-
-            pillarGlow.begin();
-            pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
-            pillarGlow.setUniformf("u_worldColor", Color.GOLD);
-
-            //light's origin point
-            pillarGlow.setUniformf("u_lightPos", new Vector2(WorldContactListener.lightedPillarX, WorldContactListener.lightedPillarY));
-            renderer.getBatch().setShader(pillarGlow);
-
-            // render game map
-            renderer.render();
-            renderer.getBatch().setShader(null); //un-set the shader
-            pillarGlow.end();
-        }
-
-        //to reveal full visibility
-        if (WorldContactListener.fullVisibility==1){
-            // render game map
-            renderer.render();
-            // render our Box2DDebugLines
-            b2dr.render(world, gameCam.combined);
             controller.draw();
-            hud.stage.draw();
+        } else {
+            //in the dark - game starting state
 
             // tell our game batch to recognise where the gameCam is and render what the camera can see
             game.batch.setProjectionMatrix(gameCam.combined);
-            game.batch.begin();
-            if(sm.getShadows()!=null){
-                sm.getShadows().setSize(30,40);
-                sm.getShadows().draw(game.batch);
-            }
-            game.batch.end();
-            game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
-            //render glow on pillar when map is lit
-            if (WorldContactListener.indicateOrbOnPillar){
-                ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
-                        Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
-                shader.pedantic = false;
+            //render glow on pillar when map is not fully visible
+            if (WorldContactListener.indicateOrbOnPillar) {
+
+                ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/pillarLightingVertex.glsl"),
+                        Gdx.files.internal("shaders/pillarLightingFragment.glsl"));
+                pillarGlow.pedantic = false;
                 if (!pillarGlow.isCompiled())
                     throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
-
                 pillarGlow.begin();
                 pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
                 pillarGlow.setUniformf("u_worldColor", Color.GOLD);
-
-                //light's origin point
-                pillarGlow.setUniformf("u_lightPos", new Vector2(WorldContactListener.lightedPillarX, WorldContactListener.lightedPillarY));
+                pillarGlow.setUniformf("u_lightPos", new Vector2(WorldContactListener.lightedPillarX,
+                        WorldContactListener.lightedPillarY)); //light's origin position
                 renderer.getBatch().setShader(pillarGlow);
-
-                // render game map
                 renderer.render();
                 renderer.getBatch().setShader(null); //un-set the shader
-                shader.end();
+                pillarGlow.end();
             }
-        }
 
+            //black shader to hide visibility - glow on player
+            ShaderProgram shader = new ShaderProgram(Gdx.files.internal("shaders/BasicLightingVertex.glsl"),
+                    Gdx.files.internal("shaders/BasicLightingFragment.glsl"));
+            shader.pedantic = false;
+            if (!shader.isCompiled())
+                throw new GdxRuntimeException("Couldn't compile shader: " + shader.getLog());
+            shader.begin();
+            shader.setUniformMatrix("u_worldView", gameCam.combined);
+            shader.setUniformf("u_worldColor", Color.WHITE);
+            if (WorldContactListener.indicateOrb) {
+                shader.setUniformf("u_worldColor", Color.GOLD);
+            }
+            shader.setUniformf("u_lightPos", new Vector2(gameCam.position.x, gameCam.position.y));
+            renderer.getBatch().setShader(shader);
+            renderer.render();
+            renderer.getBatch().setShader(null); //un-set the shader
+            shader.end();
+
+            //render shadow if player is certain distance from shadow
+            if (sm.getShadows() != null) {
+                xDistance = Math.abs(gameCam.position.x - sm.getShadows().getX());
+                yDistance = Math.abs(gameCam.position.y - sm.getShadows().getY());
+                if (xDistance <= 60.0f && yDistance <= 60.0f) {
+                    game.batch.begin();
+                    sm.getShadows().setSize(30, 40);
+                    sm.getShadows().draw(game.batch);
+                    game.batch.end();
+                }
+            }
+
+            controller.draw();
+        }
 
         // Game Over
         if (gameOver()){
@@ -418,7 +356,6 @@ public class PlayScreen implements Screen {
 
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-
         hud.stage.draw();
 
     }

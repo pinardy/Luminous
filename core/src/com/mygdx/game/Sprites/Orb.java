@@ -1,5 +1,6 @@
 package com.mygdx.game.Sprites;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -22,6 +23,7 @@ public class Orb extends Object{
     static float startPosX = 500;
     static float startPosY = 600;
     public int id = 0;
+    private TextureRegion orbGraphics;
 
     public Orb(PlayScreen screen, float x, float y) {
         super(screen, x, y);
@@ -30,6 +32,11 @@ public class Orb extends Object{
         setToPicked = false;
         picked = false;
         id = 0;
+
+        //graphics
+        orbGraphics = new TextureRegion(getTexture(), 55, 67, 350, 367);
+        setBounds(getX(), getY(), 16,16);
+        setRegion(orbGraphics);
     }
 
     public Orb(PlayScreen screen, float x, float y, float posX, float posY, int id) {
@@ -64,6 +71,8 @@ public class Orb extends Object{
             // move a bit over half the width of the sprite, and down half the height
             setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2);
         }
+
+
 
     }
 
