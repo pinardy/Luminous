@@ -32,6 +32,11 @@ io.on("connection", function(socket){
     // player wants to join a room
     socket.on("room", function (data) {
         console.log("Player wants to join room with size "+data);
+        if (!!foundRoom){
+            console.log("Player has already joined room "+foundRoom.id)
+            socket.emit("socketID", {id: socket.id, numOfPlayers: foundRoom.numOfPlayers});
+            return;
+        }
         try {
             var size = data;
             for (var i = 0; i < rooms.length; i++) {
@@ -43,7 +48,7 @@ io.on("connection", function(socket){
             }
             if (!foundRoom) {
                 console.log("Creating room!");
-                foundRoom = new Room(Math.random(), size);
+                foundRoom = new Room(Math.random().toString(), size);
                 foundRoom.addPlayer(socket.id);
                 rooms.push(foundRoom);
                 foundRoom.game = new GameStruct(foundRoom.id);
@@ -198,16 +203,17 @@ io.on("connection", function(socket){
     socket.on('disconnect', function(){
         console.log("Player disconnected");
         try {
-            if (foundRoom != null) {
-                var players = foundRoom.game.players;
+            if (!!foundRoom) {
+                var playerIDs = foundRoom.playerIDs;
                 socket.broadcast.to(foundRoom.id).emit("playerDisconnected", {id: socket.id});
-                for (var i = 0; i < players.length; i++) {
-                    if (players[i].id == socket.id) {
-                        players.splice(i, 1);
+                for (var i = 0; i < playerIDs.length; i++) {
+                    if (playerIDs[i] == socket.id) {
+                        playerIDs.splice(i, 1);
+                        console.log("remove player from room");
                         break;
                     }
                 }
-                if (players.length == 0) {
+                if (playerIDs.length == 0) {
                     for (i = 0; i < rooms.length; i++) {
                         if (rooms[i].id == foundRoom.id) {
                             rooms.splice(i, 1);
@@ -215,6 +221,10 @@ io.on("connection", function(socket){
                             break;
                         }
                     }
+                }else {
+                    var players = foundRoom.game.players;
+                    const id = findById(players, socket.id);
+                    players.splice(id, 1);
                 }
             }
         }catch (err){
@@ -300,6 +310,15 @@ function resetGame(room) {
     room.host = undefined;
 }
 
+function nextLevel(room) {
+    var game = room.game;
+    var level = game.gameStatus.level+1;
+    game.shadows = generateShadows(room.size, level);
+    game.orbsOfLight = generateOrbs(room.size, level);
+    game.pillars = generatePillars(room.size, level);
+    game.gameStatus = resetStatus(level);
+}
+
 // the number of shadows negatively exponentially proportional to level
 function generateShadows(numOfPlayers, level) {
     var genShadows = [];
@@ -338,6 +357,10 @@ function generatePillars(numOfPlayers, level) {
         genPillars.push(new Pillar(i, 0, 0));
     }
     return genPillars;
+}
+
+function resetStatus(level) {
+    return new GameStatus(0, 0, GAME_TIME, 10, level);
 }
 
 function startGame(io, room) {

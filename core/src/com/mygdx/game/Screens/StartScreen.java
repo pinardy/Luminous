@@ -39,7 +39,6 @@ public class StartScreen implements Screen {
     private Game game;
     private Viewport viewport;
     private Stage stage;
-    public boolean hasJoined = false;
     private Socket socket;
 
     //TODO: Change these variables to read from server
@@ -122,9 +121,8 @@ public class StartScreen implements Screen {
         joinImg.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!hasJoined) {
+                if (!SocketClient.isConnected()) {
                     //TODO: Join the server
-                    hasJoined = true;
                     //TODO: Update player count (capacity, numOfPlayers)
                     connectSocket();
                     //TODO: Set the labels accordingly

@@ -35,6 +35,10 @@ public class SocketClient {
 
     private SocketClient() {
     }
+
+    public static boolean isConnected(){
+        return getInstance().connected();
+    }
 }
 
 class ServerShadow{
