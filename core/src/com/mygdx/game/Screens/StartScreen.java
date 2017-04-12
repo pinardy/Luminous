@@ -118,22 +118,32 @@ public class StartScreen implements Screen {
             };
         });
 
-        //Add logic for connecting to server here
+        // Logic for connecting to server
         joinImg.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!SocketClient.isConnected()) {
-                    //TODO: Join the server
-                    connectSocket();
-                    socket.emit("room", capacity);
-                }else {
-                    socket.emit("room", capacity);
+                if (!hasJoin) {
+                    hasJoin = true;
+                    if (!SocketClient.isConnected()) {
+                        // Join the server
+                        connectSocket();
+                        socket.emit("room", capacity);
+                    } else {
+                        SocketClient.getInstance().emit("room", capacity);
+                    }
+
+                    // Set the labels to show connected
+                    numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
+                    connectedLabel.setText("Connected to server!");
+                } else {
+                    SocketClient.getInstance().emit("leave", 0); // leave room
+                    hasJoin = false; // player is no longer in room
+
+                    // Set labels to show leaving room
+                    numOfPlayersLabel.setText("");
+                    connectedLabel.setText("Disconnected from server!");
                 }
-                //TODO: add leave room
-                // socket.emit("leave", 0);
-                //TODO: Set the labels accordingly
-                numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
-                connectedLabel.setText("Connected to server!");
+
             }
         });
 
@@ -158,15 +168,9 @@ public class StartScreen implements Screen {
 
     @Override
     public void render(float delta) {
-//        if(Gdx.input.justTouched()) {
-//            game.setScreen(new PlayScreen((MultiplayerGame) game));
-//            dispose();
-//        }
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-//        Gdx.app.log("Start Screen", String.valueOf(joinButPressed));
-
+        
         stage.draw();
         if (ready){
             game.setScreen(new PlayScreen((MultiplayerGame) game, true));
