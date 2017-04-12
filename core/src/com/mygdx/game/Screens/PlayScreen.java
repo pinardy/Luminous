@@ -276,6 +276,16 @@ public class PlayScreen implements Screen {
 
         renderer.setView(gameCam);
 
+        ArrayList<Float> litPillarX = new ArrayList<Float>();
+        ArrayList<Float> litPillarY = new ArrayList<Float>();
+
+        for (Pillar p : B2WorldCreator.listOfPillars) {
+            if (p.hasOrb()) {
+                litPillarX.add(p.positionX());
+                litPillarY.add(p.positionY());
+            }
+        }
+
         //whole map is lit when player touches pillar
         if (WorldContactListener.fullVisibility == 1) {
             renderer.render();
@@ -321,10 +331,33 @@ public class PlayScreen implements Screen {
                     pillarGlow.pedantic = false;
                     if (!pillarGlow.isCompiled())
                         throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
+
+                    //for 2 orbs
                     pillarGlow.begin();
                     pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
-                    pillarGlow.setUniformf("u_worldColor", Color.GOLD);
-                    pillarGlow.setUniformf("u_lightPos", new Vector2(p.positionX(), p.positionY()));
+
+                    if (litPillarX.size()==2){//case for 2 lit pillars
+                        pillarGlow.setUniformf("u_worldColorPillarA", Color.GOLD); //indicate glow
+                        pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(litPillarX.get(0),
+                                litPillarY.get(0)));
+                        pillarGlow.setUniformf("u_worldColorPillarB", Color.GOLD); //indicate glow
+                        pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(litPillarX.get(1),
+                                litPillarY.get(1)));
+
+                    } else if (litPillarX.size()==1) { //case for 1 lit pillar
+                        pillarGlow.setUniformf("u_worldColorPillarA", Color.GOLD); //indicate glow
+                        pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(litPillarX.get(0),
+                                litPillarY.get(0)));
+                        pillarGlow.setUniformf("u_worldColorPillarB", Color.alpha(0)); //no glow
+                        pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(0, 0));
+
+                    } else { //case for 0 lit pillar
+                        pillarGlow.setUniformf("u_worldColorPillarA", Color.alpha(0)); //no glow
+                        pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(new Vector2(0,0)));
+                        pillarGlow.setUniformf("u_worldColorPillarB", Color.alpha(0)); //no glow
+                        pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(new Vector2(0,0)));
+                    }
+
                     renderer.getBatch().setShader(pillarGlow);
                     renderer.render();
                     renderer.getBatch().setShader(null); //un-set the shader
@@ -344,16 +377,6 @@ public class PlayScreen implements Screen {
             pillarGlow.pedantic = false;
             if (!pillarGlow.isCompiled())
                 throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
-
-            ArrayList<Float> litPillarX = new ArrayList<Float>();
-            ArrayList<Float> litPillarY = new ArrayList<Float>();
-
-            for (Pillar p : B2WorldCreator.listOfPillars) {
-                if (p.hasOrb()) {
-                    litPillarX.add(p.positionX());
-                    litPillarY.add(p.positionY());
-                }
-            }
 
             //coded for 2 pillars
             pillarGlow.begin();
@@ -383,7 +406,7 @@ public class PlayScreen implements Screen {
 
             String s = "";
             if (PlayScreen.player.isHoldingOrb())
-                pillarGlow.setUniformf("u_worldColorPlayer", Color.GOLD); //indicate glow o player
+                pillarGlow.setUniformf("u_worldColorPlayer", Color.GOLD); //indicate glow on player
             else
                 pillarGlow.setUniformf("u_worldColorPlayer", Color.WHITE);//player as per normal
 
