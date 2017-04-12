@@ -164,8 +164,9 @@ public class WorldContactListener implements ContactListener{
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
                     //fixA is player in this case:
-                    selfPlayer = ((Player) fixA.getUserData()).getID();
-                    if (selfPlayer == PlayScreen.player.getID()){
+                    String id = ((Player) fixA.getUserData()).getID();
+                    if (id.equals(PlayScreen.player.getID())){
+                        selfPlayer = id;
                         fullVisibility = 1;
                         playerPillar = true;
                     }
@@ -196,8 +197,9 @@ public class WorldContactListener implements ContactListener{
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
                     //fixB is player in this case:
-                    selfPlayer = ((Player) fixB.getUserData()).getID();
-                    if (selfPlayer == PlayScreen.player.getID()){
+                    String id = ((Player) fixB.getUserData()).getID();
+                    if (id.equals(PlayScreen.player.getID())){
+                        selfPlayer = id;
                         fullVisibility = 1;
                         playerPillar = true;
                     }
@@ -233,8 +235,9 @@ public class WorldContactListener implements ContactListener{
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
                     //fixA is player in this case:
-                    selfPlayer = ((Player) fixA.getUserData()).getID();
-                    if (selfPlayer == PlayScreen.player.getID()){
+                    String id = ((Player) fixA.getUserData()).getID();
+                    if (id.equals(PlayScreen.player.getID())){
+                        selfPlayer = id;
                         fullVisibility = 1;
                         playerPillar = true;
                     }
@@ -262,8 +265,9 @@ public class WorldContactListener implements ContactListener{
                     boolean pickOrbAndroid = PlayScreen.controller.isOrbPressed();
 
                     //fixB is player in this case:
-                    selfPlayer = ((Player) fixB.getUserData()).getID();
-                    if (selfPlayer == PlayScreen.player.getID()){
+                    String id = ((Player) fixB.getUserData()).getID();
+                    if (id.equals(PlayScreen.player.getID())){
+                        selfPlayer = id;
                         fullVisibility = 1;
                         playerPillar = true;
                     }
@@ -277,7 +281,7 @@ public class WorldContactListener implements ContactListener{
 //                            indicateOrb = true;
 
                             //check if it is that player
-                            if (selfPlayer == PlayScreen.player.getID()){
+                            if (id.equals(PlayScreen.player.getID())){
                                 playerOrbPillar = true;
                             }
 //                            indicateOrbOnPillar = false;
@@ -297,9 +301,32 @@ public class WorldContactListener implements ContactListener{
     @Override
     public void endContact(Contact contact) {
         boolean endContact = true;
-        if(WorldContactListener.selfPlayer!=null)
-            endContact = endContact = (!multiplayer) ||
-                    (multiplayer && WorldContactListener.selfPlayer.equals(PlayScreen.player.getID()));
+        if(selfPlayer!=null) {
+            endContact = (!multiplayer) ||
+                    (selfPlayer.equals(PlayScreen.player.getID()));
+
+            Fixture fixA = contact.getFixtureA();
+            Fixture fixB = contact.getFixtureB();
+
+            /* Check if the contact was between player and pillar:
+            if true and if the player Id is the host player id, then disable full visibility
+             */
+            int cDef = fixA.getFilterData().categoryBits | fixB.getFilterData().categoryBits;
+            if ((cDef == (MultiplayerGame.PLAYER_BIT | MultiplayerGame.PILLAR_BIT))
+                    || (cDef == (MultiplayerGame.PLAYER_BIT | MultiplayerGame.LIGHTEDPILLAR_BIT))){
+                if (fixA.getFilterData().categoryBits == MultiplayerGame.PLAYER_BIT) {
+                    if (((Player) fixA.getUserData()).getID().equals(selfPlayer)) {
+                        selfPlayer = null;
+                        fullVisibility = 0;
+                    }
+                }else {
+                    if (((Player) fixB.getUserData()).getID().equals(selfPlayer)) {
+                        selfPlayer = null;
+                        fullVisibility = 0;
+                    }
+                }
+            }
+        }
 
         if (endContact) {
             if (playerPillar && sameState) {
@@ -310,7 +337,7 @@ public class WorldContactListener implements ContactListener{
                 //pass
                 sameState = false;
             } else {
-                fullVisibility = 0;
+//                fullVisibility = 0;
                 playerPillar = false;
             }
 

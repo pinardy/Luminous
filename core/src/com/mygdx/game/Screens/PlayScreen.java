@@ -279,7 +279,6 @@ public class PlayScreen implements Screen {
         boolean enterShader = true;
         if (WorldContactListener.selfPlayer!=null) {
             enterShader = (!multiplayer) || (multiplayer && WorldContactListener.selfPlayer.equals(PlayScreen.player.getID()));
-            System.out.println("fixture: " + WorldContactListener.selfPlayer + " playScreen: " + PlayScreen.player.getID());
         }
         //Full visibility
         if (!enterShader){
@@ -345,7 +344,7 @@ public class PlayScreen implements Screen {
                         pillarGlow.begin();
                         pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
                         pillarGlow.setUniformf("u_worldColor", Color.GOLD);
-                        pillarGlow.setUniformf("u_lightPos", new Vector2(WorldContactListener.lightedPillarX, WorldContactListener.lightedPillarY));
+                        pillarGlow.setUniformf("u_lightPos", new Vector2(p.positionX(), p.positionY()));
                         renderer.getBatch().setShader(pillarGlow);
                         renderer.render();
                         renderer.getBatch().setShader(null); //un-set the shader
