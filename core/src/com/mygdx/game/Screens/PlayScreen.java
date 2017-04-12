@@ -355,21 +355,35 @@ public class PlayScreen implements Screen {
                 }
             }
 
-            //coded for only 1 lit pillar now
+            //coded for 2 pillars
             pillarGlow.begin();
             pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
-            if (!(litPillarX.size()<1)) {
-                pillarGlow.setUniformf("u_worldColorPillar", Color.GOLD); //indicate light on pillar
-                pillarGlow.setUniformf("u_lightPosPillar", new Vector2(litPillarX.get(0),
+
+            if (litPillarX.size()==2){//case for 2 lit pillars
+                pillarGlow.setUniformf("u_worldColorPillarA", Color.GOLD); //indicate glow
+                pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(litPillarX.get(0),
                         litPillarY.get(0)));
-            } else {
-                pillarGlow.setUniformf("u_worldColorPillar", Color.alpha(0)); //pillar as per normal
-                pillarGlow.setUniformf("u_lightPosPillar", new Vector2(0,0)); //to not render
+                pillarGlow.setUniformf("u_worldColorPillarB", Color.GOLD); //indicate glow
+                pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(litPillarX.get(1),
+                        litPillarY.get(1)));
+
+            } else if (litPillarX.size()==1) { //case for 1 lit pillar
+                pillarGlow.setUniformf("u_worldColorPillarA", Color.GOLD); //indicate glow
+                pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(litPillarX.get(0),
+                        litPillarY.get(0)));
+                pillarGlow.setUniformf("u_worldColorPillarB", Color.alpha(0)); //no glow
+                pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(0, 0));
+
+            } else { //case for 0 lit pillar
+                pillarGlow.setUniformf("u_worldColorPillarA", Color.alpha(0)); //no glow
+                pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(new Vector2(0,0)));
+                pillarGlow.setUniformf("u_worldColorPillarB", Color.alpha(0)); //no glow
+                pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(new Vector2(0,0)));
             }
 
             String s = "";
             if (PlayScreen.player.isHoldingOrb())
-                pillarGlow.setUniformf("u_worldColorPlayer", Color.GOLD); //indicate glow on player
+                pillarGlow.setUniformf("u_worldColorPlayer", Color.GOLD); //indicate glow o player
             else
                 pillarGlow.setUniformf("u_worldColorPlayer", Color.WHITE);//player as per normal
 
