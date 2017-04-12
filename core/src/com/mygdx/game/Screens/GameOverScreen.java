@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
+import com.mygdx.game.SocketClient;
 
 
 public class GameOverScreen implements Screen {
@@ -71,6 +72,13 @@ public class GameOverScreen implements Screen {
             Hud.worldTimer = 300;
             Hud.timeIsUp = false;
             Hud.coreIsDead = false;
+
+            // if multiplayer mode, player leaves after leaving the GameOverScreen
+            if (StartScreen.hasJoin) {
+                StartScreen.hasJoin = false;
+                StartScreen.ready = false;
+                SocketClient.getInstance().emit("leave");
+            }
             dispose();
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);
