@@ -45,7 +45,7 @@ public class StartScreen implements Screen {
     //TODO: Change these variables to read from server
     private static int capacity = 2;
     private static int numOfPlayers = 0;
-    private boolean ready;
+    public static boolean ready;
 
     // Music
     private Music music;
