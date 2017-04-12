@@ -445,12 +445,9 @@ public class PlayScreen implements Screen {
                         }
                     }
                 }
-
-
                 controller.draw();
             }
         }
-
         // Game Over
         if (gameOver()){
             game.setScreen(new GameOverScreen(game));
@@ -460,6 +457,14 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
 
+    }
+
+    // for checking if game is over
+    public boolean gameOver(){
+        if(Hud.timeIsUp | Hud.coreIsDead){
+            return true;
+        }
+        return false;
     }
 
     public TiledMap getMap() {
@@ -498,14 +503,6 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
-    }
-
-    // for checking if game is over
-    public boolean gameOver(){
-        if(Hud.timeIsUp | Hud.coreIsDead){
-            return true;
-        }
-        return false;
     }
 
     public void updateMyPosition(String idAction, float x, float y){
