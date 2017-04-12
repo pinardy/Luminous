@@ -72,7 +72,12 @@ public class GameOverScreen implements Screen {
             Hud.worldTimer = 300;
             Hud.timeIsUp = false;
             Hud.coreIsDead = false;
-            if (StartScreen.hasJoin) SocketClient.getInstance().emit("leave");
+            // if multiplayer mode, player leaves after leaving the GameOverScreen
+            if (StartScreen.hasJoin) {
+                StartScreen.hasJoin = false;
+                StartScreen.ready = false;
+                SocketClient.getInstance().emit("leave");
+            }
             dispose();
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);

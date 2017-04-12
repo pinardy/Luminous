@@ -104,4 +104,8 @@ public class Player extends Object {
         mOrb = null;
         return toReturn;
     }
+
+    public String getID(){
+        return this.id;
+    }
 }

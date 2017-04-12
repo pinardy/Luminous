@@ -51,6 +51,16 @@ public class Shadow extends Object{
     public Shadow(PlayScreen screen, float x, float y, int time) {
         this(screen, x, y);
         serverTime = time;
+
+        shadowMan = new TextureRegion(getTexture(), 0,0,16,16);
+        setBounds(0,0,16,16);
+        setRegion(shadowMan);
+
+        Array<TextureRegion> frames = new Array<TextureRegion>();
+        for (int i = 0; i < 12; i++){
+            frames.add(new TextureRegion(getTexture(), i*32, 0, 32, 57));
+        }
+        shadowRun = new Animation(0.1f, frames);
     }
 
     public void update(float dt){
