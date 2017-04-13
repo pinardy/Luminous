@@ -309,6 +309,12 @@ public class PlayScreen implements Screen {
                         game.batch.end();
                     }
                 }
+                for (Map.Entry<String,Player>player : PlayScreen.players.entrySet()){
+                    game.batch.begin();
+                    player.getValue().setSize(40,40);
+                    player.getValue().draw(game.batch);
+                    game.batch.end();
+                }
             }else{
                 game.batch.begin();
                 if (sm.getShadows() != null) {
@@ -319,7 +325,7 @@ public class PlayScreen implements Screen {
                     orb.setSize(20, 20);
                     orb.draw(game.batch);
                 }
-                PlayScreen.player.setSize(32,32);
+                PlayScreen.player.setSize(40,40);
                 PlayScreen.player.draw(game.batch);
                 game.batch.end();
             }
@@ -450,6 +456,8 @@ public class PlayScreen implements Screen {
                         game.batch.begin();
                         orb.setSize(20, 20);
                         orb.draw(game.batch);
+                        PlayScreen.player.setSize(40,40);
+                        PlayScreen.player.draw(game.batch);
                         game.batch.end();
                     }
                 }
@@ -465,6 +473,12 @@ public class PlayScreen implements Screen {
                             game.batch.end();
                         }
                     }
+                }
+                for (Map.Entry<String,Player>player : PlayScreen.players.entrySet()) {
+                    game.batch.begin();
+                    player.getValue().setSize(40, 40);
+                    player.getValue().draw(game.batch);
+                    game.batch.end();
                 }
             }
             controller.draw();
