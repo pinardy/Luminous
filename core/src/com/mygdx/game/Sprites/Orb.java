@@ -6,7 +6,12 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 /** Orb is the 'tool' of the game.
@@ -21,7 +26,7 @@ public class Orb extends Object{
     private float stateTime;
     private boolean ToPick;
     private boolean picked;
-    private static boolean orbNotOnFloor;
+//    private static boolean orbNotOnFloor;
     static float startPosX = 500;
     static float startPosY = 600;
     private int id;
@@ -119,25 +124,31 @@ public class Orb extends Object{
         return this.id;
     }
 
-    public void setOrbNotOnFloor(int x){
-        if (x==0)
-            orbNotOnFloor = false;
-        else
-            orbNotOnFloor = true;
-    }
+    public static boolean onFloor(Orb orb){
+        if (!WorldContactListener.multiplayer) { //single player
+            for (Pillar p : B2WorldCreator.listOfPillars){
+                if (p.hasOrb()){
+                    return false;
+                }
+            }
+            if (PlayScreen.player.isHoldingOrb()){
+                return false;
+            }else{
+                return true;
+            }
+        }else{//multiplayer
+            for (Pillar p : B2WorldCreator.listOfPillars){
+                if (p.hasOrb() && p.getmOrb().getID()==orb.getID()){ //if orb is on pillar
+                    return false;
+                }
+            }
 
-    public boolean onFloor(){
-        if (!WorldContactListener.multiplayer) {
-            if (WorldContactListener.indicateOrb ||
-                    WorldContactListener.indicateOrbOnPillar) { //whenever orb is held on player or hanging on pillar
-                return false;
+            for (Map.Entry<String, Player> player : PlayScreen.getPlayers().entrySet()) {
+                if (player.getValue().isHoldingOrb() && player.getValue().getHoldingOrb().getID() == orb.getID()){
+                    return false;
+                }
             }
-        }else{//in multiplayer mode
-            if (orbNotOnFloor){
-                return false;
-            }
+            return true;
         }
-        return true;
     }
-
 }
