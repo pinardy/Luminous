@@ -153,7 +153,7 @@ public class PlayScreen implements Screen {
 
         if (!multiplayer) {
             // create a player in our game world
-            player = new Player(world);
+            player = new Player(world, this);
 
             // create an orb in our game world
             orb = new Orb(this, .32f, .32f);
@@ -319,6 +319,8 @@ public class PlayScreen implements Screen {
                     orb.setSize(20, 20);
                     orb.draw(game.batch);
                 }
+                PlayScreen.player.setSize(32,32);
+                PlayScreen.player.draw(game.batch);
                 game.batch.end();
             }
             game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -415,6 +417,11 @@ public class PlayScreen implements Screen {
             renderer.render();
             renderer.getBatch().setShader(null); //un-set the shader
             pillarGlow.end();
+
+            game.batch.begin();
+            PlayScreen.player.setSize(32,32);
+            PlayScreen.player.draw(game.batch);
+            game.batch.end();
 
             //render shadow if player is certain distance from shadow
             if (sm.getShadows() != null) {
@@ -609,11 +616,11 @@ public class PlayScreen implements Screen {
                 Double x = onlinePlayer.getDouble("x");
                 Double y = onlinePlayer.getDouble("y");
                 if (id.equals(SocketClient.myID)) {
-                    player = new Player(world, x.floatValue(), y.floatValue(), id);
+                    player = new Player(world, this, x.floatValue(), y.floatValue(), id);
                     players.put(id, player);
                 }
                 else {
-                    players.put(id, new Player(world, x.floatValue(), y.floatValue(), id));
+                    players.put(id, new Player(world, this, x.floatValue(), y.floatValue(), id));
                     playerActions.put(id, new LinkedList<Vector2>());
                 }
             }

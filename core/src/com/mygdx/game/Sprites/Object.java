@@ -27,8 +27,19 @@ public abstract class Object extends Sprite {
         setPosition(x, y);
     }
 
+    public Object(World world, PlayScreen screen, float x, float y){
+        super(screen.getAtlas().findRegion("shadowman"));
+
+        fdef = new FixtureDef();
+        this.filter = new Filter();
+
+        this.world = world;
+        setPosition(x, y);
+        defineObject();
+    }
+
     public Object(PlayScreen screen, float x, float y){
-        super(screen.getAtlas().findRegion("shadowman")); //temporary
+        super(screen.getAtlas().findRegion("shadowman"));
 
         fdef = new FixtureDef();
         this.filter = new Filter();
@@ -36,8 +47,8 @@ public abstract class Object extends Sprite {
         this.world = screen.getWorld();
         setPosition(x, y);
         defineObject();
-
     }
+
 
     // Every object is defined differently. Hence this method is abstract
     protected abstract void defineObject();

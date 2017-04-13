@@ -59,6 +59,7 @@ public class Orb extends Object{
 
     public void update(float dt){
         stateTime += dt;
+
         if (getToPick() && !getPicked()){
             world.destroyBody(b2body);
             setPicked();
