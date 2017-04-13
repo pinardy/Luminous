@@ -19,12 +19,12 @@ import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SocketClient;
 
 
-public class WinScreen implements Screen {
+public class GameEndScreen implements Screen {
     private Game game;
     private Viewport viewport;
     private Stage stage;
 
-    public WinScreen(Game game){
+    public GameEndScreen(Game game){
         this.game = game;
         viewport = new FitViewport(MultiplayerGame.V_WIDTH, MultiplayerGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((MultiplayerGame) game).batch);
@@ -41,12 +41,21 @@ public class WinScreen implements Screen {
         Label tapLabel = new Label("Tap anywhere to go back to the main menu", font);
         Label scoreValue = new Label(String.valueOf(Hud.score), font);
 
+        // image for "Game Over"
+        Image gameOverImg = new Image(new Texture("gameover.png"));
+        gameOverImg.setSize(250, 48);
+
         // image for "Victory"
         Image victoryImg = new Image(new Texture("win.png"));
         victoryImg.setSize(400, 60);
 
         // Arrangement of the labels using a table
-        table.add(victoryImg).size(victoryImg.getWidth(), victoryImg.getHeight());
+        if (Hud.coreDead()) {
+            table.add(gameOverImg).size(gameOverImg.getWidth(), gameOverImg.getHeight());
+        }
+        if (Hud.timesUp()) {
+            table.add(victoryImg).size(victoryImg.getWidth(), victoryImg.getHeight());
+        }
         table.row();
         table.add(scoreLabel);
         table.row();
@@ -72,8 +81,7 @@ public class WinScreen implements Screen {
             Hud.worldTimer = 300;
             Hud.timeIsUp = false;
             Hud.coreIsDead = false;
-
-            // if multiplayer mode, player leaves after leaving the GameOverScreen
+            // if multiplayer mode, player leaves after leaving the GameEndScreen
             if (StartScreen.hasJoin) {
                 StartScreen.hasJoin = false;
                 StartScreen.ready = false;

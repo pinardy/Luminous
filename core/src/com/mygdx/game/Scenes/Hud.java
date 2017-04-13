@@ -115,6 +115,9 @@ public class Hud implements Disposable{
 
     // for checking if the game time is up
     public static boolean timesUp(){
+        if (worldTimer == 0){
+            timeIsUp = true;
+        }
         return timeIsUp;
     }
 

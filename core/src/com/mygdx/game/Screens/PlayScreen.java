@@ -460,16 +460,12 @@ public class PlayScreen implements Screen {
                         }
                     }
                 }
-<<<<<<< HEAD
-=======
                 controller.draw();
->>>>>>> origin/master
             }
-            controller.draw();
         }
         // Game Over
         if (gameOver()){
-            game.setScreen(new GameOverScreen(game));
+            game.setScreen(new GameEndScreen(game));
             dispose();
         }
 
@@ -480,7 +476,7 @@ public class PlayScreen implements Screen {
 
     // for checking if game is over
     public boolean gameOver(){
-        if(Hud.timeIsUp | Hud.coreIsDead){
+        if(Hud.timesUp() | Hud.coreDead()){
             return true;
         }
         return false;
