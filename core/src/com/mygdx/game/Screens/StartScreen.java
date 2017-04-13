@@ -10,15 +10,18 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
@@ -28,11 +31,16 @@ import com.mygdx.game.Tools.Controller;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 /** StartScreen is the screen users will see when the game app is started
- * Users can choose to play single-player, multi-player, or read the help section
+ * Users can choose to :
+ * 1) play single-player
+ * 2) play multi-player
+ * 3) read the help section
  */
 
 public class StartScreen implements Screen {
@@ -40,6 +48,7 @@ public class StartScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private Socket socket;
+    private static Table table;
     public static boolean hasJoin;
 
     //TODO: Change these variables to read from server
@@ -50,6 +59,7 @@ public class StartScreen implements Screen {
     // Music
     private Music music;
 
+    // Labels for number of players and connection status
     static Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), Color.WHITE);
     static Label numOfPlayersLabel = new Label("", font);
     static Label connectedLabel = new Label("", font);
@@ -59,10 +69,10 @@ public class StartScreen implements Screen {
         viewport = new FitViewport(MultiplayerGame.V_WIDTH, MultiplayerGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((MultiplayerGame) game).batch);
 
-        //enable the listener for buttons
+        // enable the listener for buttons
         Gdx.input.setInputProcessor(stage);
 
-        Table table = new Table();
+        table = new Table();
         table.bottom();
         table.setFillParent(true);
 
@@ -83,14 +93,15 @@ public class StartScreen implements Screen {
         Image logoImg = new Image(new Texture("luminousicon.png"));
         logoImg.setSize(243, 240);
 
-        Image joinImg = new Image(new Texture("joinGame.png"));
+        final Image joinImg = new Image(new Texture("joinGame.png"));
         joinImg.setSize(108, 48);
+
 
         // Only for debugging in single player mode
         Image singleImg = new Image(new Texture("singleMode.png"));
         singleImg.setSize(108, 48);
 
-        Image helpImg = new Image(new Texture("help.png"));
+        final Image helpImg = new Image(new Texture("help.png"));
         helpImg.setSize(108, 48);
 
         // Arrangement of the labels using a table
@@ -99,6 +110,7 @@ public class StartScreen implements Screen {
         table.add(logoImg);
         table.row().pad(5, 5, 50, 5);
         table.add(joinImg).size(joinImg.getWidth(), joinImg.getHeight());
+        table.getCells();
         table.add(singleImg).size(singleImg.getWidth(), singleImg.getHeight());
         table.add(helpImg).size(helpImg.getWidth(), helpImg.getHeight());
 
@@ -126,8 +138,10 @@ public class StartScreen implements Screen {
                     hasJoin = true;
                     if (!SocketClient.isConnected()) {
                         // Join the server
+                        joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
                         connectSocket();
                         socket.emit("room", capacity);
+
                     } else {
                         SocketClient.getInstance().emit("room", capacity);
                     }
@@ -136,6 +150,8 @@ public class StartScreen implements Screen {
                     numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
                     connectedLabel.setText("Connected to server!");
                 } else {
+                    joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("joinGame.png"))));
+
                     SocketClient.getInstance().emit("leave", 0); // leave room
                     hasJoin = false; // player is no longer in room
 
@@ -154,6 +170,10 @@ public class StartScreen implements Screen {
                 dispose();
             }
         });
+    }
+
+    public Table getTable(){
+        return table;
     }
 
     public int playersLeft(){

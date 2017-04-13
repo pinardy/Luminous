@@ -19,6 +19,11 @@ import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SocketClient;
 
 
+/** GameEndScreen is the screen users will see when either of the two conditions are met:
+ * 1) Time is up (Victory)
+ * 2) Core health is 0 (Game over)
+ */
+
 public class GameEndScreen implements Screen {
     private Game game;
     private Viewport viewport;
