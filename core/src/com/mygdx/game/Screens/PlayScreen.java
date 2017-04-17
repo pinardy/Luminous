@@ -94,7 +94,7 @@ public class PlayScreen implements Screen {
     // List of Orbs
     public static ArrayList<Orb> listOfOrbs = new ArrayList<Orb>();
 
-    private ArrayList<Orb> getListOfOrbs() {
+    public ArrayList<Orb> getListOfOrbs() {
         return listOfOrbs;
     }
 
@@ -651,40 +651,6 @@ public class PlayScreen implements Screen {
 
     // Configure socket events after TCP connection has been established.
     public void configSocketEvents(){
-//        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-//            @Override
-//            public void call(Object... args) {
-//                Gdx.app.log("SocketIO", "Connected");
-//            }
-//        });
-//
-//        socket.on("socketID", new Emitter.Listener() {
-//            @Override
-//            public void call(Object... args) {
-//                JSONObject data = (JSONObject) args[0];
-//                try {
-//                    myID = data.getString("id");
-//                    Gdx.app.log("SocketIO", "My ID: " + myID);
-//                    players.put(myID, player);
-//                }catch (Exception e){
-//                    Gdx.app.log("SocketIO", "error getting id");
-//                }
-//            }
-//        }).on("newPlayer", new Emitter.Listener() {
-//            @Override
-//            public void call(Object... args) {
-//                JSONObject data = (JSONObject) args[0];
-//                try {
-//                    String id = data.getString("id");
-//                    players.put(id, new Player(world));
-//                    playerActions.put(id, new LinkedList<Vector2>());
-//                    Gdx.app.log("SocketIO", "New player has id: " + id);
-//                }catch (Exception e){
-//                    Gdx.app.log("SocketIO", "error getting new player");
-//                }
-//
-//            }
-//        });
         socket.on("playerDisconnected", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -714,26 +680,6 @@ public class PlayScreen implements Screen {
                 }
             }
         });
-//        socket.on("getPlayers", new Emitter.Listener() {
-//            @Override
-//            public void call(Object... args) {
-//                JSONArray onlinePlayers = (JSONArray) args[0];
-//                try {
-//                    for (int i = 0; i < onlinePlayers.length(); i++){
-//                        Player coopPlayer = new Player(world);
-//                        Vector2 position = new Vector2();
-//                        position.x = ((Double) onlinePlayers.getJSONObject(i).getDouble("x")).floatValue();
-//                        position.y = ((Double) onlinePlayers.getJSONObject(i).getDouble("y")).floatValue();
-//                        coopPlayer.b2body.setTransform(position.x, position.y, coopPlayer.b2body.getAngle());
-//                        players.put(onlinePlayers.getJSONObject(i).getString("id"), coopPlayer);
-//                        playerActions.put(onlinePlayers.getJSONObject(i).getString("id"), new LinkedList<Vector2>());
-//                    }
-//                }catch (Exception e){
-//                    Gdx.app.log("SocketIO", "error getting id");
-//                }
-//
-//            }
-//        });
     }
 
     private void configSocketOrb(){
