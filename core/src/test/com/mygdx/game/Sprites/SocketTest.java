@@ -1,6 +1,7 @@
 package com.mygdx.game.Sprites;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.BooleanArray;
 import com.mygdx.game.SocketClient;
 
 import org.json.JSONObject;
@@ -17,6 +18,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -54,8 +56,8 @@ public class SocketTest {
     }
 
     @Test
-    public void testAverageConnectionTime() throws Exception {
-        int connections = 1000;
+    public void testAverageConnectionTimeParallel() throws Exception {
+        int connections = 5;
         ExecutorService executor = Executors.newCachedThreadPool();
         ArrayList<Future> futureList = new ArrayList<Future>();
 
@@ -65,9 +67,10 @@ public class SocketTest {
                 Socket s = SocketClient.getInstance();
                 long oldTime = System.currentTimeMillis();
                 s.connect();
+                while (!s.connected()){Thread.yield();}
                 oldTime = System.currentTimeMillis() - oldTime;
                 s.disconnect();
-
+                System.out.println(oldTime);
                 return oldTime;
             }
         };
@@ -89,7 +92,61 @@ public class SocketTest {
     }
 
     @Test
-    public void testSocketThroughput() {
-       
+    public void testAverageConnectionTimeSequantial() throws Exception {
+        int connections = 10;
+
+        long totalTime = 0;
+        int failures = 0;
+        for (int i = 0; i < connections; i++){
+            int timeout = 5000;
+            boolean success = true;
+            long startTIme = System.currentTimeMillis();
+            socket.connect();
+            while (!socket.connected()){
+                if (System.currentTimeMillis() - startTIme > timeout){
+                    success = false;
+                    failures++;
+                    break;
+                }
+            }
+            System.out.println(System.currentTimeMillis() - startTIme);
+            if (success) totalTime += System.currentTimeMillis() - startTIme;
+            socket.disconnect();
+            try {
+                // letting socket disconnect
+                Thread.sleep(1000);
+            }catch (Exception e){
+                System.out.println("interrupted");
+            }
+        }
+
+        System.out.println("Average connection time is: " + totalTime/(float)(connections - failures) + "ms");
+        System.out.println("Number of connections made: " + connections);
+        System.out.println("NUmber of failures: " + failures);
+    }
+
+    @Test
+    public void testSocketThroughput() throws Exception{
+        socket.connect();
+        int pipeline = 10000;
+        byte[] data = new byte[512];
+        final AtomicInteger packetReceived = new AtomicInteger();
+        JSONObject packet = new JSONObject();
+        packet.put("data", data);
+        for (int i = 0; i <pipeline; i++){
+            socket.emit("throughput", packet);
+        }
+        socket.on("throughput", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                packetReceived.getAndAdd(1);
+            }
+        });
+        long start = System.currentTimeMillis();
+        final int sec = 1000;
+        while (System.currentTimeMillis() - start < sec*10){
+        }
+        System.out.println("Average throughput with packet size "+data.length+" is: "+packetReceived.get()/10.0);
+        socket.close();
     }
 }
