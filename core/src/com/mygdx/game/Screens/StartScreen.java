@@ -143,6 +143,7 @@ public class StartScreen implements Screen {
                         socket.emit("room", capacity);
 
                     } else {
+                        joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
                         SocketClient.getInstance().emit("room", capacity);
                     }
 

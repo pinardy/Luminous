@@ -467,8 +467,8 @@ public class PlayScreen implements Screen {
                         }
                     }
                 }
-                controller.draw();
             }
+            controller.draw();
         }
         // Game Over
         if (gameOver()){
