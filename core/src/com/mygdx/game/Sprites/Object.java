@@ -18,35 +18,26 @@ public abstract class Object extends Sprite {
     protected Fixture fixture;
     protected Filter filter;
 
-    //TODO: Figure how to overload the constructors
-    public Object(World world, float x, float y){
+    private void initialize(World world, float x, float y) {
         fdef = new FixtureDef();
         this.filter = new Filter();
 
         this.world = world;
         setPosition(x, y);
+        defineObject();
+    }
+    public Object(World world, float x, float y) {
+        initialize(world, x, y);
     }
 
     public Object(World world, PlayScreen screen, float x, float y){
         super(screen.getAtlas().findRegion("shadowman"));
-
-        fdef = new FixtureDef();
-        this.filter = new Filter();
-
-        this.world = world;
-        setPosition(x, y);
-        defineObject();
+        initialize(world, x, y);
     }
 
     public Object(PlayScreen screen, float x, float y){
         super(screen.getAtlas().findRegion("shadowman"));
-
-        fdef = new FixtureDef();
-        this.filter = new Filter();
-
-        this.world = screen.getWorld();
-        setPosition(x, y);
-        defineObject();
+        initialize(screen.getWorld(), x, y);
     }
 
 
