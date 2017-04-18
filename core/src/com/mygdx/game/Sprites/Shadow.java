@@ -44,6 +44,7 @@ public class Shadow extends Object{
         stateTime = 0;
         hitPillar = false;
         alive = true;
+        this.graphics = graphics;
     }
 
     // construct from server
