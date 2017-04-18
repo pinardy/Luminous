@@ -423,10 +423,10 @@ public class PlayScreen implements Screen {
             renderer.getBatch().setShader(null); //un-set the shader
             pillarGlow.end();
 
-            game.batch.begin();
-            PlayScreen.player.setSize(32,32);
-            PlayScreen.player.draw(game.batch);
-            game.batch.end();
+//            game.batch.begin();
+//            PlayScreen.player.setSize(40,40);
+//            PlayScreen.player.draw(game.batch);
+//            game.batch.end();
 
             //render shadow if player is certain distance from shadow
             if (sm.getShadows() != null) {
@@ -474,11 +474,24 @@ public class PlayScreen implements Screen {
                         }
                     }
                 }
-                for (Map.Entry<String,Player>player : PlayScreen.players.entrySet()) {
-                    game.batch.begin();
-                    player.getValue().setSize(40, 40);
-                    player.getValue().draw(game.batch);
-                    game.batch.end();
+                for (Map.Entry<String, Player> player : players.entrySet()) {
+                    //always render current player
+                    if (player.getKey().equals(PlayScreen.player.getID())){
+                        game.batch.begin();
+                        player.getValue().setSize(40, 40);
+                        player.getValue().draw(game.batch);
+                        game.batch.end();
+                    }else{
+                        xDistance = Math.abs(gameCam.position.x - player.getValue().getX());
+                        yDistance = Math.abs(gameCam.position.y - player.getValue().getY());
+                        if (xDistance <= 60.0f && yDistance <= 60.0f) {
+                            game.batch.begin();
+                            player.getValue().setSize(40, 40);
+                            player.getValue().draw(game.batch);
+                            game.batch.end();
+                        }
+                    }
+
                 }
             }
             controller.draw();
