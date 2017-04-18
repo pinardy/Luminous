@@ -60,10 +60,12 @@ public class Orb extends Object{
     public Orb(PlayScreen screen, float x, float y, float posX, float posY, int id) {
         this(screen, x, y, posX, posY);
         this.id = id;
+        startPosX = posX;
+        startPosY = posY;
     }
 
     public Orb(PlayScreen screen, float x, float y, float posX, float posY) {
-        this(screen, x, y, true);
+        this(screen, x, y);
         startPosX = posX;
         startPosY = posY;
     }

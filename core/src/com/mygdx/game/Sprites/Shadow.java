@@ -45,12 +45,16 @@ public class Shadow extends Object{
         hitPillar = false;
         alive = true;
         this.graphics = graphics;
+
+        initializeGraphics(graphics);
     }
 
     // construct from server
     public Shadow(PlayScreen screen, float x, float y, int time) {
-        this(screen, x, y, true);
+        this(screen, x, y);
         serverTime = time;
+
+        initializeGraphics(true);
     }
 
     private void initializeGraphics(boolean graphics) {
@@ -75,7 +79,7 @@ public class Shadow extends Object{
                 b2body.getPosition().y - getHeight()/2);
 
         //for animation
-        if(graphics) setRegion(shadowRun.getKeyFrame(stateTime, true)); //boolean for looping
+        if(graphics&&shadowRun!=null) setRegion(shadowRun.getKeyFrame(stateTime, true)); //boolean for looping
 
         // if the Shadow object exists
         if(b2body != null) {

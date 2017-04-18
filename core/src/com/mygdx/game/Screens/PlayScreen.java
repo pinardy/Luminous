@@ -295,36 +295,40 @@ public class PlayScreen implements Screen {
             //render shadows
             game.batch.setProjectionMatrix(gameCam.combined);
             if (multiplayer){
+                game.batch.begin();
                 for (Shadow serverShadow : sm.getMShadows()) {
-                    game.batch.begin();
                     serverShadow.setSize(30, 40);
                     serverShadow.draw(game.batch);
-                    game.batch.end();
                 }
+                game.batch.end();
+                game.batch.begin();
                 for (int x = 0; x < listOfOrbs.size(); x++) {
                     if (Orb.onFloor(listOfOrbs.get(x))) {
-                        game.batch.begin();
                         listOfOrbs.get(x).setSize(20, 20);
                         listOfOrbs.get(x).draw(game.batch);
-                        game.batch.end();
                     }
                 }
+                game.batch.end();
+                game.batch.begin();
                 for (Map.Entry<String,Player>player : PlayScreen.players.entrySet()){
-                    game.batch.begin();
                     player.getValue().setSize(40,40);
                     player.getValue().draw(game.batch);
-                    game.batch.end();
                 }
+                game.batch.end();
             }else{
                 game.batch.begin();
                 if (sm.getShadows() != null) {
                     sm.getShadows().setSize(30, 40);
                     sm.getShadows().draw(game.batch);
                 }
+                game.batch.end();
+                game.batch.begin();
                 if (Orb.onFloor(orb)) {
                     orb.setSize(20, 20);
                     orb.draw(game.batch);
                 }
+                game.batch.end();
+                game.batch.begin();
                 PlayScreen.player.setSize(40,40);
                 PlayScreen.player.draw(game.batch);
                 game.batch.end();
@@ -429,12 +433,12 @@ public class PlayScreen implements Screen {
                 yDistance = Math.abs(gameCam.position.y - sm.getShadows().getY());
                 if (xDistance <= 60.0f && yDistance <= 60.0f) {
                     if (multiplayer) {
+                        game.batch.begin();
                         for (Sprite serverShadow : sm.getMShadows()) {
-                            game.batch.begin();
                             serverShadow.setSize(30, 40);
                             serverShadow.draw(game.batch);
-                            game.batch.end();
                         }
+                        game.batch.end();
                     } else{
                         game.batch.begin();
                         sm.getShadows().setSize(30, 40);
@@ -444,55 +448,57 @@ public class PlayScreen implements Screen {
                 }
             }
             if (!multiplayer) { //in singleplayer mode
+                game.batch.begin();
                 xDistance = Math.abs(gameCam.position.x - orb.getX());
                 yDistance = Math.abs(gameCam.position.y - orb.getY());
                 if (xDistance <= 60.0f && yDistance <= 60.0f) {
                     if (Orb.onFloor(orb)) {
-                        game.batch.begin();
                         orb.setSize(20, 20);
                         orb.draw(game.batch);
-                        game.batch.end();
                     }
                 }
-                game.batch.begin();
+//                game.batch.begin();
                 PlayScreen.player.setSize(40,40);
                 PlayScreen.player.draw(game.batch);
                 game.batch.end();
             } else { //in multiplayer mode
+                game.batch.begin();
                 for (int x = 0; x < listOfOrbs.size(); x++) {
                     xDistance = Math.abs(gameCam.position.x - listOfOrbs.get(x).getX());
                     yDistance = Math.abs(gameCam.position.y - listOfOrbs.get(x).getY());
                     if (xDistance <= 60.0f && yDistance <= 60.0f) {
                         if (Orb.onFloor(listOfOrbs.get(x))) {
-                            game.batch.begin();
                             listOfOrbs.get(x).setSize(20, 20);
                             listOfOrbs.get(x).draw(game.batch);
-                            game.batch.end();
                         }
                     }
                 }
+                game.batch.end();
+
                 for (Map.Entry<String, Player> player : players.entrySet()) {
                     //always render current player
+//                    game.batch.begin();
                     if (player.getKey().equals(PlayScreen.player.getID())){
                         game.batch.begin();
                         player.getValue().setSize(40, 40);
                         player.getValue().draw(game.batch);
                         game.batch.end();
                     }else{
+                        game.batch.begin();
                         xDistance = Math.abs(gameCam.position.x - player.getValue().getX());
                         yDistance = Math.abs(gameCam.position.y - player.getValue().getY());
                         if (xDistance <= 60.0f && yDistance <= 60.0f) {
-                            game.batch.begin();
+//                            game.batch.begin();
                             player.getValue().setSize(40, 40);
                             player.getValue().draw(game.batch);
-                            game.batch.end();
-                        }
-                    }
 
+                        }
+                        game.batch.end();
+                    }
                 }
             }
-            controller.draw();
         }
+        controller.draw();
         // Game Over
         if (gameOver()){
             game.setScreen(new GameEndScreen(game));
@@ -501,7 +507,6 @@ public class PlayScreen implements Screen {
 
         game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
-
     }
 
     // for checking if game is over
@@ -633,7 +638,7 @@ public class PlayScreen implements Screen {
                 JSONObject orb = orbs.getJSONObject(i);
                 Double x = orb.getDouble("x");
                 Double y = orb.getDouble("y");
-                listOfOrbs.add(new Orb(this, .32f, .32f, x.floatValue(), y.floatValue(), orb.getInt("id")));
+                listOfOrbs.add(new Orb(PlayScreen.this, .32f, .32f, x.floatValue(), y.floatValue(), orb.getInt("id")));
             }
         }catch (JSONException e){
             Gdx.app.log("SocketIO", "Error parsing orb json");
