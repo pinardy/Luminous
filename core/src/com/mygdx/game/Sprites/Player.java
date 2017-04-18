@@ -172,10 +172,10 @@ public class Player extends Object {
 
     //rendering other player for multiplayer
     public TextureRegion getOtherFrame(float dt, Player player){
-        currentState = getMState(player);
+        State currentStateB = getMState(player);
 
         TextureRegion region = playerStand;
-        switch(currentState){
+        switch(currentStateB){
             case UP:
                 region = playerUp.getKeyFrame(stateTimer, true);
                 break;
@@ -198,37 +198,37 @@ public class Player extends Object {
     }
 
     //for multiplayer mode
-    public Array<TextureRegion> getMultipleFrame(float dt){
-
-        Array<TextureRegion> regions = new Array<TextureRegion>();
-
-        for (Map.Entry<String, Player> player : PlayScreen.getPlayers().entrySet()) {
-            currentState = getMState(player.getValue());
-            TextureRegion region = playerStand;
-
-            switch (currentState) {
-                case UP:
-                    region = playerUp.getKeyFrame(stateTimer, true);
-                    break;
-                case DOWN:
-                    region = playerDown.getKeyFrame(stateTimer, true);
-                    break;
-                case LEFT:
-                    region = playerLeft.getKeyFrame(stateTimer, true);
-                    break;
-                case RIGHT:
-                    region = playerRight.getKeyFrame(stateTimer, true);
-                    break;
-                case STAND:
-                    //static
-                    region = playerStand;
-                    break;
-            }
-            stateTimer = stateTimer + dt;
-            regions.add(region);
-        }
-        return regions;
-    }
+//    public Array<TextureRegion> getMultipleFrame(float dt){
+//
+//        Array<TextureRegion> regions = new Array<TextureRegion>();
+//
+//        for (Map.Entry<String, Player> player : PlayScreen.getPlayers().entrySet()) {
+//            currentState = getMState(player.getValue());
+//            TextureRegion region = playerStand;
+//
+//            switch (currentState) {
+//                case UP:
+//                    region = playerUp.getKeyFrame(stateTimer, true);
+//                    break;
+//                case DOWN:
+//                    region = playerDown.getKeyFrame(stateTimer, true);
+//                    break;
+//                case LEFT:
+//                    region = playerLeft.getKeyFrame(stateTimer, true);
+//                    break;
+//                case RIGHT:
+//                    region = playerRight.getKeyFrame(stateTimer, true);
+//                    break;
+//                case STAND:
+//                    //static
+//                    region = playerStand;
+//                    break;
+//            }
+//            stateTimer = stateTimer + dt;
+//            regions.add(region);
+//        }
+//        return regions;
+//    }
 
     //single player
     public State getState(){
@@ -254,15 +254,19 @@ public class Player extends Object {
     public State getMState(Player player){
         if(player.b2body.getLinearVelocity().y > 99){
             //up
+            System.out.println("up");
             return State.UP;
         } else if (player.b2body.getLinearVelocity().y < -99){
             //down
+            System.out.println("down");
             return State.DOWN;
         } else if (player.b2body.getLinearVelocity().x < -99){
             //left
+            System.out.println("left");
             return State.LEFT;
         } else if (player.b2body.getLinearVelocity().x > 99){
             //right
+            System.out.println("right");
             return State.RIGHT;
         }else{
             //not moving

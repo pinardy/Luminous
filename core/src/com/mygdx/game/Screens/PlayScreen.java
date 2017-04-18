@@ -423,11 +423,6 @@ public class PlayScreen implements Screen {
             renderer.getBatch().setShader(null); //un-set the shader
             pillarGlow.end();
 
-//            game.batch.begin();
-//            PlayScreen.player.setSize(40,40);
-//            PlayScreen.player.draw(game.batch);
-//            game.batch.end();
-
             //render shadow if player is certain distance from shadow
             if (sm.getShadows() != null) {
                 xDistance = Math.abs(gameCam.position.x - sm.getShadows().getX());
@@ -456,11 +451,13 @@ public class PlayScreen implements Screen {
                         game.batch.begin();
                         orb.setSize(20, 20);
                         orb.draw(game.batch);
-                        PlayScreen.player.setSize(40,40);
-                        PlayScreen.player.draw(game.batch);
                         game.batch.end();
                     }
                 }
+                game.batch.begin();
+                PlayScreen.player.setSize(40,40);
+                PlayScreen.player.draw(game.batch);
+                game.batch.end();
             } else { //in multiplayer mode
                 for (int x = 0; x < listOfOrbs.size(); x++) {
                     xDistance = Math.abs(gameCam.position.x - listOfOrbs.get(x).getX());
