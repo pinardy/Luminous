@@ -136,7 +136,7 @@ public class SocketTest {
     @Test
     public void testSocketThroughput() throws Exception{
         socket.connect();
-        final int pipeline = 2000;
+        final int pipeline = 5000;
         byte[] data = new byte[1024];
         final AtomicInteger packetReceived = new AtomicInteger();
         socket.on("throughput", new Emitter.Listener() {
@@ -151,16 +151,23 @@ public class SocketTest {
         task.start();
         while (!task.started);
         long start = System.currentTimeMillis();
+        long timeout = Math.max(5000, pipeline*5);
+        boolean timedOut = false;
         while (packetReceived.get() < pipeline){
+            if (System.currentTimeMillis() - start > timeout){
+                timedOut = true;
+                break;
+            }
             Thread.yield();
         }
         start = System.currentTimeMillis() - start;
-        System.out.println("Average throughput is "+pipeline*data.length * 1000/start+ " bytes/sec");
+        if (timedOut) System.out.println("Timed out");
+        else System.out.println("Average throughput is "+pipeline*data.length * 1000/start+ " bytes/sec");
         task.interrupt();
         socket.close();
     }
 
-    class ThroughputTask extends Thread{
+    private class ThroughputTask extends Thread{
         volatile boolean started = false;
         int pipeline;
         Socket socket;
