@@ -31,12 +31,12 @@ public abstract class Object extends Sprite {
     }
 
     public Object(World world, PlayScreen screen, float x, float y){
-        super(screen.getAtlas().findRegion("shadowman"));
+        screen.getAtlas().findRegion("shadowman");
         initialize(world, x, y);
     }
 
     public Object(PlayScreen screen, float x, float y){
-        super(screen.getAtlas().findRegion("shadowman"));
+        screen.getAtlas().findRegion("shadowman");
         initialize(screen.getWorld(), x, y);
     }
 

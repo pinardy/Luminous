@@ -92,7 +92,7 @@ public class SocketTest {
     }
 
     @Test
-    public void testAverageConnectionTimeSequantial() throws Exception {
+    public void testAverageConnectionTimeSequential() throws Exception {
         int connections = 10;
 
         long totalTime = 0;
@@ -109,7 +109,7 @@ public class SocketTest {
                     break;
                 }
             }
-            System.out.println(System.currentTimeMillis() - startTIme);
+//            System.out.println(System.currentTimeMillis() - startTIme);
             if (success) totalTime += System.currentTimeMillis() - startTIme;
             socket.disconnect();
             try {
