@@ -18,6 +18,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import io.socket.client.Socket;
@@ -135,26 +136,53 @@ public class SocketTest {
     @Test
     public void testSocketThroughput() throws Exception{
         socket.connect();
-        int pipeline = 10000;
-        byte[] data = new byte[512];
+        final int pipeline = 2000;
+        byte[] data = new byte[1024];
         final AtomicInteger packetReceived = new AtomicInteger();
-        JSONObject packet = new JSONObject();
-        packet.put("data", data);
-        for (int i = 0; i <pipeline; i++){
-            socket.emit("throughput", packet);
-        }
         socket.on("throughput", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                packetReceived.getAndAdd(1);
+                packetReceived.getAndIncrement();
             }
         });
+        JSONObject packet = new JSONObject();
+        packet.put("data", data);
+        ThroughputTask task = new ThroughputTask(pipeline, packet, socket);
+        task.start();
+        while (!task.started);
         long start = System.currentTimeMillis();
-        final int sec = 1000;
-        while (System.currentTimeMillis() - start < sec*10){
+        while (packetReceived.get() < pipeline){
+            Thread.yield();
         }
-        System.out.println("Average throughput with packet size " +
-                data.length + " is: " + packetReceived.get()/10.0);
+        start = System.currentTimeMillis() - start;
+        System.out.println("Average throughput is "+pipeline*data.length * 1000/start+ " bytes/sec");
+        task.interrupt();
         socket.close();
+    }
+
+    class ThroughputTask extends Thread{
+        volatile boolean started = false;
+        int pipeline;
+        Socket socket;
+        JSONObject toSend;
+        ThroughputTask(int pipeline, JSONObject toSend, Socket socket){
+            this.pipeline = pipeline;
+            this.toSend = toSend;
+            this.socket = socket;
+        }
+        @Override
+        public void run() {
+            int size = 0;
+            for (int i = 0; i <pipeline; i++){
+                if (!Thread.interrupted()) {
+                    started = true;
+                    socket.emit("throughput", toSend);
+                    size++;
+                }else {
+                    break;
+                }
+            }
+            System.out.println("packet sent: "+ size);
+        }
     }
 }
