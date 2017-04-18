@@ -14,6 +14,7 @@ import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
 
 import java.util.Arrays;
+import java.util.Map;
 
 /** A Player is able to pick up an Orb and place it on a Pillar object
  */
@@ -120,11 +121,16 @@ public class Player extends Object {
 
     public void update(float dt) {
         //to render graphics on fixture
-        setPosition(b2body.getPosition().x - getWidth()/2,
-                b2body.getPosition().y - getHeight()/2);
 
-        //for animation
-        setRegion(getFrame(dt));
+        for (Map.Entry<String,Player>player : PlayScreen.getPlayers().entrySet()) {
+            setPosition(player.getValue().b2body.getPosition().x - getWidth()/2,
+                    player.getValue().b2body.getPosition().y - getHeight()/2);
+
+            //for animation
+            setRegion(getFrame(dt));
+        }
+
+
     }
 
     public TextureRegion getFrame(float dt){

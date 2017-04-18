@@ -40,6 +40,11 @@ public abstract class Object extends Sprite {
         initialize(screen.getWorld(), x, y);
     }
 
+    //Only used for testing to avoid invoking super()
+    public Object(PlayScreen screen, float x, float y, boolean test){
+        initialize(screen.getWorld(), x, y);
+    }
+
 
     // Every object is defined differently. Hence this method is abstract
     protected abstract void defineObject();

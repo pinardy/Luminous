@@ -64,7 +64,7 @@ public class PlayScreen implements Screen {
     private Socket socket;
     private String myID;
     HashMap<String, Vector2> clientPrediction;
-    private HashMap<String, Player> players;
+    private static HashMap<String, Player> players;
     private HashMap<String, LinkedList<Vector2>> playerActions;
     private boolean keyPressed;
     private boolean multiplayer;
@@ -302,12 +302,18 @@ public class PlayScreen implements Screen {
                     game.batch.end();
                 }
                 for (int x = 0; x < listOfOrbs.size(); x++) {
-                    if (listOfOrbs.get(x).onFloor()) {
+                    if (Orb.onFloor(listOfOrbs.get(x))) {
                         game.batch.begin();
                         listOfOrbs.get(x).setSize(20, 20);
                         listOfOrbs.get(x).draw(game.batch);
                         game.batch.end();
                     }
+                }
+                for (Map.Entry<String,Player>player : PlayScreen.players.entrySet()){
+                    game.batch.begin();
+                    player.getValue().setSize(40,40);
+                    player.getValue().draw(game.batch);
+                    game.batch.end();
                 }
             }else{
                 game.batch.begin();
@@ -315,11 +321,11 @@ public class PlayScreen implements Screen {
                     sm.getShadows().setSize(30, 40);
                     sm.getShadows().draw(game.batch);
                 }
-                if (orb.onFloor()) {
+                if (Orb.onFloor(orb)) {
                     orb.setSize(20, 20);
                     orb.draw(game.batch);
                 }
-                PlayScreen.player.setSize(32,32);
+                PlayScreen.player.setSize(40,40);
                 PlayScreen.player.draw(game.batch);
                 game.batch.end();
             }
@@ -366,7 +372,6 @@ public class PlayScreen implements Screen {
                     pillarGlow.end();
                 }
             }
-            controller.draw();
         } else {
             //in the dark - game starting state
             //render glow on pillar when map is not fully visible
@@ -447,10 +452,12 @@ public class PlayScreen implements Screen {
                 xDistance = Math.abs(gameCam.position.x - orb.getX());
                 yDistance = Math.abs(gameCam.position.y - orb.getY());
                 if (xDistance <= 60.0f && yDistance <= 60.0f) {
-                    if (orb.onFloor()) {
+                    if (Orb.onFloor(orb)) {
                         game.batch.begin();
                         orb.setSize(20, 20);
                         orb.draw(game.batch);
+                        PlayScreen.player.setSize(40,40);
+                        PlayScreen.player.draw(game.batch);
                         game.batch.end();
                     }
                 }
@@ -459,13 +466,19 @@ public class PlayScreen implements Screen {
                     xDistance = Math.abs(gameCam.position.x - listOfOrbs.get(x).getX());
                     yDistance = Math.abs(gameCam.position.y - listOfOrbs.get(x).getY());
                     if (xDistance <= 60.0f && yDistance <= 60.0f) {
-                        if (listOfOrbs.get(x).onFloor()) {
+                        if (Orb.onFloor(listOfOrbs.get(x))) {
                             game.batch.begin();
                             listOfOrbs.get(x).setSize(20, 20);
                             listOfOrbs.get(x).draw(game.batch);
                             game.batch.end();
                         }
                     }
+                }
+                for (Map.Entry<String,Player>player : PlayScreen.players.entrySet()) {
+                    game.batch.begin();
+                    player.getValue().setSize(40, 40);
+                    player.getValue().draw(game.batch);
+                    game.batch.end();
                 }
             }
             controller.draw();
@@ -526,6 +539,15 @@ public class PlayScreen implements Screen {
         b2dr.dispose();
         hud.dispose();
     }
+
+    public static HashMap<String, Player> getPlayers(){
+        HashMap<String, Player> playerCopy = new  HashMap<String, Player>();
+        for(Map.Entry<String, Player> player : players.entrySet()){
+            playerCopy.put(player.getKey(), player.getValue());
+        }
+        return playerCopy;
+    }
+
 
     public void updateMyPosition(String idAction, float x, float y){
         Vector2 predictedPos = clientPrediction.get(idAction);
@@ -693,7 +715,6 @@ public class PlayScreen implements Screen {
                     Gdx.app.log("SocketIO", "picking orb "+orbID);
                     players.get(orbOwnerID).orbPick(orbID);
                     getListOfOrbs().get(orbID).setToPick();
-                    getListOfOrbs().get(orbID).setOrbNotOnFloor(1);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error picking up orb");
                     e.printStackTrace();
@@ -726,7 +747,6 @@ public class PlayScreen implements Screen {
                     pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                     MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                     Gdx.app.log("SocketIO", "placing orb");
-                    orb.setOrbNotOnFloor(1);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error placing orb");
                     e.printStackTrace();
@@ -745,7 +765,6 @@ public class PlayScreen implements Screen {
                     pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                     MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
                     Gdx.app.log("SocketIO", "picking up orb from pillar");
-                    getListOfOrbs().get(orbID).setOrbNotOnFloor(1);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error picking orb");
                     e.printStackTrace();

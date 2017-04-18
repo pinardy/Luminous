@@ -1,15 +1,17 @@
 package com.mygdx.game.Sprites;
 
-import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Screens.PlayScreen;
 
 import junit.framework.TestCase;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import static org.mockito.Mockito.when;
 
 /**
  * Created by kennethlimcp on 30/Mar/2017.
@@ -24,11 +26,13 @@ public class ObjectTest extends TestCase {
     public void setUp() throws Exception {
         super.setUp();
 
-        PlayScreen playScreen = Mockito.mock(PlayScreen.class);
+        Vector2 vector = new Vector2(0.0f, 0.0f);
+        World world = new World(vector, true);
+
         float testX = 1;
         float testY = 1;
 
-        o = new ObjectMethod(playScreen, testX, testY);
+        o = new ObjectMethod(world, testX, testY);
     }
 
 
@@ -53,8 +57,8 @@ public class ObjectTest extends TestCase {
 class ObjectMethod extends Object {
     private boolean defineObjectIsCalledInConstructor;
 
-    public ObjectMethod(PlayScreen screen, float x, float y) {
-        super(screen, x, y);
+    public ObjectMethod(World world, float x, float y) {
+        super(world, x, y);
         defineObjectIsCalledInConstructor = false;
 
     }

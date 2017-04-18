@@ -27,7 +27,7 @@ public class ShadowTest extends TestCase {
 
         x = (float) 1.0;
         y = (float) 1.0;
-        shadow = new Shadow(playScreen, x, y);
+        shadow = new Shadow(playScreen, x, y, false);
 
     }
 

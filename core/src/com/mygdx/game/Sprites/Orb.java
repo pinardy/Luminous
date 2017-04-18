@@ -6,7 +6,12 @@ import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.Tools.B2WorldCreator;
 import com.mygdx.game.Tools.WorldContactListener;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 /** Orb is the 'tool' of the game.
@@ -21,7 +26,7 @@ public class Orb extends Object{
     private float stateTime;
     private boolean ToPick;
     private boolean picked;
-    private static boolean orbNotOnFloor;
+//    private static boolean orbNotOnFloor;
     static float startPosX = 500;
     static float startPosY = 600;
     private int id;
@@ -35,15 +40,21 @@ public class Orb extends Object{
         picked = false;
         this.id = 0;
 
-        //graphics
-        orbGraphics = new TextureRegion(getTexture(), 55, 67, 350, 367);
-        setBounds(getX(), getY(), 16,16);
-        setRegion(orbGraphics);
+        initializeGraphics(true);
     }
 
-    public Orb(PlayScreen screen, float x, float y, int id) {
-        this(screen, x, y);
+    public Orb(PlayScreen screen, float x, float y, boolean graphics) {
+        super(screen, x, y, graphics);
+        stateTime = 0;
+        setBounds(getX(), getY(), 16, 16);
+        ToPick = false;
+        picked = false;
         this.id = 0;
+    }
+
+    public Orb(PlayScreen screen, float x, float y, int id, boolean graphics) {
+        this(screen, x, y, graphics);
+        this.id = id;
     }
 
     public Orb(PlayScreen screen, float x, float y, float posX, float posY, int id) {
@@ -52,9 +63,18 @@ public class Orb extends Object{
     }
 
     public Orb(PlayScreen screen, float x, float y, float posX, float posY) {
-        this(screen, x, y);
+        this(screen, x, y, true);
         startPosX = posX;
         startPosY = posY;
+    }
+
+    private void initializeGraphics(boolean graphics) {
+        //graphics
+        if(graphics) {
+            orbGraphics = new TextureRegion(getTexture(), 55, 67, 350, 367);
+            setBounds(getX(), getY(), 16,16);
+            setRegion(orbGraphics);
+        }
     }
 
     public void update(float dt){
@@ -119,25 +139,31 @@ public class Orb extends Object{
         return this.id;
     }
 
-    public void setOrbNotOnFloor(int x){
-        if (x==0)
-            orbNotOnFloor = false;
-        else
-            orbNotOnFloor = true;
-    }
+    public static boolean onFloor(Orb orb){
+        if (!WorldContactListener.multiplayer) { //single player
+            for (Pillar p : B2WorldCreator.listOfPillars){
+                if (p.hasOrb()){
+                    return false;
+                }
+            }
+            if (PlayScreen.player.isHoldingOrb()){
+                return false;
+            }else{
+                return true;
+            }
+        }else{//multiplayer
+            for (Pillar p : B2WorldCreator.listOfPillars){
+                if (p.hasOrb() && p.getmOrb().getID()==orb.getID()){ //if orb is on pillar
+                    return false;
+                }
+            }
 
-    public boolean onFloor(){
-        if (!WorldContactListener.multiplayer) {
-            if (WorldContactListener.indicateOrb ||
-                    WorldContactListener.indicateOrbOnPillar) { //whenever orb is held on player or hanging on pillar
-                return false;
+            for (Map.Entry<String, Player> player : PlayScreen.getPlayers().entrySet()) {
+                if (player.getValue().isHoldingOrb() && player.getValue().getHoldingOrb().getID() == orb.getID()){
+                    return false;
+                }
             }
-        }else{//in multiplayer mode
-            if (orbNotOnFloor){
-                return false;
-            }
+            return true;
         }
-        return true;
     }
-
 }
