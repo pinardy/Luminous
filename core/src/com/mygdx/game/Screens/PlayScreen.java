@@ -156,7 +156,7 @@ public class PlayScreen implements Screen {
             player = new Player(world, this);
 
             // create an orb in our game world
-            orb = new Orb(this, .32f, .32f, true);
+            orb = new Orb(this, .32f, .32f);
             listOfOrbs.add(orb);
         }
 

@@ -32,16 +32,7 @@ public class Orb extends Object{
     private int id;
     private TextureRegion orbGraphics;
 
-    private void initializeGraphics(boolean graphics) {
-        //graphics
-        if(graphics) {
-            orbGraphics = new TextureRegion(getTexture(), 55, 67, 350, 367);
-            setBounds(getX(), getY(), 16,16);
-            setRegion(orbGraphics);
-        }
-    }
-
-    public Orb(PlayScreen screen, float x, float y, boolean graphics) {
+    public Orb(PlayScreen screen, float x, float y) {
         super(screen, x, y);
         stateTime = 0;
         setBounds(getX(), getY(), 16, 16);
@@ -49,7 +40,16 @@ public class Orb extends Object{
         picked = false;
         this.id = 0;
 
-        initializeGraphics(graphics);
+        initializeGraphics(true);
+    }
+
+    public Orb(PlayScreen screen, float x, float y, boolean graphics) {
+        super(screen, x, y, graphics);
+        stateTime = 0;
+        setBounds(getX(), getY(), 16, 16);
+        ToPick = false;
+        picked = false;
+        this.id = 0;
     }
 
     public Orb(PlayScreen screen, float x, float y, int id, boolean graphics) {
@@ -66,6 +66,15 @@ public class Orb extends Object{
         this(screen, x, y, true);
         startPosX = posX;
         startPosY = posY;
+    }
+
+    private void initializeGraphics(boolean graphics) {
+        //graphics
+        if(graphics) {
+            orbGraphics = new TextureRegion(getTexture(), 55, 67, 350, 367);
+            setBounds(getX(), getY(), 16,16);
+            setRegion(orbGraphics);
+        }
     }
 
     public void update(float dt){

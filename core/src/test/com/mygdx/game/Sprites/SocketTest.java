@@ -57,38 +57,42 @@ public class SocketTest {
 
     @Test
     public void testAverageConnectionTimeParallel() throws Exception {
-        int connections = 5;
+        int connections = 1000;
+        long totalTime = 0;
+
         ExecutorService executor = Executors.newCachedThreadPool();
         ArrayList<Future> futureList = new ArrayList<Future>();
 
         Callable r = new Callable() {
             @Override
             public Object call() throws Exception {
-                Socket s = SocketClient.getInstance();
+                Socket s = SocketClient.getTestingInstance();
                 long oldTime = System.currentTimeMillis();
                 s.connect();
                 while (!s.connected()){Thread.yield();}
                 oldTime = System.currentTimeMillis() - oldTime;
                 s.disconnect();
-                System.out.println(oldTime);
+                s = null;
                 return oldTime;
             }
         };
+
 
         for(int i=0; i<connections; i++) {
             Future f = executor.submit(r);
             futureList.add(f);
         }
 
-        long totalTime = 0;
-
         for(Future<Long> f : futureList) {
             totalTime += f.get();
         }
+
+            System.out.println("Number of connections made: " + futureList.size());
+            System.out.println("Average connection time is: " + totalTime/(float)futureList.size() + "ms");
+
         executor.shutdownNow();
 
-        System.out.println("Average connection time is: " + totalTime/(float)futureList.size() + "ms");
-        System.out.println("Number of connections made: " + futureList.size());
+
     }
 
     @Test
@@ -146,7 +150,8 @@ public class SocketTest {
         final int sec = 1000;
         while (System.currentTimeMillis() - start < sec*10){
         }
-        System.out.println("Average throughput with packet size "+data.length+" is: "+packetReceived.get()/10.0);
+        System.out.println("Average throughput with packet size " +
+                data.length + " is: " + packetReceived.get()/10.0);
         socket.close();
     }
 }

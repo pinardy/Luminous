@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
@@ -23,6 +22,7 @@ public class Shadow extends Object{
     private float speed = 10;
     private boolean hitPillar;
     private boolean alive;
+    private boolean graphics;
 
     //graphics
     private TextureRegion shadowMan;
@@ -36,31 +36,34 @@ public class Shadow extends Object{
         hitPillar = false;
         alive = true;
 
-        shadowMan = new TextureRegion(getTexture(), 0,0,16,16);
-        setBounds(0,0,16,16);
-        setRegion(shadowMan);
+        initializeGraphics(true);
+    }
 
-        Array<TextureRegion> frames = new Array<TextureRegion>();
-        for (int i = 0; i < 12; i++){
-            frames.add(new TextureRegion(getTexture(), i*32, 0, 32, 57));
-        }
-        shadowRun = new Animation(0.1f, frames);
+    public Shadow(PlayScreen screen, float x, float y, boolean graphics) {
+        super(screen, x, y, graphics);
+        stateTime = 0;
+        hitPillar = false;
+        alive = true;
     }
 
     // construct from server
     public Shadow(PlayScreen screen, float x, float y, int time) {
-        this(screen, x, y);
+        this(screen, x, y, true);
         serverTime = time;
+    }
 
-        shadowMan = new TextureRegion(getTexture(), 0,0,16,16);
-        setBounds(0,0,16,16);
-        setRegion(shadowMan);
+    private void initializeGraphics(boolean graphics) {
+        if(graphics) {
+            shadowMan = new TextureRegion(getTexture(), 0, 0, 16, 16);
+            setBounds(0, 0, 16, 16);
+            setRegion(shadowMan);
 
-        Array<TextureRegion> frames = new Array<TextureRegion>();
-        for (int i = 0; i < 12; i++){
-            frames.add(new TextureRegion(getTexture(), i*32, 0, 32, 57));
+            Array<TextureRegion> frames = new Array<TextureRegion>();
+            for (int i = 0; i < 12; i++) {
+                frames.add(new TextureRegion(getTexture(), i * 32, 0, 32, 57));
+            }
+            shadowRun = new Animation(0.1f, frames);
         }
-        shadowRun = new Animation(0.1f, frames);
     }
 
     public void update(float dt){
@@ -69,9 +72,9 @@ public class Shadow extends Object{
         //to render graphics on fixture
         setPosition(b2body.getPosition().x - getWidth()/2,
                 b2body.getPosition().y - getHeight()/2);
-        //for animation
-        setRegion(shadowRun.getKeyFrame(stateTime, true)); //boolean for looping
 
+        //for animation
+        if(graphics) setRegion(shadowRun.getKeyFrame(stateTime, true)); //boolean for looping
 
         // if the Shadow object exists
         if(b2body != null) {
