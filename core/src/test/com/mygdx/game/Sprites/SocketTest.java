@@ -133,31 +133,61 @@ public class SocketTest {
         System.out.println("Number of failures: " + failures);
     }
 
-    @Test
+    @Test(timeout=60000)
     public void testSocketThroughput() throws Exception{
-        socket.connect();
-        final int pipeline = 2000;
-        byte[] data = new byte[1024];
+        int totalBytes = 512*1000;
+
+
         final AtomicInteger packetReceived = new AtomicInteger();
+
         socket.on("throughput", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 packetReceived.getAndIncrement();
             }
         });
-        JSONObject packet = new JSONObject();
-        packet.put("data", data);
-        ThroughputTask task = new ThroughputTask(pipeline, packet, socket);
-        task.start();
-        while (!task.started);
-        long start = System.currentTimeMillis();
-        while (packetReceived.get() < pipeline){
-            Thread.yield();
+
+        for(int i=1; i<256; i*=2) {
+            System.out.println("\n");
+
+
+            int byteSize = 128*i;
+            int pipeline = totalBytes/byteSize;
+
+            byte[] data = new byte[byteSize];
+
+            socket.connect();
+            while(!socket.connected());
+
+            JSONObject packet = new JSONObject();
+            ThroughputTask task = new ThroughputTask(pipeline, packet, socket);
+            packet.put("data", data);
+
+            task.start();
+            while (!task.started);
+
+            long start = System.currentTimeMillis();
+            while (packetReceived.get() < pipeline){
+                Thread.yield();
+            }
+
+            start = System.currentTimeMillis() - start;
+
+            System.out.println("Number of packets sent  : " + packetReceived.get());
+            System.out.println("Size of each packet sent: " + byteSize + " bytes");
+            System.out.println("Average throughput is " + (pipeline*data.length)/start + " Kbytes/sec");
+
+            task.interrupt();
+            socket.close();
+            while (socket.connected());
+            packetReceived.set(0);
+            task = null;
+            packet = null;
+            data = null;
         }
-        start = System.currentTimeMillis() - start;
-        System.out.println("Average throughput is "+pipeline*data.length * 1000/start+ " bytes/sec");
-        task.interrupt();
-        socket.close();
+
+
+
     }
 
     class ThroughputTask extends Thread{
@@ -172,17 +202,14 @@ public class SocketTest {
         }
         @Override
         public void run() {
-            int size = 0;
             for (int i = 0; i <pipeline; i++){
                 if (!Thread.interrupted()) {
                     started = true;
                     socket.emit("throughput", toSend);
-                    size++;
                 }else {
                     break;
                 }
             }
-            System.out.println("packet sent: "+ size);
         }
     }
 }
