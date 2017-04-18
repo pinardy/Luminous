@@ -97,7 +97,7 @@ public class SocketTest {
 
     @Test
     public void testAverageConnectionTimeSequential() throws Exception {
-        int connections = 10;
+        int connections = 100;
 
         long totalTime = 0;
         int failures = 0;
@@ -126,7 +126,7 @@ public class SocketTest {
 
         System.out.println("Average connection time is: " + totalTime/(float)(connections - failures) + "ms");
         System.out.println("Number of connections made: " + connections);
-        System.out.println("NUmber of failures: " + failures);
+        System.out.println("Number of failures: " + failures);
     }
 
     @Test
