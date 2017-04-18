@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
+import com.mygdx.game.Tools.WorldContactListener;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -37,18 +38,15 @@ public class Player extends Object {
     public Player(World world){
         this(world, (float)500, (float)500);
     }
-
     public Player(World world, float x, float y){
         super(world, x, y);
     }
     public Player(World world, PlayScreen screen) {
         this(world, screen, (float)500, (float)500);
     }
-
     public Player(World world, PlayScreen screen, float x, float y) {
         this(world, screen, x, y, 500, 500);
     }
-
     public Player(World world, PlayScreen screen, float x, float y, String id) {
         this(world, screen, x, y, 500, 500);
         this.id = id;
@@ -121,18 +119,31 @@ public class Player extends Object {
 
     public void update(float dt) {
         //to render graphics on fixture
+        if (WorldContactListener.multiplayer){
+            for (Map.Entry<String, Player> player : PlayScreen.getPlayers().entrySet()) {
+                if (!player.getKey().equals(PlayScreen.player.getID())){
+                    //render for other players
+                    player.getValue().setPosition(player.getValue().b2body.getPosition().x - getWidth() / 2,
+                        player.getValue().b2body.getPosition().y - getHeight() / 2);
+                    player.getValue().setRegion(getOtherFrame(dt,player.getValue()));
+                }
+                else{
+                    player.getValue().setPosition(b2body.getPosition().x - getWidth()/2,
+                            b2body.getPosition().y - getHeight()/2);
 
-        for (Map.Entry<String,Player>player : PlayScreen.getPlayers().entrySet()) {
-            setPosition(player.getValue().b2body.getPosition().x - getWidth()/2,
-                    player.getValue().b2body.getPosition().y - getHeight()/2);
+                    player.getValue().setRegion(getFrame(dt));//for animation
+                }
+            }
+        }else{
+            //single player
+            setPosition(b2body.getPosition().x - getWidth()/2,
+                    b2body.getPosition().y - getHeight()/2);
 
-            //for animation
-            setRegion(getFrame(dt));
+            setRegion(getFrame(dt));//for animation
         }
-
-
     }
 
+    //for singleplayer
     public TextureRegion getFrame(float dt){
         currentState = getState();
 
@@ -159,6 +170,67 @@ public class Player extends Object {
         return region;
     }
 
+    //rendering other player for multiplayer
+    public TextureRegion getOtherFrame(float dt, Player player){
+        State currentStateB = getMState(player);
+
+        TextureRegion region = playerStand;
+        switch(currentStateB){
+            case UP:
+                region = playerUp.getKeyFrame(stateTimer, true);
+                break;
+            case DOWN:
+                region = playerDown.getKeyFrame(stateTimer, true);
+                break;
+            case LEFT:
+                region = playerLeft.getKeyFrame(stateTimer, true);
+                break;
+            case RIGHT:
+                region = playerRight.getKeyFrame(stateTimer, true);
+                break;
+            case STAND:
+                //static
+                region = playerStand;
+                break;
+        }
+        stateTimer = stateTimer + dt;
+        return region;
+    }
+
+    //for multiplayer mode
+//    public Array<TextureRegion> getMultipleFrame(float dt){
+//
+//        Array<TextureRegion> regions = new Array<TextureRegion>();
+//
+//        for (Map.Entry<String, Player> player : PlayScreen.getPlayers().entrySet()) {
+//            currentState = getMState(player.getValue());
+//            TextureRegion region = playerStand;
+//
+//            switch (currentState) {
+//                case UP:
+//                    region = playerUp.getKeyFrame(stateTimer, true);
+//                    break;
+//                case DOWN:
+//                    region = playerDown.getKeyFrame(stateTimer, true);
+//                    break;
+//                case LEFT:
+//                    region = playerLeft.getKeyFrame(stateTimer, true);
+//                    break;
+//                case RIGHT:
+//                    region = playerRight.getKeyFrame(stateTimer, true);
+//                    break;
+//                case STAND:
+//                    //static
+//                    region = playerStand;
+//                    break;
+//            }
+//            stateTimer = stateTimer + dt;
+//            regions.add(region);
+//        }
+//        return regions;
+//    }
+
+    //single player
     public State getState(){
         if(b2body.getLinearVelocity().y > 99){
             //up
@@ -171,6 +243,30 @@ public class Player extends Object {
             return State.LEFT;
         } else if (b2body.getLinearVelocity().x > 99){
             //right
+            return State.RIGHT;
+        }else{
+            //not moving
+            return State.STAND;
+        }
+    }
+
+    //mult-player
+    public State getMState(Player player){
+        if(player.b2body.getLinearVelocity().y > 99){
+            //up
+            System.out.println("up");
+            return State.UP;
+        } else if (player.b2body.getLinearVelocity().y < -99){
+            //down
+            System.out.println("down");
+            return State.DOWN;
+        } else if (player.b2body.getLinearVelocity().x < -99){
+            //left
+            System.out.println("left");
+            return State.LEFT;
+        } else if (player.b2body.getLinearVelocity().x > 99){
+            //right
+            System.out.println("right");
             return State.RIGHT;
         }else{
             //not moving

@@ -22,7 +22,7 @@ public class Shadow extends Object{
     private float speed = 10;
     private boolean hitPillar;
     private boolean alive;
-    private boolean graphics;
+    private boolean graphics = true;
 
     //graphics
     private TextureRegion shadowMan;
