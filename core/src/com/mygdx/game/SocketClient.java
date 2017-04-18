@@ -33,17 +33,6 @@ public class SocketClient {
         return ourInstance;
     }
 
-    public static Socket getTestingInstance(){
-        Socket socket = null;
-        try {
-            socket = IO.socket("http://128.199.74.49:8008");
-//			    ourInstance = IO.socket("http://localhost:8008");
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return socket;
-    }
-
     private SocketClient() {
     }
 

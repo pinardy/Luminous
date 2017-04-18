@@ -97,6 +97,7 @@ public class SocketTest {
 
         long totalTime = 0;
         int failures = 0;
+        long initializationTime = 0;
         for (int i = 0; i < connections; i++){
             int timeout = 5000;
             boolean success = true;
@@ -110,7 +111,8 @@ public class SocketTest {
                 }
             }
             System.out.println(System.currentTimeMillis() - startTIme);
-            if (success) totalTime += System.currentTimeMillis() - startTIme;
+            if (success && i > 0) totalTime += System.currentTimeMillis() - startTIme;
+            else initializationTime = System.currentTimeMillis() - startTIme;
             socket.disconnect();
             try {
                 // letting socket disconnect
@@ -119,8 +121,8 @@ public class SocketTest {
                 System.out.println("interrupted");
             }
         }
-
-        System.out.println("Average connection time is: " + totalTime/(float)(connections - failures) + "ms");
+        System.out.println("Initial connection time is: "+ initializationTime);
+        if (connections > 1) System.out.println("Average connection time is: " + totalTime/(float)(connections - failures -1) + "ms");
         System.out.println("Number of connections made: " + connections);
         System.out.println("NUmber of failures: " + failures);
     }
