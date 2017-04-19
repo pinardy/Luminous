@@ -39,6 +39,7 @@ public class GameEndScreen implements Screen {
     private Stage stage;
     private boolean ready;
     private long startTimeMs;
+    static Label tapLabel;
 
     public GameEndScreen(Game game) {
         startTimeMs = System.currentTimeMillis();
@@ -56,7 +57,7 @@ public class GameEndScreen implements Screen {
 
         // labels to be displayed on screen
         Label scoreLabel = new Label("Score: ", font);
-        Label tapLabel = new Label("Tap anywhere to go back to the main menu", font);
+        tapLabel = new Label("Tap anywhere to go back to the main menu", font);
         Label scoreValue = new Label(String.valueOf(Hud.score), font);
 
         // image for "Game Over"
@@ -123,6 +124,7 @@ public class GameEndScreen implements Screen {
         // go back to StartScsreen
 
         if (Hud.coreDead()) {
+            tapLabel.setText(String.format("%06d", "Tap anywhere to go back to the main menu"));
             if (Gdx.input.justTouched()) {
                 game.setScreen(new StartScreen(game));
                 // resets the game variables
@@ -148,6 +150,7 @@ public class GameEndScreen implements Screen {
                     game.setScreen(new PlayScreen((MultiplayerGame) game, false));
                     dispose();
                 } else {
+                    tapLabel.setText(String.format("%06d", "Waiting for all players to be ready..."));
                     if (ready) {
                         game.setScreen(new PlayScreen((MultiplayerGame) game, true));
                         Hud.level += 1;
