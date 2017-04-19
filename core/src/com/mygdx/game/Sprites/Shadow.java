@@ -40,7 +40,7 @@ public class Shadow extends Object{
     }
 
     public Shadow(PlayScreen screen, float x, float y, boolean graphics) {
-        super(screen, x, y);
+        super(screen, x, y, graphics);
         stateTime = 0;
         hitPillar = false;
         alive = true;
