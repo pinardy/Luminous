@@ -270,8 +270,8 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float dt) {
-        if (multiplayer) updateServer(dt);
         update(dt);
+        if (multiplayer) updateServer(dt);
 
         // clear game screen with black
         Gdx.gl.glClearColor(0, 0, 0, 0); // colour, alpha
@@ -564,31 +564,32 @@ public class PlayScreen implements Screen {
 
     // Update server when player moves
     public void updateServer(float dt){
+        Player.toUpdatePos = new HashMap<String, Player.State>();
         for (String id:playerActions.keySet()){
             if (!playerActions.get(id).isEmpty()){
                 Vector2 newPos = playerActions.get(id).poll();
+                if(!id.equals(PlayScreen.player.getID())){
 
-                if (Player.playerE.getID().equals(id)) {
+                        float xDistance = newPos.x - players.get(id).getX();
+                        float yDistance = newPos.y - players.get(id).getY();
+                        float zero = 20.00000f;
 
-                    float xDistance = newPos.x - Player.playerE.getX();
-                    float yDistance = newPos.y - Player.playerE.getY();
-                    float zero = 20.00000f;
-
-                    if (yDistance > zero ) {
-                        returnPlayerEPos = Player.State.UP;
-                    } else if (yDistance < zero) {
-                        returnPlayerEPos = Player.State.DOWN;
-                    } else if (xDistance < zero) {
-                        returnPlayerEPos = Player.State.LEFT;
-                    } else if (xDistance > zero) {
-                        returnPlayerEPos = Player.State.RIGHT;
-                    } else {
-                        returnPlayerEPos = Player.State.STAND;
+                        if (yDistance > zero+1 ) {
+                            Player.toUpdatePos.put(players.get(id).getID(),Player.State.UP);
+                        } else if (yDistance < zero-1) {
+                            Player.toUpdatePos.put(players.get(id).getID(),Player.State.DOWN);
+                        } else if (xDistance < zero-1) {
+                            Player.toUpdatePos.put(players.get(id).getID(),Player.State.LEFT);
+                        } else if (xDistance > zero+1) {
+                            Player.toUpdatePos.put(players.get(id).getID(),Player.State.RIGHT);
+                        } else{
+                            Player.toUpdatePos.put(players.get(id).getID(),Player.State.STAND);
+                        }
                     }
-                }
                 players.get(id).b2body.setTransform(newPos.x, newPos.y,players.get(id).b2body.getAngle());
             }
         }
+
         if (player != null && keyPressed){
             keyPressed = false;
             // client prediction;
@@ -664,6 +665,7 @@ public class PlayScreen implements Screen {
                     playerActions.put(id, new LinkedList<Vector2>());
                 }
             }
+            Player.initOtherPlayers();
         }catch (JSONException e){
             Gdx.app.log("SocketIO", "Error parsing orb json");
         }

@@ -1,5 +1,6 @@
 package com.mygdx.game.Sprites;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -15,7 +16,9 @@ import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Screens.PlayScreen;
 import com.mygdx.game.Tools.WorldContactListener;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 /** A Player is able to pick up an Orb and place it on a Pillar object
@@ -33,9 +36,13 @@ public class Player extends Object {
     public enum State{UP, DOWN, LEFT, RIGHT, STAND}
     public State currentState;
     public State prevState;
-    public static Player playerE;
+    public static ArrayList<Player> toUpdatePlayers;
+    public static HashMap<String,State> toUpdatePos = new HashMap<String, State>();
+    private static ArrayList<Player> allOtherPlayers;
     private Animation<TextureRegion> playerUp, playerDown, playerLeft, playerRight;
     private Animation<TextureRegion> playerUpB, playerDownB, playerLeftB, playerRightB;
+    private Animation<TextureRegion> playerUpC, playerDownC, playerLeftC, playerRightC;
+    private Animation<TextureRegion> playerUpD, playerDownD, playerLeftD, playerRightD;
 
     private float stateTimer;
 
@@ -55,7 +62,6 @@ public class Player extends Object {
         this(world, screen, x, y, 500, 500);
         this.id = id;
     }
-
     public Player(World world, PlayScreen screen, float x, float y, int startPosX, int startPosY) {
         super(world, screen, startPosX, startPosY);
         this.world = world;
@@ -94,8 +100,16 @@ public class Player extends Object {
         playerRightB = new Animation(0.1f, frames.get(6), frames.get(7), frames.get(8));
         playerUpB = new Animation(0.1f, frames.get(9), frames.get(10), frames.get(11));
 
-    }
+        playerDownC = new Animation(0.1f, frames.get(0), frames.get(1), frames.get(2));
+        playerLeftC = new Animation(0.1f, frames.get(3), frames.get(4), frames.get(5));
+        playerRightC = new Animation(0.1f, frames.get(6), frames.get(7), frames.get(8));
+        playerUpC = new Animation(0.1f, frames.get(9), frames.get(10), frames.get(11));
 
+        playerDownD = new Animation(0.1f, frames.get(0), frames.get(1), frames.get(2));
+        playerLeftD = new Animation(0.1f, frames.get(3), frames.get(4), frames.get(5));
+        playerRightD = new Animation(0.1f, frames.get(6), frames.get(7), frames.get(8));
+        playerUpD = new Animation(0.1f, frames.get(9), frames.get(10), frames.get(11));
+    }
 
     @Override
     public void defineObject() {
@@ -126,6 +140,15 @@ public class Player extends Object {
         fixture.setUserData(this);
     }
 
+    public static void initOtherPlayers(){
+        allOtherPlayers = new ArrayList<Player>(); //should be -1
+        for (Map.Entry<String, Player> otherPlayer : PlayScreen.getPlayers().entrySet()) {
+            if (!otherPlayer.getKey().equals(PlayScreen.player.getID())){
+                allOtherPlayers.add(otherPlayer.getValue());
+            }
+        }
+    }
+
 
     public void update(float dt) {
         //to render graphics on fixture
@@ -133,13 +156,12 @@ public class Player extends Object {
             for (Map.Entry<String, Player> player : PlayScreen.getPlayers().entrySet()) {
                 if (!player.getKey().equals(PlayScreen.player.getID())){
                     //render for other players
-                    playerE = player.getValue(); //set value for playscreen
                     player.getValue().setPosition(player.getValue().b2body.getPosition().x - getWidth() / 2,
-                        player.getValue().b2body.getPosition().y - getHeight() / 2);
+                            player.getValue().b2body.getPosition().y - getHeight() / 2);
                     player.getValue().setRegion(getOtherFrame(dt,player.getValue()));
                     PlayScreen.returnPlayerEPos = null;
-                }
-                else{
+
+                } else{
                     player.getValue().setPosition(b2body.getPosition().x - getWidth()/2,
                             b2body.getPosition().y - getHeight()/2);
 
@@ -185,8 +207,14 @@ public class Player extends Object {
     //rendering other player for multiplayer
     public TextureRegion getOtherFrame(float dt, Player player){
 
-        State currentStateB = PlayScreen.returnPlayerEPos;
+        State currentStateB = null;
         TextureRegion region = playerStand;
+
+        for (Map.Entry<String, State> s : toUpdatePos.entrySet()){
+            if (s.getKey().equals(player.getID())){
+                currentStateB = s.getValue();
+            }
+        }
 
         if (currentStateB==null){
             return playerStand;
@@ -194,16 +222,88 @@ public class Player extends Object {
 
         switch(currentStateB){
             case UP:
-                region = playerUpB.getKeyFrame(stateTimer, true);
+                if(allOtherPlayers.size()==3){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerUpB.getKeyFrame(stateTimer, true);
+                    } else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                        region =  playerUpC.getKeyFrame(stateTimer, true);
+                    } else if (allOtherPlayers.get(2).getID().equals(player.getID())){
+                        region =  playerUpD.getKeyFrame(stateTimer, true);
+                    }
+                }else if(allOtherPlayers.size()==2){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerUpB.getKeyFrame(stateTimer, true);
+                    }else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                        region =  playerUpC.getKeyFrame(stateTimer, true);
+                    }
+                }else if(allOtherPlayers.size()==1){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerUpB.getKeyFrame(stateTimer, true);
+                    }
+                }
                 break;
             case DOWN:
-                region = playerDownB.getKeyFrame(stateTimer, true);
+                if(allOtherPlayers.size()==3){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerDownB.getKeyFrame(stateTimer, true);
+                    } else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                        region =  playerDownC.getKeyFrame(stateTimer, true);
+                    } else if (allOtherPlayers.get(2).getID().equals(player.getID())){
+                        region =  playerDownD.getKeyFrame(stateTimer, true);
+                    }
+                }else if(allOtherPlayers.size()==2){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerDownB.getKeyFrame(stateTimer, true);
+                    }else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                        region =  playerDownC.getKeyFrame(stateTimer, true);
+                    }
+                }else if(allOtherPlayers.size()==1){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerDownB.getKeyFrame(stateTimer, true);
+                    }
+                }
                 break;
             case LEFT:
-                region = playerLeftB.getKeyFrame(stateTimer, true);
+                if(allOtherPlayers.size()==3){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerLeftB.getKeyFrame(stateTimer, true);
+                    } else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                        region =  playerLeftC.getKeyFrame(stateTimer, true);
+                    } else if (allOtherPlayers.get(2).getID().equals(player.getID())){
+                        region =  playerLeftD.getKeyFrame(stateTimer, true);
+                    }
+                }else if(allOtherPlayers.size()==2){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerLeftB.getKeyFrame(stateTimer, true);
+                    }else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                        region =  playerLeftC.getKeyFrame(stateTimer, true);
+                    }
+                }else if(allOtherPlayers.size()==1){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerLeftB.getKeyFrame(stateTimer, true);
+                    }
+                }
                 break;
             case RIGHT:
-                region = playerRightB.getKeyFrame(stateTimer, true);
+                if(allOtherPlayers.size()==3){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerRightB.getKeyFrame(stateTimer, true);
+                    } else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                        region =  playerRightC.getKeyFrame(stateTimer, true);
+                    } else if (allOtherPlayers.get(2).getID().equals(player.getID())){
+                        region =  playerRightD.getKeyFrame(stateTimer, true);
+                    }
+                }else if(allOtherPlayers.size()==2){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerRightB.getKeyFrame(stateTimer, true);
+                    }else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                        region =  playerRightC.getKeyFrame(stateTimer, true);
+                    }
+                }else if(allOtherPlayers.size()==1){
+                    if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                        region =  playerRightB.getKeyFrame(stateTimer, true);
+                    }
+                }
                 break;
             case STAND:
                 region = playerStand;
