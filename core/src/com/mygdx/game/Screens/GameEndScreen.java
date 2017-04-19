@@ -38,6 +38,7 @@ public class GameEndScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private boolean ready;
+    private boolean sentReady;
     private long startTimeMs;
     static Label tapLabel;
 
@@ -101,7 +102,7 @@ public class GameEndScreen implements Screen {
                     }
                 }
             });
-            socket.emit("ready");
+            tapLabel.setText("Waiting for all players to be ready...");
         }
         table.row();
         table.add(scoreLabel);
@@ -124,7 +125,7 @@ public class GameEndScreen implements Screen {
         // go back to StartScsreen
 
         if (Hud.coreDead()) {
-            tapLabel.setText(String.format("%06d", "Tap anywhere to go back to the main menu"));
+            tapLabel.setText("Tap anywhere to go back to the main menu");
             if (Gdx.input.justTouched()) {
                 game.setScreen(new StartScreen(game));
                 // resets the game variables
@@ -145,12 +146,14 @@ public class GameEndScreen implements Screen {
 
                 // resets the game variables
                 resetGameStatus();
-
+                if (!sentReady) {
+                    SocketClient.getInstance().emit("ready");
+                    sentReady = true;
+                }
                 if (!PlayScreen.multiplayer) {
                     game.setScreen(new PlayScreen((MultiplayerGame) game, false));
                     dispose();
                 } else {
-                    tapLabel.setText(String.format("%06d", "Waiting for all players to be ready..."));
                     if (ready) {
                         game.setScreen(new PlayScreen((MultiplayerGame) game, true));
                         Hud.level += 1;
