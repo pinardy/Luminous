@@ -279,20 +279,30 @@ public class PlayScreen implements Screen {
 
         renderer.setView(gameCam);
 
-        ArrayList<Float> litPillarX = new ArrayList<Float>();
-        ArrayList<Float> litPillarY = new ArrayList<Float>();
+        ArrayList<Vector2> litPillars = new ArrayList<Vector2>();
+        ArrayList<Color> litPillarColors = new ArrayList<Color>();
 
+        int pillarCount = 0;
         for (Pillar p : B2WorldCreator.listOfPillars) {
+            litPillars.add(null);
+            litPillarColors.add(null);
             if (p.hasOrb()) {
-                litPillarX.add(p.positionX());
-                litPillarY.add(p.positionY());
+                litPillars.set(pillarCount, new Vector2(p.positionX(),p.positionY()));
+                litPillarColors.set(pillarCount, Color.GOLD);
+                pillarCount++;
             }
         }
+        while(pillarCount<4){
+            litPillars.set(pillarCount,new Vector2(0,0));
+            litPillarColors.set(pillarCount,Color.CLEAR);
+            pillarCount++;
+        }
+
 
         //whole map is lit when player touches pillar
         if (WorldContactListener.fullVisibility == 1) {
             renderer.render();
-//            b2dr.render(world, gameCam.combined); //render fixture outlines
+            b2dr.render(world, gameCam.combined); //render fixture outlines
 
             // tell our game batch to recognise where the gameCam is and render what the camera can see
             //render shadows
@@ -339,46 +349,30 @@ public class PlayScreen implements Screen {
             game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
             //render glow on pillar when map is lit
-            for (Pillar p : B2WorldCreator.listOfPillars) {
-                if (p.hasOrb()) {
-                    ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/pillarLightingVertex.glsl"),
-                            Gdx.files.internal("shaders/pillarLightingFragment.glsl"));
-                    pillarGlow.pedantic = false;
-                    if (!pillarGlow.isCompiled())
-                        throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
+            ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/pillarLightingVertex.glsl"),
+                    Gdx.files.internal("shaders/pillarLightingFragment.glsl"));
+            pillarGlow.pedantic = false;
+            if (!pillarGlow.isCompiled())
+                throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
 
-                    //for 2 orbs
-                    pillarGlow.begin();
-                    pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
+            //for 4 orbs
+            pillarGlow.begin();
+            pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
 
-                    if (litPillarX.size()==2){//case for 2 lit pillars
-                        pillarGlow.setUniformf("u_worldColorPillarA", Color.GOLD); //indicate glow
-                        pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(litPillarX.get(0),
-                                litPillarY.get(0)));
-                        pillarGlow.setUniformf("u_worldColorPillarB", Color.GOLD); //indicate glow
-                        pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(litPillarX.get(1),
-                                litPillarY.get(1)));
+            pillarGlow.setUniformf("u_lightPosPillarA", litPillars.get(0));
+            pillarGlow.setUniformf("u_lightPosPillarB", litPillars.get(1));
+            pillarGlow.setUniformf("u_lightPosPillarC", litPillars.get(2));
+            pillarGlow.setUniformf("u_lightPosPillarD", litPillars.get(3));
 
-                    } else if (litPillarX.size()==1) { //case for 1 lit pillar
-                        pillarGlow.setUniformf("u_worldColorPillarA", Color.GOLD); //indicate glow
-                        pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(litPillarX.get(0),
-                                litPillarY.get(0)));
-                        pillarGlow.setUniformf("u_worldColorPillarB", Color.alpha(0)); //no glow
-                        pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(0, 0));
+            pillarGlow.setUniformf("u_worldColorPillarA", litPillarColors.get(0));
+            pillarGlow.setUniformf("u_worldColorPillarB", litPillarColors.get(1));
+            pillarGlow.setUniformf("u_worldColorPillarC", litPillarColors.get(2));
+            pillarGlow.setUniformf("u_worldColorPillarD", litPillarColors.get(3));
 
-                    } else { //case for 0 lit pillar
-                        pillarGlow.setUniformf("u_worldColorPillarA", Color.alpha(0)); //no glow
-                        pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(new Vector2(0,0)));
-                        pillarGlow.setUniformf("u_worldColorPillarB", Color.alpha(0)); //no glow
-                        pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(new Vector2(0,0)));
-                    }
-
-                    renderer.getBatch().setShader(pillarGlow);
-                    renderer.render();
-                    renderer.getBatch().setShader(null); //un-set the shader
-                    pillarGlow.end();
-                }
-            }
+            renderer.getBatch().setShader(pillarGlow);
+            renderer.render();
+            renderer.getBatch().setShader(null); //un-set the shader
+            pillarGlow.end();
         } else {
             //in the dark - game starting state
             //render glow on pillar when map is not fully visible
@@ -392,31 +386,19 @@ public class PlayScreen implements Screen {
             if (!pillarGlow.isCompiled())
                 throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
 
-            //coded for 2 pillars
+            //coded for 4 orbs
             pillarGlow.begin();
             pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
 
-            if (litPillarX.size()==2){//case for 2 lit pillars
-                pillarGlow.setUniformf("u_worldColorPillarA", Color.GOLD); //indicate glow
-                pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(litPillarX.get(0),
-                        litPillarY.get(0)));
-                pillarGlow.setUniformf("u_worldColorPillarB", Color.GOLD); //indicate glow
-                pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(litPillarX.get(1),
-                        litPillarY.get(1)));
+            pillarGlow.setUniformf("u_lightPosPillarA", litPillars.get(0));
+            pillarGlow.setUniformf("u_lightPosPillarB", litPillars.get(1));
+            pillarGlow.setUniformf("u_lightPosPillarC", litPillars.get(2));
+            pillarGlow.setUniformf("u_lightPosPillarD", litPillars.get(3));
 
-            } else if (litPillarX.size()==1) { //case for 1 lit pillar
-                pillarGlow.setUniformf("u_worldColorPillarA", Color.GOLD); //indicate glow
-                pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(litPillarX.get(0),
-                        litPillarY.get(0)));
-                pillarGlow.setUniformf("u_worldColorPillarB", Color.alpha(0)); //no glow
-                pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(0, 0));
-
-            } else { //case for 0 lit pillar
-                pillarGlow.setUniformf("u_worldColorPillarA", Color.alpha(0)); //no glow
-                pillarGlow.setUniformf("u_lightPosPillarA", new Vector2(new Vector2(0,0)));
-                pillarGlow.setUniformf("u_worldColorPillarB", Color.alpha(0)); //no glow
-                pillarGlow.setUniformf("u_lightPosPillarB", new Vector2(new Vector2(0,0)));
-            }
+            pillarGlow.setUniformf("u_worldColorPillarA", litPillarColors.get(0));
+            pillarGlow.setUniformf("u_worldColorPillarB", litPillarColors.get(1));
+            pillarGlow.setUniformf("u_worldColorPillarC", litPillarColors.get(2));
+            pillarGlow.setUniformf("u_worldColorPillarD", litPillarColors.get(3));
 
             String s = "";
             if (PlayScreen.player.isHoldingOrb())
@@ -460,7 +442,6 @@ public class PlayScreen implements Screen {
                         orb.draw(game.batch);
                     }
                 }
-//                game.batch.begin();
                 PlayScreen.player.setSize(40,40);
                 PlayScreen.player.draw(game.batch);
                 game.batch.end();
@@ -480,7 +461,6 @@ public class PlayScreen implements Screen {
 
                 for (Map.Entry<String, Player> player : players.entrySet()) {
                     //always render current player
-//                    game.batch.begin();
                     if (player.getKey().equals(PlayScreen.player.getID())){
                         game.batch.begin();
                         player.getValue().setSize(40, 40);
@@ -491,16 +471,15 @@ public class PlayScreen implements Screen {
                         xDistance = Math.abs(gameCam.position.x - player.getValue().getX());
                         yDistance = Math.abs(gameCam.position.y - player.getValue().getY());
                         if (xDistance <= 60.0f && yDistance <= 60.0f) {
-//                            game.batch.begin();
                             player.getValue().setSize(40, 40);
                             player.getValue().draw(game.batch);
-
                         }
                         game.batch.end();
                     }
                 }
             }
         }
+
         controller.draw();
         // Game Over
         if (gameOver()){
@@ -695,7 +674,7 @@ public class PlayScreen implements Screen {
             int duration = gameStatus.getInt("time");
             int health = gameStatus.getInt("health");
             int level = gameStatus.getInt("level");
-            hud.initializeStatus(10, health, level);
+            hud.initializeStatus(300, health, level);
         }catch (JSONException e){
             Gdx.app.log("SocketIO", "Error parsing game status");
             e.printStackTrace();

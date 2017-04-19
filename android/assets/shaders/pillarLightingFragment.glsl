@@ -4,10 +4,16 @@ precision mediump float;
 
 in vec2 v_texCoords;
 in vec4 v_position;
+
 in vec4 v_worldColorPillarA;
 in vec4 v_worldColorPillarB;
+in vec4 v_worldColorPillarC;
+in vec4 v_worldColorPillarD;
+
 in vec2 v_lightPosPillarA;
 in vec2 v_lightPosPillarB;
+in vec2 v_lightPosPillarC;
+in vec2 v_lightPosPillarD;
 
 out vec4 FragColor;
 
@@ -19,6 +25,8 @@ void main() {
     float dropoffDist = 100.0;
     float distA = 0.0;
     float distB = 0.0;
+    float distC = 0.0;
+    float distD = 0.0;
 
     //PILLAR A: distance btw light and actual vertex
     distA = pow(abs(v_lightPosPillarA.x - v_position.x) , 2.0);
@@ -32,8 +40,22 @@ void main() {
     distB = distB * 40.0f;
     distB = sqrt(distB);
 
+    //PILLAR C: distance btw light and actual vertex
+    distC = pow(abs(v_lightPosPillarC.x - v_position.x) , 2.0);
+    distC += pow(abs(v_lightPosPillarC.y - v_position.y) , 2.0);
+    distC = distC * 40.0f;
+    distC = sqrt(distC);
+
+    //PILLAR D: distance btw light and actual vertex
+    distD = pow(abs(v_lightPosPillarD.x - v_position.x) , 2.0);
+    distD += pow(abs(v_lightPosPillarD.y - v_position.y) , 2.0);
+    distD = distD * 40.0f;
+    distD = sqrt(distD);
+
     //scaling from dist to maximum dropOffDist
     //the further away, the darker it gets
     FragColor = v_worldColorPillarA*texture(u_texture, v_texCoords) * (dropoffDist / max(1.0,distA)) +
-                    v_worldColorPillarB*texture(u_texture, v_texCoords) * (dropoffDist / max(1.0,distB));
+                v_worldColorPillarB*texture(u_texture, v_texCoords) * (dropoffDist / max(1.0,distB)) +
+                v_worldColorPillarC*texture(u_texture, v_texCoords) * (dropoffDist / max(1.0,distC)) +
+                v_worldColorPillarD*texture(u_texture, v_texCoords) * (dropoffDist / max(1.0,distD));
 }
