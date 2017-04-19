@@ -179,15 +179,16 @@ public class StartScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 // if the button image is displayed
                 if (!hasJoin){
+                    capacity = 2;
                     hasJoin = true;
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();
-                        socket.emit("room", 2);
+                        socket.emit("room", capacity);
 
                     } else {
-                        SocketClient.getInstance().emit("room", 2);
+                        SocketClient.getInstance().emit("room", capacity);
                     }
 
                     // Set the labels to show connected
@@ -202,15 +203,16 @@ public class StartScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 // if the button image is displayed
                 if (!hasJoin){
+                    capacity = 3;
                     hasJoin = true;
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();
-                        socket.emit("room", 3);
+                        socket.emit("room", capacity);
 
                     } else {
-                        SocketClient.getInstance().emit("room", 3);
+                        SocketClient.getInstance().emit("room", capacity);
                     }
                     // Set the labels to show connected
                     numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
@@ -224,15 +226,16 @@ public class StartScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 // if the button image is displayed
                 if (!hasJoin){
+                    capacity = 4;
                     hasJoin = true;
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();
-                        socket.emit("room", 4);
+                        socket.emit("room", capacity);
 
                     } else {
-                        SocketClient.getInstance().emit("room", 4);
+                        SocketClient.getInstance().emit("room", capacity);
                     }
                 }
                 // Set the labels to show connected
