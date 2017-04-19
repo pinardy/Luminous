@@ -155,4 +155,10 @@ public class Hud implements Disposable{
         coreIsDead = false;
         timePassed = 0;
     }
+
+    public void updateStatus(int duration, int newHealth, int newLevel){
+        worldTimer = duration;
+        level = newLevel;
+        health = newHealth;
+    }
 }

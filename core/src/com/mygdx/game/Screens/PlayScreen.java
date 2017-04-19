@@ -62,7 +62,6 @@ public class PlayScreen implements Screen {
     //synchronize with worldcontact
 //    public static String currentUser;
     private Socket socket;
-    private String myID;
     HashMap<String, Vector2> clientPrediction;
     private static HashMap<String, Player> players;
     private HashMap<String, LinkedList<Vector2>> playerActions;
@@ -678,6 +677,18 @@ public class PlayScreen implements Screen {
         }
     }
 
+    private void updateGameStatus(JSONObject gameStatus){
+        try {
+            int duration = gameStatus.getInt("time");
+            int health = gameStatus.getInt("health");
+            int level = gameStatus.getInt("level");
+            hud.updateStatus(duration, health, level);
+        }catch (JSONException e){
+            Gdx.app.log("SocketIO", "Error parsing game status");
+            e.printStackTrace();
+        }
+    }
+
     private void initializeFromServer(){
         initializePlayers(SocketClient.players);
         initializeOrbs(SocketClient.orbs);
@@ -708,12 +719,33 @@ public class PlayScreen implements Screen {
                     String id = data.getString("id");
                     Double x = data.getDouble("x");
                     Double y = data.getDouble("y");
-                    if (players.get(id) != null && !id.equals(myID)){
+                    if (players.get(id) != null && !id.equals(SocketClient.myID)){
                         playerActions.get(id).offer(new Vector2(x.floatValue(), y.floatValue()));
                     }
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error getting id");
                     e.printStackTrace();
+                }
+            }
+        }).on("gameStatus", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                updateGameStatus(data);
+            }
+        }).on("end", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    String condition = data.getString("condition");
+                    if (condition.equals("time")){
+                        Hud.timeIsUp = true;
+                    }else if (condition.equals("health")){
+                        Hud.health = 0;
+                    }
+                }catch (Exception e){
+                    Gdx.app.log("SocketIO", "error ending game");
                 }
             }
         });
