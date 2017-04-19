@@ -34,6 +34,7 @@ public class GameEndScreen implements Screen {
     private Game game;
     private Viewport viewport;
     private Stage stage;
+    private boolean ready;
 
     public GameEndScreen(Game game){
         this.game = game;
@@ -69,6 +70,30 @@ public class GameEndScreen implements Screen {
         if (Hud.timesUp()) {
             table.add(victoryImg).size(victoryImg.getWidth(), victoryImg.getHeight());
             Socket socket = SocketClient.getInstance();
+            socket.on("start", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject data = (JSONObject) args[0];
+                        SocketClient.shadows = data.getJSONArray("shadows");
+                        SocketClient.orbs = data.getJSONArray("orbs");
+                        SocketClient.players = data.getJSONArray("players");
+                        SocketClient.status = data.getJSONObject("gameStatus");
+                        SocketClient.hostID = data.getString("host");
+                        if (SocketClient.hostID.equals(SocketClient.myID))
+                            SocketClient.isHost = true;
+                        Gdx.app.log("SocketIO", SocketClient.shadows.toString());
+                        Gdx.app.log("SocketIO", SocketClient.orbs.toString());
+                        Gdx.app.log("SocketIO", SocketClient.players.toString());
+                        Gdx.app.log("SocketIO", SocketClient.status.toString());
+                        Gdx.app.log("SocketIO", SocketClient.hostID);
+                        Gdx.app.log("SocketIO", "Game starts");
+                        ready = true;
+                    }catch (Exception e){
+                        Gdx.app.log("SocketIO", "error starting game");
+                    }
+                }
+            });
             socket.emit("ready");
         }
         table.row();
@@ -113,7 +138,7 @@ public class GameEndScreen implements Screen {
                 game.setScreen(new PlayScreen((MultiplayerGame) game, false));
                 dispose();
             } else {
-                if (StartScreen.ready) {
+                if (ready) {
                     resetGameStatus();
                     game.setScreen(new PlayScreen((MultiplayerGame) game, true));
                     Hud.difficulty += 1;

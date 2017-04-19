@@ -22,6 +22,7 @@ public class ShadowManagement extends Thread {
 
     private MultiplayerGame game = null;
     private CopyOnWriteArrayList<Shadow> shadows = new CopyOnWriteArrayList<Shadow>();
+    public ArrayList<Rectangle> shadowStartPositions;
     private final Object shadowsLock = new Object();
     private float shadowX = 0f;
     private float shadowY = 0f;
@@ -29,6 +30,7 @@ public class ShadowManagement extends Thread {
     public ShadowManagement(MultiplayerGame game) {
         this.game = game;
         serverShadows = new LinkedList<Shadow>();
+        calculateShadowStartPosition();
     }
 
     public ShadowManagement(MultiplayerGame game, boolean multiPlayer) {
@@ -41,7 +43,7 @@ public class ShadowManagement extends Thread {
 //        calculateShadowStartPosition();
         Random rand = new Random();
 
-        while (true) {
+        while (!Thread.interrupted()) {
             if (multiPlayer) {
                 while (serverShadows.peek() != null && serverShadows.peek().getServerTime() <= Hud.timePassed) {
                     shadows.add(serverShadows.poll());
@@ -49,8 +51,8 @@ public class ShadowManagement extends Thread {
                 }
             }else {
                 if (shadows.size() == 0) {
-                    int randomShadow = rand.nextInt(game.getPillarPositions().size());
-                    Rectangle r = game.getPillarPositions().get(randomShadow);
+                    int randomShadow = rand.nextInt(shadowStartPositions.size());
+                    Rectangle r = shadowStartPositions.get(randomShadow);
                     shadows.add(new Shadow((PlayScreen) game.getScreen(), r.getX(), r.getY()));
                     Gdx.app.log("Spawning new shadow", "sm thread");
                 }
@@ -64,6 +66,7 @@ public class ShadowManagement extends Thread {
                 }
             }
         }
+        clearShadows();
     }
 
     public void calculateShadowStartPosition() {
@@ -71,7 +74,10 @@ public class ShadowManagement extends Thread {
         float coreY = game.corePosition.getY() + game.corePosition.getHeight()/2;
 
         // create a shadow in our game world
-        for(Rectangle r: game.getPillarPositions()) {
+        shadowStartPositions = new ArrayList<Rectangle>();
+        for(Rectangle rect: game.getPillarPositions()) {
+            Rectangle r = new Rectangle(rect);
+            shadowStartPositions.add(r);
             float x = r.getX() + r.getWidth()/2;
             float y = r.getY() + r.getHeight()/2;
 
@@ -106,9 +112,16 @@ public class ShadowManagement extends Thread {
         return sprites ;
     }
 
-
+    public ArrayList<Rectangle> getShadowStartPositions() {
+        return shadowStartPositions;
+    }
 
     public void addServerShadows(Shadow shadow){
         serverShadows.offer(shadow);
+    }
+
+    public void clearShadows(){
+        serverShadows.clear();
+        shadows.clear();
     }
 }

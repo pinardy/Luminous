@@ -119,9 +119,12 @@ public class PlayScreen implements Screen {
     private ShadowManagement sm = null;
 
     public PlayScreen(MultiplayerGame game, boolean multiplayer) {
+        if (players != null) players.clear();
+        if (playerActions != null) playerActions.clear();
         players = new HashMap<String, Player>();
         playerActions = new HashMap<String, LinkedList<Vector2>>();
         clientPrediction = new HashMap<String, Vector2>();
+        listOfOrbs = new ArrayList<Orb>();
         keyPressed = false;
         this.multiplayer = multiplayer;
         WorldContactListener.multiplayer = multiplayer;
@@ -167,7 +170,6 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener());
 
         sm = new ShadowManagement(game, multiplayer);
-        sm.calculateShadowStartPosition();
         sm.start();
 
         // multi-player initialization
@@ -502,6 +504,8 @@ public class PlayScreen implements Screen {
         controller.draw();
         // Game Over
         if (gameOver()){
+            sm.interrupt();
+            socket.off();
             game.setScreen(new GameEndScreen(game));
             dispose();
         }
@@ -644,7 +648,7 @@ public class PlayScreen implements Screen {
         try {
             for (int i = 0; i < shadows.length(); i++) {
                 JSONObject shadow = shadows.getJSONObject(i);
-                Rectangle r = game.getPillarPositions().get(shadow.getInt("direction"));
+                Rectangle r = sm.getShadowStartPositions().get(shadow.getInt("direction"));
                 sm.addServerShadows(new Shadow(this, r.getX(), r.getY(), shadow.getInt("time")));
             }
         }catch (JSONException e){
