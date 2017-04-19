@@ -18,6 +18,11 @@ import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SocketClient;
 
+import org.json.JSONObject;
+
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+
 
 /** GameEndScreen is the screen users will see when either of the two conditions are met:
  * 1) Time is up (Victory)
@@ -28,6 +33,7 @@ public class GameEndScreen implements Screen {
     private Game game;
     private Viewport viewport;
     private Stage stage;
+    public static boolean ready = false;
 
     public GameEndScreen(Game game){
         this.game = game;
@@ -62,6 +68,33 @@ public class GameEndScreen implements Screen {
         // win
         if (Hud.timesUp()) {
             table.add(victoryImg).size(victoryImg.getWidth(), victoryImg.getHeight());
+            Socket socket = SocketClient.getInstance();
+            socket.on("start", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+
+                    JSONObject data = (JSONObject) args[0];
+                    try {
+                        SocketClient.shadows = data.getJSONArray("shadows");
+                        SocketClient.orbs = data.getJSONArray("orbs");
+                        SocketClient.players = data.getJSONArray("players");
+                        SocketClient.status = data.getJSONObject("gameStatus");
+                        SocketClient.hostID = data.getString("host");
+                        if (SocketClient.hostID.equals(SocketClient.myID)) SocketClient.isHost = true;
+                        Gdx.app.log("SocketIO", SocketClient.shadows.toString());
+                        Gdx.app.log("SocketIO", SocketClient.orbs.toString());
+                        Gdx.app.log("SocketIO", SocketClient.players.toString());
+                        Gdx.app.log("SocketIO", SocketClient.status.toString());
+                        Gdx.app.log("SocketIO", SocketClient.hostID);
+                        Gdx.app.log("SocketIO", "Game starts");
+                        ready = true;
+                    }catch (Exception e){
+                        Gdx.app.log("SocketIO", "error starting game");
+                        e.printStackTrace();
+                    }
+                }
+            });
+            socket.emit("ready");
         }
         table.row();
         table.add(scoreLabel);
@@ -108,6 +141,15 @@ public class GameEndScreen implements Screen {
             Hud.coreIsDead = false;
 
             //TODO: emit
+            if (!PlayScreen.multiplayer){
+                game.setScreen(new PlayScreen((MultiplayerGame) game, false));
+                dispose();
+            } else {
+                if (ready) {
+                    game.setScreen(new PlayScreen((MultiplayerGame) game, true));
+                    dispose();
+                }
+            }
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

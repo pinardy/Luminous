@@ -66,7 +66,7 @@ public class PlayScreen implements Screen {
     private static HashMap<String, Player> players;
     private HashMap<String, LinkedList<Vector2>> playerActions;
     private boolean keyPressed;
-    private boolean multiplayer;
+    public static boolean multiplayer;
 
     private MultiplayerGame game;
     private OrthographicCamera gameCam;
@@ -670,7 +670,7 @@ public class PlayScreen implements Screen {
             int duration = gameStatus.getInt("time");
             int health = gameStatus.getInt("health");
             int level = gameStatus.getInt("level");
-            hud.initializeStatus(duration, health, level);
+            hud.initializeStatus(10, health, level);
         }catch (JSONException e){
             Gdx.app.log("SocketIO", "Error parsing game status");
             e.printStackTrace();
