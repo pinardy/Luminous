@@ -55,9 +55,11 @@ public class GameEndScreen implements Screen {
         victoryImg.setSize(400, 60);
 
         // Arrangement of the labels using a table
+        // lose
         if (Hud.coreDead()) {
             table.add(gameOverImg).size(gameOverImg.getWidth(), gameOverImg.getHeight());
         }
+        // win
         if (Hud.timesUp()) {
             table.add(victoryImg).size(victoryImg.getWidth(), victoryImg.getHeight());
         }
@@ -79,20 +81,33 @@ public class GameEndScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if(Gdx.input.justTouched()) {
-            game.setScreen(new StartScreen(game));
+        // go back to StartScsreen
+
+        if (Hud.coreDead()) {
+            if (Gdx.input.justTouched()) {
+                game.setScreen(new StartScreen(game));
+                // resets the game variables
+                Hud.health = 5;
+                Hud.worldTimer = 300;
+                Hud.timeIsUp = false;
+                Hud.coreIsDead = false;
+                // if multiplayer mode, player leaves after leaving the GameEndScreen
+                if (StartScreen.hasJoin) {
+                    StartScreen.hasJoin = false;
+                    StartScreen.ready = false;
+                    SocketClient.getInstance().emit("leave");
+                }
+                dispose();
+            }
+        } else {
+            //TODO: next level
             // resets the game variables
             Hud.health = 5;
             Hud.worldTimer = 300;
             Hud.timeIsUp = false;
             Hud.coreIsDead = false;
-            // if multiplayer mode, player leaves after leaving the GameEndScreen
-            if (StartScreen.hasJoin) {
-                StartScreen.hasJoin = false;
-                StartScreen.ready = false;
-                SocketClient.getInstance().emit("leave");
-            }
-            dispose();
+
+            //TODO: emit
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
