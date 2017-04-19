@@ -85,6 +85,9 @@ public class StartScreen implements Screen {
         music = MultiplayerGame.manager.get("audio/music/dungeon_peace.mp3", Music.class);
         music.setLooping(true);
         music.play();
+
+        // socket
+        socket = SocketClient.getInstance();
     }
 
     private void createContent(Table table) {
@@ -94,7 +97,11 @@ public class StartScreen implements Screen {
         logoImg.setSize(243, 240);
 
         final Image joinImg = new Image(new Texture("joinGame.png"));
-        joinImg.setSize(108, 48);
+//        joinImg.setSize(108, 48);
+
+        final Image twoPlayer = new Image(new Texture("blackness.png"));
+        final Image threePlayer = new Image(new Texture("blackness.png"));
+        final Image fourPlayer = new Image(new Texture("blackness.png"));
 
 
         // Only for debugging in single player mode
@@ -110,7 +117,6 @@ public class StartScreen implements Screen {
         table.add(logoImg);
         table.row().pad(5, 5, 50, 5);
         table.add(joinImg).size(joinImg.getWidth(), joinImg.getHeight());
-        table.getCells();
         table.add(singleImg).size(singleImg.getWidth(), singleImg.getHeight());
         table.add(helpImg).size(helpImg.getWidth(), helpImg.getHeight());
 
@@ -120,6 +126,13 @@ public class StartScreen implements Screen {
         table.row().pad(5, 5, 5, 5);
         table.add();
         table.add(numOfPlayersLabel);
+        table.row().pad(5, 5, 5, 5);
+
+        // buttons for choosing number of players
+        table.add(twoPlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
+        table.add(threePlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
+        table.add(fourPlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
+
 
         //Only for debugging in single player mode
         singleImg.addListener(new ClickListener() {
@@ -135,32 +148,96 @@ public class StartScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (!hasJoin) {
+                        // set images to black
+                    twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("2player.png"))));
+                    threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("3player.png"))));
+                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("4player.png"))));
+
+//                        joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
+
+                } else {
+                    joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("joinGame.png"))));
+
+                    twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+                    threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+
+                    // Set labels to show leaving room
+                    numOfPlayersLabel.setText("");
+                    connectedLabel.setText("Disconnected from server!");
+                    //TODO: emit a leave
+                    socket.emit("leave", 0);
+                    hasJoin = false;
+                }
+
+            }
+        });
+
+        // Handling of choosing between different number of players
+        twoPlayer.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // if the button image is displayed
+                if (!hasJoin){
                     hasJoin = true;
-                    if (!SocketClient.isConnected()) {
-                        // Join the server
-                        joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
+                    joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
+
+                    if(!SocketClient.isConnected()){
                         connectSocket();
-                        socket.emit("room", capacity);
+                        socket.emit("room", 2);
 
                     } else {
-                        joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
-                        SocketClient.getInstance().emit("room", capacity);
+                        SocketClient.getInstance().emit("room", 2);
                     }
 
                     // Set the labels to show connected
                     numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
                     connectedLabel.setText("Connected to server!");
-                } else {
-                    joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("joinGame.png"))));
-
-                    SocketClient.getInstance().emit("leave", 0); // leave room
-                    hasJoin = false; // player is no longer in room
-
-                    // Set labels to show leaving room
-                    numOfPlayersLabel.setText("");
-                    connectedLabel.setText("Disconnected from server!");
                 }
+            }
+        });
 
+        threePlayer.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // if the button image is displayed
+                if (!hasJoin){
+                    hasJoin = true;
+                    joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
+
+                    if(!SocketClient.isConnected()){
+                        connectSocket();
+                        socket.emit("room", 3);
+
+                    } else {
+                        SocketClient.getInstance().emit("room", 3);
+                    }
+                    // Set the labels to show connected
+                    numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
+                    connectedLabel.setText("Connected to server!");
+                }
+            }
+        });
+
+        fourPlayer.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // if the button image is displayed
+                if (!hasJoin){
+                    hasJoin = true;
+                    joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
+
+                    if(!SocketClient.isConnected()){
+                        connectSocket();
+                        socket.emit("room", 4);
+
+                    } else {
+                        SocketClient.getInstance().emit("room", 4);
+                    }
+                }
+                // Set the labels to show connected
+                numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
+                connectedLabel.setText("Connected to server!");
             }
         });
 
@@ -171,6 +248,8 @@ public class StartScreen implements Screen {
                 dispose();
             }
         });
+
+
     }
 
     public Table getTable(){
