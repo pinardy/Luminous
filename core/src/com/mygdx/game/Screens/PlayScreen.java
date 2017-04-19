@@ -137,7 +137,7 @@ public class PlayScreen implements Screen {
         hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
-        if (multiplayer) map = mapLoader.load("map_hard_edited.tmx");
+        if (multiplayer) map = mapLoader.load("map_hard.tmx");
         else map = mapLoader.load("map_easy_edited.tmx"); // game world is created in a tmx file
         renderer = new OrthogonalTiledMapRenderer(map);
 
