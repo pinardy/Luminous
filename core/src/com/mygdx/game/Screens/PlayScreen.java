@@ -64,7 +64,7 @@ public class PlayScreen implements Screen {
     private Socket socket;
     HashMap<String, Vector2> clientPrediction;
     private static HashMap<String, Player> players;
-    private HashMap<String, LinkedList<Vector2>> playerActions;
+    public static HashMap<String, LinkedList<Vector2>> playerActions;
     private boolean keyPressed;
     public static boolean multiplayer;
 
@@ -89,6 +89,7 @@ public class PlayScreen implements Screen {
     public static Player player;
     private Orb orb;
     private TextureAtlas atlas;
+    public static Player.State returnPlayerEPos;
 
     // List of Orbs
     public static ArrayList<Orb> listOfOrbs = new ArrayList<Orb>();
@@ -583,6 +584,25 @@ public class PlayScreen implements Screen {
         for (String id:playerActions.keySet()){
             if (!playerActions.get(id).isEmpty()){
                 Vector2 newPos = playerActions.get(id).poll();
+
+                if (Player.playerE.getID().equals(id)) {
+
+                    float xDistance = newPos.x - Player.playerE.getX();
+                    float yDistance = newPos.y - Player.playerE.getY();
+                    float zero = 20.00000f;
+
+                    if (yDistance > zero ) {
+                        returnPlayerEPos = Player.State.UP;
+                    } else if (yDistance < zero) {
+                        returnPlayerEPos = Player.State.DOWN;
+                    } else if (xDistance < zero) {
+                        returnPlayerEPos = Player.State.LEFT;
+                    } else if (xDistance > zero) {
+                        returnPlayerEPos = Player.State.RIGHT;
+                    } else {
+                        returnPlayerEPos = Player.State.STAND;
+                    }
+                }
                 players.get(id).b2body.setTransform(newPos.x, newPos.y,players.get(id).b2body.getAngle());
             }
         }
