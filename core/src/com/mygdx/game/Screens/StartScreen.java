@@ -325,6 +325,7 @@ public class StartScreen implements Screen {
             @Override
             public void call(Object... args) {
                 Gdx.app.log("SocketIO", "Connected");
+                connectedLabel.setText("Connected to server!");
             }
         });
 

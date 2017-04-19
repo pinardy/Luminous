@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
 import com.mygdx.game.SocketClient;
+import com.mygdx.game.Tools.WorldContactListener;
 
 import org.json.JSONObject;
 
@@ -94,10 +95,7 @@ public class GameEndScreen implements Screen {
             if (Gdx.input.justTouched()) {
                 game.setScreen(new StartScreen(game));
                 // resets the game variables
-                Hud.health = 5;
-                Hud.worldTimer = 300;
-                Hud.timeIsUp = false;
-                Hud.coreIsDead = false;
+                resetGameStatus();
                 // if multiplayer mode, player leaves after leaving the GameEndScreen
                 if (StartScreen.hasJoin) {
                     StartScreen.hasJoin = false;
@@ -108,18 +106,15 @@ public class GameEndScreen implements Screen {
             }
         } else {
             //TODO: next level
-            // resets the game variables
-            Hud.health = 5;
-            Hud.worldTimer = 300;
-            Hud.timeIsUp = false;
-            Hud.coreIsDead = false;
 
             //TODO: emit
             if (!PlayScreen.multiplayer){
+                resetGameStatus();
                 game.setScreen(new PlayScreen((MultiplayerGame) game, false));
                 dispose();
             } else {
                 if (StartScreen.ready) {
+                    resetGameStatus();
                     game.setScreen(new PlayScreen((MultiplayerGame) game, true));
                     dispose();
                 }
@@ -153,5 +148,14 @@ public class GameEndScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    public void resetGameStatus(){
+        // resets the game variables
+        Hud.health = 5;
+        Hud.worldTimer = 300;
+        Hud.timeIsUp = false;
+        Hud.coreIsDead = false;
+        WorldContactListener.fullVisibility = 0;
     }
 }

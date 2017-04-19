@@ -137,7 +137,8 @@ public class PlayScreen implements Screen {
         hud = new Hud(game.batch);
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map_easy_edited.tmx"); // game world is created in a tmx file
+        if (multiplayer) map = mapLoader.load("map_hard_edited.tmx");
+        else map = mapLoader.load("map_easy_edited.tmx"); // game world is created in a tmx file
         renderer = new OrthogonalTiledMapRenderer(map);
 
         // initially set our gamcam to be centered correctly at the start of of map
