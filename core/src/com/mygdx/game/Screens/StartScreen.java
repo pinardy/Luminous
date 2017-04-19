@@ -284,10 +284,13 @@ public class StartScreen implements Screen {
                     SocketClient.orbs = data.getJSONArray("orbs");
                     SocketClient.players = data.getJSONArray("players");
                     SocketClient.status = data.getJSONObject("gameStatus");
+                    SocketClient.hostID = data.getString("host");
+                    if (SocketClient.hostID.equals(SocketClient.myID)) SocketClient.isHost = true;
                     Gdx.app.log("SocketIO", SocketClient.shadows.toString());
                     Gdx.app.log("SocketIO", SocketClient.orbs.toString());
                     Gdx.app.log("SocketIO", SocketClient.players.toString());
                     Gdx.app.log("SocketIO", SocketClient.status.toString());
+                    Gdx.app.log("SocketIO", SocketClient.hostID);
                     Gdx.app.log("SocketIO", "Game starts");
                     ready = true;
                 }catch (Exception e){

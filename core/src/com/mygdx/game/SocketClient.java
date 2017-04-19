@@ -20,6 +20,8 @@ public class SocketClient {
     public static JSONObject status;
     public static JSONArray players;
     public static JSONArray pillars;
+    public static String hostID;
+    public static boolean isHost = false;
 
     public static Socket getInstance() {
         if (ourInstance == null){
@@ -37,7 +39,7 @@ public class SocketClient {
         Socket socket = null;
         try {
             socket = IO.socket("http://128.199.74.49:8008");
-//			    ourInstance = IO.socket("http://localhost:8008");
+//			    socket = IO.socket("http://localhost:8008");
         }catch (Exception e){
             e.printStackTrace();
         }
