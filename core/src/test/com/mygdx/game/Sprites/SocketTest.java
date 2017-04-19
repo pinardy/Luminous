@@ -136,7 +136,7 @@ public class SocketTest {
     @Test
     public void testSocketThroughput() throws Exception{
         socket.connect();
-        final int pipeline = 5000;
+        final int pipeline = 1000;
         byte[] data = new byte[1024];
         final AtomicInteger packetReceived = new AtomicInteger();
         socket.on("throughput", new Emitter.Listener() {
