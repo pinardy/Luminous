@@ -32,6 +32,7 @@ public class Hud implements Disposable{
     public static int health;
     public static int level;
     public static int timePassed;
+    public static int difficulty;
 
     // for checking if game is over
     public static boolean timeIsUp;
@@ -46,6 +47,7 @@ public class Hud implements Disposable{
     private Label countDownLabel;
     private Label healthLabel;
     private static Label healthValue;
+
 
     public Hud(SpriteBatch sb){
         // define our tracking variables
@@ -66,7 +68,7 @@ public class Hud implements Disposable{
 
         // level
         levelHeader = new Label("LEVEL", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        levelLabel = new Label("1", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        levelLabel = new Label(String.format("%06d", difficulty), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         // time
         timeLabel = new Label("TIME", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
@@ -142,6 +144,7 @@ public class Hud implements Disposable{
         timeIsUp = false;
         coreIsDead = false;
         timePassed = 0;
+        difficulty = 1;
     }
 
     // Initialize the game status with specified settings (mostly used from server.
