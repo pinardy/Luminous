@@ -292,7 +292,7 @@ public class PlayScreen implements Screen {
         //whole map is lit when player touches pillar
         if (WorldContactListener.fullVisibility == 1) {
             renderer.render();
-            b2dr.render(world, gameCam.combined); //render fixture outlines
+//            b2dr.render(world, gameCam.combined); //render fixture outlines
 
             // tell our game batch to recognise where the gameCam is and render what the camera can see
             //render shadows

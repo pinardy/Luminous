@@ -148,12 +148,10 @@ public class StartScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (!hasJoin) {
-                        // set images to black
+                    // set images to black
                     twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("2player.png"))));
                     threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("3player.png"))));
                     fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("4player.png"))));
-
-//                        joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
 
                 } else {
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("joinGame.png"))));
@@ -181,7 +179,11 @@ public class StartScreen implements Screen {
                 if (!hasJoin){
                     capacity = 2;
                     hasJoin = true;
+
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
+                    twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+                    threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();
@@ -205,7 +207,11 @@ public class StartScreen implements Screen {
                 if (!hasJoin){
                     capacity = 3;
                     hasJoin = true;
+
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
+                    twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+                    threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();
@@ -228,7 +234,11 @@ public class StartScreen implements Screen {
                 if (!hasJoin){
                     capacity = 4;
                     hasJoin = true;
+
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
+                    twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+                    threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();

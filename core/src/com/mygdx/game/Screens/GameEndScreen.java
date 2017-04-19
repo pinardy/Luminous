@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.MultiplayerGame;
@@ -25,7 +27,8 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 
-/** GameEndScreen is the screen users will see when either of the two conditions are met:
+/**
+ * GameEndScreen is the screen users will see when either of the two conditions are met:
  * 1) Time is up (Victory)
  * 2) Core health is 0 (Game over)
  */
@@ -35,8 +38,13 @@ public class GameEndScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private boolean ready;
+    private long startTimeNano;
+    private long startTimeMs;
 
-    public GameEndScreen(Game game){
+    public GameEndScreen(Game game) {
+        startTimeNano = TimeUtils.nanoTime();
+        startTimeMs = TimeUtils.nanosToMillis(startTimeNano);
+
         this.game = game;
         viewport = new FitViewport(MultiplayerGame.V_WIDTH, MultiplayerGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((MultiplayerGame) game).batch);
@@ -133,7 +141,7 @@ public class GameEndScreen implements Screen {
             //TODO: next level
 
             //TODO: emit
-            if (!PlayScreen.multiplayer){
+            if (!PlayScreen.multiplayer) {
                 resetGameStatus();
                 game.setScreen(new PlayScreen((MultiplayerGame) game, false));
                 dispose();
@@ -141,14 +149,33 @@ public class GameEndScreen implements Screen {
                 if (ready) {
                     resetGameStatus();
                     game.setScreen(new PlayScreen((MultiplayerGame) game, true));
-                    Hud.difficulty += 1;
-                    dispose();
+                    Hud.level += 1;
+                    // if 10 seconds has passed,
+                    if (TimeUtils.timeSinceMillis(startTimeMs) > 10000) {
+
+                        // resets the game variables
+                        Hud.health = 5;
+                        Hud.worldTimer = 300;
+                        Hud.timeIsUp = false;
+                        Hud.coreIsDead = false;
+
+                        if (!PlayScreen.multiplayer) {
+                            game.setScreen(new PlayScreen((MultiplayerGame) game, false));
+                            dispose();
+                        } else {
+                            if (StartScreen.ready) {
+                                game.setScreen(new PlayScreen((MultiplayerGame) game, true));
+                                Hud.level += 1;
+                                dispose();
+                            }
+                        }
+                    }
+                    Gdx.gl.glClearColor(0, 0, 0, 1);
+                    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+                    stage.draw();
                 }
             }
         }
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.draw();
     }
 
     @Override
