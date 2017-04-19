@@ -116,6 +116,7 @@ public class GameEndScreen implements Screen {
                 if (StartScreen.ready) {
                     resetGameStatus();
                     game.setScreen(new PlayScreen((MultiplayerGame) game, true));
+                    Hud.difficulty += 1;
                     dispose();
                 }
             }
