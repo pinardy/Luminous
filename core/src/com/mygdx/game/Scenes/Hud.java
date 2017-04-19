@@ -47,7 +47,6 @@ public class Hud implements Disposable{
     private Label healthLabel;
     private static Label healthValue;
 
-
     public Hud(SpriteBatch sb){
         // define our tracking variables
         initializeStatus();
@@ -156,6 +155,7 @@ public class Hud implements Disposable{
         timeIsUp = false;
         coreIsDead = false;
         timePassed = 0;
+        levelLabel.setText(""+level);
     }
 
     public void updateStatus(int duration, int newHealth, int newLevel){

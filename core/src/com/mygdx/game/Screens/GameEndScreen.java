@@ -38,12 +38,10 @@ public class GameEndScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
     private boolean ready;
-    private long startTimeNano;
     private long startTimeMs;
 
     public GameEndScreen(Game game) {
-        startTimeNano = TimeUtils.nanoTime();
-        startTimeMs = TimeUtils.nanosToMillis(startTimeNano);
+        startTimeMs = System.currentTimeMillis();
 
         this.game = game;
         viewport = new FitViewport(MultiplayerGame.V_WIDTH, MultiplayerGame.V_HEIGHT, new OrthographicCamera());
@@ -141,41 +139,26 @@ public class GameEndScreen implements Screen {
             //TODO: next level
 
             //TODO: emit
-            if (!PlayScreen.multiplayer) {
+            if (System.currentTimeMillis() - startTimeMs > 5000) {
+
+                // resets the game variables
                 resetGameStatus();
-                game.setScreen(new PlayScreen((MultiplayerGame) game, false));
-                dispose();
-            } else {
-                if (ready) {
-                    resetGameStatus();
-                    game.setScreen(new PlayScreen((MultiplayerGame) game, true));
-                    Hud.level += 1;
-                    // if 10 seconds has passed,
-                    if (TimeUtils.timeSinceMillis(startTimeMs) > 10000) {
 
-                        // resets the game variables
-                        Hud.health = 5;
-                        Hud.worldTimer = 300;
-                        Hud.timeIsUp = false;
-                        Hud.coreIsDead = false;
-
-                        if (!PlayScreen.multiplayer) {
-                            game.setScreen(new PlayScreen((MultiplayerGame) game, false));
-                            dispose();
-                        } else {
-                            if (StartScreen.ready) {
-                                game.setScreen(new PlayScreen((MultiplayerGame) game, true));
-                                Hud.level += 1;
-                                dispose();
-                            }
-                        }
+                if (!PlayScreen.multiplayer) {
+                    game.setScreen(new PlayScreen((MultiplayerGame) game, false));
+                    dispose();
+                } else {
+                    if (ready) {
+                        game.setScreen(new PlayScreen((MultiplayerGame) game, true));
+                        Hud.level += 1;
+                        dispose();
                     }
-                    Gdx.gl.glClearColor(0, 0, 0, 1);
-                    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-                    stage.draw();
                 }
             }
         }
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.draw();
     }
 
     @Override
