@@ -40,6 +40,11 @@ public abstract class Object extends Sprite {
         initialize(screen.getWorld(), x, y);
     }
 
+    public Object(PlayScreen screen, float x, float y, float posX, float posY){
+        super(screen.getAtlas().findRegion("shadowman"));
+        initialize(screen.getWorld(), posX, posY);
+    }
+
     //Only used for testing to avoid invoking super()
     public Object(PlayScreen screen, float x, float y, boolean test){
         initialize(screen.getWorld(), x, y);
