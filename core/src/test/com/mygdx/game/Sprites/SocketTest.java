@@ -135,45 +135,14 @@ public class SocketTest {
 
     @Test(timeout=60000)
     public void testSocketThroughput() throws Exception{
-//<<<<<<< HEAD
-//        socket.connect();
-//        final int pipeline = 1000;
-//        byte[] data = new byte[1024];
-//=======
         int totalBytes = 512*1000;
-
-
-//>>>>>>> 358c75389ff1eb21dafcbd9ad45e6d0c407af345
         final AtomicInteger packetReceived = new AtomicInteger();
-//
         socket.on("throughput", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 packetReceived.getAndIncrement();
             }
         });
-//<<<<<<< HEAD
-//        JSONObject packet = new JSONObject();
-//        packet.put("data", data);
-//        ThroughputTask task = new ThroughputTask(pipeline, packet, socket);
-//        task.start();
-//        while (!task.started);
-//        long start = System.currentTimeMillis();
-//        long timeout = Math.max(5000, pipeline*5);
-//        boolean timedOut = false;
-//        while (packetReceived.get() < pipeline){
-//            if (System.currentTimeMillis() - start > timeout){
-//                timedOut = true;
-//                break;
-//            }
-//            Thread.yield();
-//        }
-//        start = System.currentTimeMillis() - start;
-//        if (timedOut) System.out.println("Timed out");
-//        else System.out.println("Average throughput is "+pipeline*data.length * 1000/start+ " bytes/sec");
-//        task.interrupt();
-//        socket.close();
-//=======
 
         for(int i=1; i<256; i*=2) {
             System.out.println("\n");
@@ -209,14 +178,7 @@ public class SocketTest {
             socket.close();
             while (socket.connected());
             packetReceived.set(0);
-            task = null;
-            packet = null;
-            data = null;
         }
-
-
-
-//>>>>>>> 358c75389ff1eb21dafcbd9ad45e6d0c407af345
     }
 
     private class ThroughputTask extends Thread{
