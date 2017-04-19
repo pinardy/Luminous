@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -32,7 +33,10 @@ public class Player extends Object {
     public enum State{UP, DOWN, LEFT, RIGHT, STAND}
     public State currentState;
     public State prevState;
+    public static Player playerE;
     private Animation<TextureRegion> playerUp, playerDown, playerLeft, playerRight;
+    private Animation<TextureRegion> playerUpB, playerDownB, playerLeftB, playerRightB;
+
     private float stateTimer;
 
     public Player(World world){
@@ -84,6 +88,12 @@ public class Player extends Object {
         playerLeft = new Animation(0.1f, frames.get(3), frames.get(4), frames.get(5));
         playerRight = new Animation(0.1f, frames.get(6), frames.get(7), frames.get(8));
         playerUp = new Animation(0.1f, frames.get(9), frames.get(10), frames.get(11));
+
+        playerDownB = new Animation(0.1f, frames.get(0), frames.get(1), frames.get(2));
+        playerLeftB = new Animation(0.1f, frames.get(3), frames.get(4), frames.get(5));
+        playerRightB = new Animation(0.1f, frames.get(6), frames.get(7), frames.get(8));
+        playerUpB = new Animation(0.1f, frames.get(9), frames.get(10), frames.get(11));
+
     }
 
 
@@ -123,9 +133,11 @@ public class Player extends Object {
             for (Map.Entry<String, Player> player : PlayScreen.getPlayers().entrySet()) {
                 if (!player.getKey().equals(PlayScreen.player.getID())){
                     //render for other players
+                    playerE = player.getValue(); //set value for playscreen
                     player.getValue().setPosition(player.getValue().b2body.getPosition().x - getWidth() / 2,
                         player.getValue().b2body.getPosition().y - getHeight() / 2);
                     player.getValue().setRegion(getOtherFrame(dt,player.getValue()));
+                    PlayScreen.returnPlayerEPos = null;
                 }
                 else{
                     player.getValue().setPosition(b2body.getPosition().x - getWidth()/2,
@@ -172,63 +184,33 @@ public class Player extends Object {
 
     //rendering other player for multiplayer
     public TextureRegion getOtherFrame(float dt, Player player){
-        State currentStateB = getMState(player);
 
+        State currentStateB = PlayScreen.returnPlayerEPos;
         TextureRegion region = playerStand;
+
+        if (currentStateB==null){
+            return playerStand;
+        }
+
         switch(currentStateB){
             case UP:
-                region = playerUp.getKeyFrame(stateTimer, true);
+                region = playerUpB.getKeyFrame(stateTimer, true);
                 break;
             case DOWN:
-                region = playerDown.getKeyFrame(stateTimer, true);
+                region = playerDownB.getKeyFrame(stateTimer, true);
                 break;
             case LEFT:
-                region = playerLeft.getKeyFrame(stateTimer, true);
+                region = playerLeftB.getKeyFrame(stateTimer, true);
                 break;
             case RIGHT:
-                region = playerRight.getKeyFrame(stateTimer, true);
+                region = playerRightB.getKeyFrame(stateTimer, true);
                 break;
             case STAND:
-                //static
                 region = playerStand;
                 break;
         }
-        stateTimer = stateTimer + dt;
         return region;
     }
-
-    //for multiplayer mode
-//    public Array<TextureRegion> getMultipleFrame(float dt){
-//
-//        Array<TextureRegion> regions = new Array<TextureRegion>();
-//
-//        for (Map.Entry<String, Player> player : PlayScreen.getPlayers().entrySet()) {
-//            currentState = getMState(player.getValue());
-//            TextureRegion region = playerStand;
-//
-//            switch (currentState) {
-//                case UP:
-//                    region = playerUp.getKeyFrame(stateTimer, true);
-//                    break;
-//                case DOWN:
-//                    region = playerDown.getKeyFrame(stateTimer, true);
-//                    break;
-//                case LEFT:
-//                    region = playerLeft.getKeyFrame(stateTimer, true);
-//                    break;
-//                case RIGHT:
-//                    region = playerRight.getKeyFrame(stateTimer, true);
-//                    break;
-//                case STAND:
-//                    //static
-//                    region = playerStand;
-//                    break;
-//            }
-//            stateTimer = stateTimer + dt;
-//            regions.add(region);
-//        }
-//        return regions;
-//    }
 
     //single player
     public State getState(){
@@ -251,28 +233,37 @@ public class Player extends Object {
     }
 
     //mult-player
-    public State getMState(Player player){
-        if(player.b2body.getLinearVelocity().y > 99){
-            //up
-            System.out.println("up");
-            return State.UP;
-        } else if (player.b2body.getLinearVelocity().y < -99){
-            //down
-            System.out.println("down");
-            return State.DOWN;
-        } else if (player.b2body.getLinearVelocity().x < -99){
-            //left
-            System.out.println("left");
-            return State.LEFT;
-        } else if (player.b2body.getLinearVelocity().x > 99){
-            //right
-            System.out.println("right");
-            return State.RIGHT;
-        }else{
-            //not moving
-            return State.STAND;
+    public State getMState(Player player) {
+        State ret = State.STAND;
+        for (String id : PlayScreen.playerActions.keySet()) {
+            if (player.getID().equals(id)&& !PlayScreen.playerActions.get(id).isEmpty()) {
+
+                Vector2 otherPlayerVec = PlayScreen.playerActions.get(id).poll();
+                float xDistance = otherPlayerVec.x - player.getX();
+                float yDistance = otherPlayerVec.y - player.getY();
+                float zero = 20.000f;
+
+                if (yDistance > zero) {
+                    //up
+                    ret = State.UP;
+                } else if (yDistance < zero) {
+                    //down
+                    ret = State.DOWN;
+                } else if (xDistance < zero) {
+                    //left
+                    ret = State.LEFT;
+                } else if (xDistance > zero) {
+                    //right
+                    ret = State.RIGHT;
+                } else {
+                    //not moving
+                    ret = State.STAND;
+                }
+            }
         }
+        return ret;
     }
+
 
     public void orbPick(int id) {
         setHoldingOrb(true);
@@ -298,7 +289,6 @@ public class Player extends Object {
 
     public Orb orbDrop() {
         setHoldingOrb(false);
-//        mOrb.setPosition(b2body.getPosition().x+10, b2body.getPosition().y);
         mOrb.dropOrb();
         Orb toReturn = mOrb;
         mOrb = null;
