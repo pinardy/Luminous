@@ -674,7 +674,7 @@ public class PlayScreen implements Screen {
             int duration = gameStatus.getInt("time");
             int health = gameStatus.getInt("health");
             int level = gameStatus.getInt("level");
-            hud.initializeStatus(180, health, level);
+            hud.initializeStatus(duration, health, level);
         }catch (JSONException e){
             Gdx.app.log("SocketIO", "Error parsing game status");
             e.printStackTrace();
