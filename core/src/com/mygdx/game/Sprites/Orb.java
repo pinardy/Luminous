@@ -44,14 +44,14 @@ public class Orb extends Object{
     }
 
     public Orb(PlayScreen screen, float x, float y, boolean graphics) {
-        super(screen, x, y, graphics);
+        super(screen, x, y);
         stateTime = 0;
         setBounds(getX(), getY(), 16, 16);
         ToPick = false;
         picked = false;
         this.id = 0;
 
-        initializeGraphics(graphics);
+        initializeGraphics(true);
     }
 
     public Orb(PlayScreen screen, float x, float y, int id, boolean graphics) {
