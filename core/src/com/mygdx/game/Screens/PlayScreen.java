@@ -62,7 +62,6 @@ public class PlayScreen implements Screen {
 
     // synchronize with WorldContactListener
     private Socket socket;
-    HashMap<String, Vector2> clientPrediction;
     private static HashMap<String, Player> players;
     public static HashMap<String, LinkedList<Vector2>> playerActions;
     private boolean keyPressed;
@@ -115,7 +114,6 @@ public class PlayScreen implements Screen {
     public PlayScreen(MultiplayerGame game, boolean multiplayer) {
         players = new HashMap<String, Player>();
         playerActions = new HashMap<String, LinkedList<Vector2>>();
-        clientPrediction = new HashMap<String, Vector2>();
         listOfOrbs = new ArrayList<Orb>();
         keyPressed = false;
         this.multiplayer = multiplayer;
@@ -539,21 +537,6 @@ public class PlayScreen implements Screen {
         return playerCopy;
     }
 
-
-    public void updateMyPosition(String idAction, float x, float y){
-        Vector2 predictedPos = clientPrediction.get(idAction);
-        if (predictedPos == null){
-            player.b2body.setTransform(x, y, player.b2body.getAngle());
-        }else if (floatEquals(predictedPos.x, x) && floatEquals(predictedPos.y, y)) {
-            Gdx.app.log("Socket Prediction", "correct prediction");
-            clientPrediction.remove(idAction);
-        }
-        else {
-            player.b2body.setTransform(x, y, 0);
-            clientPrediction.remove(idAction);
-        }
-    }
-
     // Update server when player moves
     public void updateServer(float dt){
         Player.toUpdatePos = new HashMap<String, Player.State>();
@@ -584,10 +567,7 @@ public class PlayScreen implements Screen {
 
         if (player != null && keyPressed){
             keyPressed = false;
-            // client prediction;
-//			String actionID = ""+System.currentTimeMillis();
             Vector2 position = new Vector2(player.b2body.getPosition());
-//			clientPrediction.put(actionID, position);
 			JSONObject object = new JSONObject();
 			try {
                 object.put("x", position.x);

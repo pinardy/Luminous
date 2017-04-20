@@ -40,7 +40,6 @@ public class ShadowManagement extends Thread {
 
     @Override
     public void run() {
-//        calculateShadowStartPosition();
         Random rand = new Random();
 
         while (!Thread.interrupted()) {
