@@ -46,6 +46,9 @@ public class SocketTest {
         socket = null;
     }
 
+    //Check that socket is able to establish connect with server
+    //@pre-condition:  socket is not connected
+    //@post-condition: socket is connected
     @Test(timeout=5000)
     public void testConnection() throws Exception {
         assertNotNull(socket);
@@ -56,6 +59,7 @@ public class SocketTest {
         assertTrue(socket.connected());
     }
 
+    //Test the average connection time when multiple requests are sent in parallel
     @Test
     public void testAverageConnectionTimeParallel() throws Exception {
         int connections = 1000;
@@ -96,6 +100,7 @@ public class SocketTest {
 
     }
 
+    //Test the average connection time when multiple requests are sent sequentially
     @Test
     public void testAverageConnectionTimeSequential() throws Exception {
         int connections = 100;
@@ -133,6 +138,7 @@ public class SocketTest {
         System.out.println("Number of failures: " + failures);
     }
 
+    //Test the throughput rate by sending varying packet sizes for a total of 412kB
     @Test(timeout=60000)
     public void testSocketThroughput() throws Exception{
         int totalBytes = 512*1000;

@@ -25,6 +25,9 @@ public class CoreTest extends TestCase {
     public void tearDown() throws Exception {
     }
 
+    //Check that the core's category bit is correctly set
+    //@pre-condition:  new core instance is created
+    //@post-condition: bit information should be set to 8
     @Test
     public void testCategoryBit() throws Exception {
         this.playScreen = Mockito.mock(PlayScreen.class);

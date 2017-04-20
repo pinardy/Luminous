@@ -64,6 +64,9 @@ public class InteractiveTileObjectTest extends TestCase {
     }
 
     //This will indirectly test get method as well
+    //Check that the category bit is set to the default of 1 on instantiation
+    //@pre-condition:  set method is not called after instantiation
+    //@post-condition: bit information should be set to 1
     @Test
     public void testDefaultCategoryFilter() throws Exception {
 
@@ -77,6 +80,9 @@ public class InteractiveTileObjectTest extends TestCase {
 
     }
 
+    //Check that the category bit is set correctly
+    //@pre-condition:  set method is called to set category bit
+    //@post-condition: bit information should be set to corresponding category value
     @Test
     public void testSetCategoryFilter() throws Exception {
 

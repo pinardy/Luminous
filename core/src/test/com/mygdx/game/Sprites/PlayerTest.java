@@ -6,6 +6,7 @@ import com.mygdx.game.Screens.PlayScreen;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
@@ -39,19 +40,12 @@ public class PlayerTest extends TestCase {
         player = null;
     }
 
-    //TODO
-    public void testDefineObject() throws Exception {
-
-    }
-
-    //TODO
-    public void testUpdate() throws Exception {
-
-    }
-
-
     //TODO - need to figure out how to override the call to PlayScreen
-    public void testOrbPickUsingID() throws Exception {
+    //Check that getHoldingOrb() returns the orb that was picked with orbPick()
+    //@pre-condition:  orbPick() is passed a mocked Orb object
+    //@post-condition: getHoldingOrb() returns mocked Orb object
+    @Test
+    public void testGetHoldingOrb() throws Exception {
         Orb orb1 = Mockito.mock(Orb.class);
 
         PlayScreen.listOfOrbs.add(orb1);
@@ -61,13 +55,22 @@ public class PlayerTest extends TestCase {
 
     }
 
+    //Check that orbPick() updates the status to true
+    //@pre-condition:  isHoldingOrb() is false
+    //@post-condition: isHoldingOrb() is true
+    @Test
     public void testOrbPickUsingObject() throws Exception {
         Orb orb1 = Mockito.mock(Orb.class);
 
+        assertEquals(false, player.isHoldingOrb());
         player.orbPick(orb1);
         assertEquals(true, player.isHoldingOrb());
     }
 
+    //Check that isHoldingOrb() returns the correct status
+    //@pre-condition:  orbPick() is called
+    //@post-condition: isHoldingOrb() is true
+    @Test
     public void testIsHoldingOrb() throws Exception {
         Orb orb1 = Mockito.mock(Orb.class);
 
@@ -77,6 +80,10 @@ public class PlayerTest extends TestCase {
 
     }
 
+    //Check that Orbdrop() updates the status variable correctly
+    //@pre-condition:  isHoldingOrb() is true
+    //@post-condition: isHoldingOrb() is false
+    @Test
     public void testOrbDrop() throws Exception {
         Orb orb1 = Mockito.mock(Orb.class);
 
@@ -88,10 +95,20 @@ public class PlayerTest extends TestCase {
 
     }
 
+    //Check that Players's category bit is get to 2
+    //@pre-condition:  instantiate a player
+    //@post-condition: category bit is 2
+    @Test
     public void testCategoryBits() throws Exception {
         assertEquals(player.getFilterData().categoryBits, PLAYER_BIT);
     }
 
+
+    //Check that Player's mask bits are set to match:
+    // DEFAULT_BIT | PILLAR_BIT | LIGHTEDPILLAR_BIT | CORE_BIT | ORB_BIT | SHADOW_BIT
+    //@pre-condition:  instantiate a player
+    //@post-condition: mask bits matches (DEFAULT_BIT | PILLAR_BIT | LIGHTEDPILLAR_BIT | CORE_BIT | ORB_BIT | SHADOW_BIT)
+    @Test
     public void testMaskBits() throws Exception {
         assertEquals(player.getFilterData().maskBits, DEFAULT_BIT | PILLAR_BIT | LIGHTEDPILLAR_BIT | CORE_BIT | ORB_BIT | SHADOW_BIT);
     }

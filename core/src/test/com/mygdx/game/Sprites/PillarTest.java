@@ -65,6 +65,9 @@ public class PillarTest extends TestCase {
         orb2 = null;
     }
 
+    //Check that setmOrb() sets the Orb ID correctly
+    //@pre-condition:  none
+    //@post-condition: getmOrb() returns correct orb with id 88
     public void testSetmOrbByID() throws Exception {
         int orbID = 88;
         Orb orb1 = Mockito.mock(Orb.class);
@@ -77,6 +80,9 @@ public class PillarTest extends TestCase {
         assertNotSame(orb2, pillar.getmOrb());
     }
 
+    //Check that setmOrb() takes an Orb object
+    //@pre-condition:  none
+    //@post-condition: getmOrb() returns correct orb object
     public void testSetmOrbObject() throws Exception {
         pillar.setmOrb(orb1);
         assertEquals(orb1, pillar.getmOrb());
@@ -84,11 +90,17 @@ public class PillarTest extends TestCase {
         assertEquals(orb2, pillar.getmOrb());
     }
 
+    //Check that releasing an Orb without picking returns a null
+    //@pre-condition:  pillar object holds no orb
+    //@post-condition: null reference returned
     public void testReleaseOrbWithoutSetting() throws Exception {
         pillar.releaseOrb();
         assertEquals(null, pillar.getmOrb());
     }
 
+    //Check that releaseOrb() returns the correct Orb that is is holding
+    //@pre-condition:  none
+    //@post-condition: releaseOrb() matches correct Orb object
     public void testReleaseOrbAfterSetting() throws Exception {
         pillar.setmOrb(orb1);
         Orb returnOrb = pillar.releaseOrb();

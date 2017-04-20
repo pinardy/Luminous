@@ -44,6 +44,9 @@ public class ObjectTest extends TestCase {
         o = null;
     }
 
+    //Check that defineObject() method is called by super upon instantiation
+    //@pre-condition:  boolean test flag is false
+    //@post-condition: boolean test flag is true
     @Test
     public void testAbstractDefineObject() throws Exception {
 
@@ -60,7 +63,6 @@ class ObjectMethod extends Object {
     public ObjectMethod(World world, float x, float y) {
         super(world, x, y);
         defineObjectIsCalledInConstructor = false;
-
     }
 
     @Override

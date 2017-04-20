@@ -6,6 +6,7 @@ import com.mygdx.game.Screens.PlayScreen;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
@@ -37,12 +38,10 @@ public class ShadowTest extends TestCase {
         y = 0;
     }
 
-    //TODO
-    public void testUpdate() throws Exception {
-
-    }
-
-
+    //Check that setActive() updates b2body status
+    //@pre-condition:  none
+    //@post-condition: isActive() matches boolean passed to setActive()
+    @Test
     public void testSetActive() throws Exception {
 
         shadow.setActive(true);
@@ -53,10 +52,15 @@ public class ShadowTest extends TestCase {
     }
 
     //Tested in testIsAlive()
+    @Test
     public void testCollided() throws Exception {
 
     }
 
+    //Check that isAlive() is set to false after collided()
+    //@pre-condition:  isAlive() is true
+    //@post-condition: isAlive() is false
+    @Test
     public void testIsAlive() throws Exception {
         //Since the game is not running, shadow should be alive on initialization
         assertTrue(shadow.isAlive());
@@ -64,10 +68,4 @@ public class ShadowTest extends TestCase {
         shadow.update(0);
         assertFalse(shadow.isAlive());
     }
-
-    //TODO
-    public void testDefineObject() throws Exception {
-
-    }
-
 }
