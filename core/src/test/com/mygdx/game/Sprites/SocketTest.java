@@ -138,7 +138,7 @@ public class SocketTest {
         System.out.println("Number of failures: " + failures);
     }
 
-    //Test the throughput rate by sending varying packet sizes for a total of 412kB
+    //Test the throughput rate by sending varying packet sizes for a total of 512kB
     @Test(timeout=60000)
     public void testSocketThroughput() throws Exception{
         int totalBytes = 512*1000;
