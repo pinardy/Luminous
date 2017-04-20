@@ -26,7 +26,6 @@ public class Orb extends Object{
     private float stateTime;
     private boolean ToPick;
     private boolean picked;
-//    private static boolean orbNotOnFloor;
     static float startPosX = 500;
     static float startPosY = 600;
     private int id;

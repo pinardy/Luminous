@@ -72,7 +72,6 @@ public class WorldContactListener implements ContactListener{
                         if (pickOrb | pickOrbAndroid) {
                             // Updates Orb's status to setToPick
                             Orb toBePicked = (Orb) fixA.getUserData();
-//                            indicateOrb = true;
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
@@ -92,7 +91,6 @@ public class WorldContactListener implements ContactListener{
                         if (pickOrb | pickOrbAndroid) {
                             // Updates Orb's status to getPicked
                             Orb toBePicked = (Orb) fixB.getUserData();
-//                            indicateOrb = true;
 
                             // Updates Player's status to pickingOrb
                             if (multiplayer) updateServerOrb(PICK_UP_ORB, toBePicked.getID());
@@ -177,7 +175,6 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixB.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-//                            indicateOrbOnPillar = true;
                             lightedPillarX = pillar.positionX();
                             lightedPillarY = pillar.positionY();
 
@@ -188,7 +185,6 @@ public class WorldContactListener implements ContactListener{
                                 pillar.setmOrb(orb);
                             }
                             Gdx.app.log("Pillar is LIT"+" with orb ", "");
-//                            indicateOrb = false;
                         }
                     }
                 }
@@ -210,7 +206,6 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixA.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.LIGHTEDPILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-//                            indicateOrbOnPillar = true;
                             lightedPillarX = pillar.positionX();
                             lightedPillarY = pillar.positionY();
 
@@ -221,7 +216,6 @@ public class WorldContactListener implements ContactListener{
                                 pillar.setmOrb(orb);
                             }
                             Gdx.app.log("Pillar is LIT" + " with orb ", "");
-//                            indicateOrb = false;
                         }
                     }
                 }
@@ -248,9 +242,7 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixB.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-//                            indicateOrb = true;
                             playerOrbPillar = true;
-//                            indicateOrbOnPillar = false;
 
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);
@@ -278,13 +270,11 @@ public class WorldContactListener implements ContactListener{
                             Pillar pillar = ((Pillar) fixA.getUserData());
                             pillar.setCategoryFilter(MultiplayerGame.PILLAR_BIT);
                             MultiplayerGame.manager.get("audio/sounds/woosh.mp3", Sound.class).play();
-//                            indicateOrb = true;
 
                             //check if it is that player
                             if (id.equals(PlayScreen.player.getID())){
                                 playerOrbPillar = true;
                             }
-//                            indicateOrbOnPillar = false;
 
                             // Updates Player's status to not carrying orb
                             if (multiplayer) updateServerOrb(PICK_PILLAR_ORB, pillar.id);

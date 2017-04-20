@@ -136,6 +136,7 @@ public class GameEndScreen implements Screen {
                 game.setScreen(new StartScreen(game));
                 // resets the game variables
                 resetGameStatus();
+
                 // if multiplayer mode, player leaves after leaving the GameEndScreen
                 if (StartScreen.hasJoin) {
                     StartScreen.hasJoin = false;
@@ -145,9 +146,6 @@ public class GameEndScreen implements Screen {
                 dispose();
             }
         } else {
-            //TODO: next level
-
-            //TODO: emit
             if (System.currentTimeMillis() - startTimeMs > 5000) {
 
                 // resets the game variables

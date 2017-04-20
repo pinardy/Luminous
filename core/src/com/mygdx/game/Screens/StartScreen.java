@@ -51,7 +51,6 @@ public class StartScreen implements Screen {
     private static Table table;
     public static boolean hasJoin;
 
-    //TODO: Change these variables to read from server
     private int capacity = 2;
     private static int numOfPlayers = 0;
     public static boolean ready;
@@ -95,14 +94,9 @@ public class StartScreen implements Screen {
         // images of buttons
         Image logoImg = new Image(new Texture("luminousicon.png"));
         logoImg.setSize(243, 240);
-
         final Image joinImg = new Image(new Texture("joinGame.png"));
-//        joinImg.setSize(108, 48);
-
         final Image twoPlayer = new Image(new Texture("blackness.png"));
         final Image threePlayer = new Image(new Texture("blackness.png"));
-        final Image fourPlayer = new Image(new Texture("blackness.png"));
-
 
         // Only for debugging in single player mode
         Image singleImg = new Image(new Texture("singleMode.png"));
@@ -131,7 +125,6 @@ public class StartScreen implements Screen {
         // buttons for choosing number of players
         table.add(twoPlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
         table.add(threePlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
-//        table.add(fourPlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
 
 
         //Only for debugging in single player mode
@@ -151,21 +144,18 @@ public class StartScreen implements Screen {
                     // set images to black
                     twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("2player.png"))));
                     threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("3player.png"))));
-//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("4player.png"))));
 
                 } else {
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("joinGame.png"))));
 
                     twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
                     threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
 
                     // Set labels to show leaving room
                     numOfPlayersLabel.setText("");
                     socket.close();
                     socket.disconnect();
                     connectedLabel.setText("Disconnected from server!");
-                    //TODO: emit a leave
                     numOfPlayers = 0;
                     hasJoin = false;
                 }
@@ -185,7 +175,6 @@ public class StartScreen implements Screen {
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
                     twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
                     threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();
@@ -213,7 +202,6 @@ public class StartScreen implements Screen {
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
                     twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
                     threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();
@@ -229,33 +217,6 @@ public class StartScreen implements Screen {
             }
         });
 
-//        fourPlayer.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                // if the button image is displayed
-//                if (!hasJoin){
-//                    capacity = 4;
-//                    hasJoin = true;
-//
-//                    joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
-//                    twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-//                    threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-//
-//                    if(!SocketClient.isConnected()){
-//                        connectSocket();
-//                        socket.emit("room", capacity);
-//
-//                    } else {
-//                        SocketClient.getInstance().emit("room", capacity);
-//                    }
-//                }
-//                // Set the labels to show connected
-//                numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
-//                connectedLabel.setText("Connected to server!");
-//            }
-//        });
-
         helpImg.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -265,10 +226,6 @@ public class StartScreen implements Screen {
         });
 
 
-    }
-
-    public Table getTable(){
-        return table;
     }
 
     public int playersLeft(){

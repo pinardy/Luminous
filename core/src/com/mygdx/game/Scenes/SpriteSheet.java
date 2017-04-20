@@ -6,9 +6,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-/**
- * Created by User on 30-Mar-17.
- */
+
 
 public class SpriteSheet {
     private String path;
@@ -20,7 +18,6 @@ public class SpriteSheet {
         BufferedImage image = null;
 
         try {
-//            image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
             image = ImageIO.read(new File(path));
         } catch (IOException e) {
             System.out.println(e);

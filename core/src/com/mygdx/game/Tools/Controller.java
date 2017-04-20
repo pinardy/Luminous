@@ -31,8 +31,6 @@ public class Controller {
         Table table = new Table();
         Table actions = new Table();
 
-        //TODO: Location may have to change
-//        table.right().bottom();
         table.setPosition(150, 150);
         actions.setPosition(750, 100);
 

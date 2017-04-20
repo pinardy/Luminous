@@ -11,6 +11,11 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.mygdx.game.Screens.PlayScreen;
 
+/**
+ * InteractiveTileObject iis for handling objects in the game
+ * that can be interacted with
+ */
+
 
 public abstract class InteractiveTileObject {
     protected World world;

@@ -12,8 +12,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
-/**
- * Created by kennethlimcp on 08/Mar/2017.
+/** ShadowManagement is the handler of creating the Shadow object
+ *  in the game world. (Shadows are the enemies of the game)
  */
 
 public class ShadowManagement extends Thread {

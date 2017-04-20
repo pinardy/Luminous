@@ -59,8 +59,8 @@ public class PlayScreen implements Screen {
     public static final String ID_PLAYER = "id";
     public static final String ID_ORB = "orbID";
     public static final String ID_PILLAR = "pillarID";
-    //synchronize with worldcontact
-//    public static String currentUser;
+
+    // synchronize with WorldContactListener
     private Socket socket;
     HashMap<String, Vector2> clientPrediction;
     private static HashMap<String, Player> players;
@@ -68,10 +68,10 @@ public class PlayScreen implements Screen {
     private boolean keyPressed;
     public static boolean multiplayer;
 
+    // Game display
     private MultiplayerGame game;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
-
     private Hud hud;
 
 
@@ -102,12 +102,6 @@ public class PlayScreen implements Screen {
         return listOfOrbs.get(id);
     }
 
-    private void addToListOfOrbs(Orb o) {
-        listOfOrbs.add(o);
-    }
-
-    // Music
-    private Music music;
 
     // Controller
     public static Controller controller;
@@ -180,7 +174,6 @@ public class PlayScreen implements Screen {
         world.step(1 / 60f, 6, 2);
 
         player.update(dt);
-//        orb.update(dt);
         hud.update(dt);
 
         for (int i = 0; i < listOfOrbs.size(); i++){
@@ -297,13 +290,14 @@ public class PlayScreen implements Screen {
         }
 
 
-        //whole map is lit when player touches pillar
+        // Whole map is lit when player touches pillar
         if (WorldContactListener.fullVisibility == 1) {
             renderer.render();
-//            b2dr.render(world, gameCam.combined); //render fixture outlines
+            // uncomment to render fixture outlines
+//            b2dr.render(world, gameCam.combined);
 
             // tell our game batch to recognise where the gameCam is and render what the camera can see
-            //render shadows
+            // render shadows
             game.batch.setProjectionMatrix(gameCam.combined);
             if (multiplayer){
                 game.batch.begin();
@@ -346,14 +340,14 @@ public class PlayScreen implements Screen {
             }
             game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
-            //render glow on pillar when map is lit
+            // render glow on pillar when map is lit
             ShaderProgram pillarGlow = new ShaderProgram(Gdx.files.internal("shaders/pillarLightingVertex.glsl"),
                     Gdx.files.internal("shaders/pillarLightingFragment.glsl"));
             pillarGlow.pedantic = false;
             if (!pillarGlow.isCompiled())
                 throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
 
-            //for 4 orbs
+            // for 4 orbs
             pillarGlow.begin();
             pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
 
@@ -372,9 +366,9 @@ public class PlayScreen implements Screen {
             renderer.getBatch().setShader(null); //un-set the shader
             pillarGlow.end();
         } else {
-            //in the dark - game starting state
-            //render glow on pillar when map is not fully visible
-            //render glow for player moving around (gold when holding orb)
+            // in the dark - game starting state
+            // render glow on pillar when map is not fully visible
+            // render glow for player moving around (gold when holding orb)
 
             // tell our game batch to recognise where the gameCam is and render what the camera can see
             game.batch.setProjectionMatrix(gameCam.combined);
@@ -384,7 +378,7 @@ public class PlayScreen implements Screen {
             if (!pillarGlow.isCompiled())
                 throw new GdxRuntimeException("Couldn't compile shader: " + pillarGlow.getLog());
 
-            //coded for 4 orbs
+            // coded for 4 orbs
             pillarGlow.begin();
             pillarGlow.setUniformMatrix("u_worldView", gameCam.combined);
 
@@ -410,7 +404,7 @@ public class PlayScreen implements Screen {
             renderer.getBatch().setShader(null); //un-set the shader
             pillarGlow.end();
 
-            //render shadow if player is certain distance from shadow
+            // render shadow if player is certain distance from shadow
             if (sm.getShadows() != null) {
                 xDistance = Math.abs(gameCam.position.x - sm.getShadows().getX());
                 yDistance = Math.abs(gameCam.position.y - sm.getShadows().getY());

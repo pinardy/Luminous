@@ -18,6 +18,9 @@ import com.mygdx.game.MultiplayerGame;
 import com.mygdx.game.Scenes.Hud;
 
 
+/** HelpScreen displays the gameplay instructions to the user
+ */
+
 public class HelpScreen implements Screen {
     private Game game;
     private Viewport viewport;
