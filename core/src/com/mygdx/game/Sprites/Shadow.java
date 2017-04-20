@@ -51,7 +51,7 @@ public class Shadow extends Object{
 
     // construct from server
     public Shadow(PlayScreen screen, float x, float y, int time) {
-        this(screen, x, y, true);
+        this(screen, x, y);
         serverTime = time;
 
         initializeGraphics(true);
