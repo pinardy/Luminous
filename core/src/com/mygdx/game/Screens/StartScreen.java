@@ -131,7 +131,7 @@ public class StartScreen implements Screen {
         // buttons for choosing number of players
         table.add(twoPlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
         table.add(threePlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
-        table.add(fourPlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
+//        table.add(fourPlayer).size(twoPlayer.getWidth(), twoPlayer.getHeight());
 
 
         //Only for debugging in single player mode
@@ -151,14 +151,14 @@ public class StartScreen implements Screen {
                     // set images to black
                     twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("2player.png"))));
                     threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("3player.png"))));
-                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("4player.png"))));
+//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("4player.png"))));
 
                 } else {
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("joinGame.png"))));
 
                     twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
                     threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
 
                     // Set labels to show leaving room
                     numOfPlayersLabel.setText("");
@@ -185,7 +185,7 @@ public class StartScreen implements Screen {
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
                     twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
                     threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();
@@ -213,7 +213,7 @@ public class StartScreen implements Screen {
                     joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
                     twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
                     threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
 
                     if(!SocketClient.isConnected()){
                         connectSocket();
@@ -229,32 +229,32 @@ public class StartScreen implements Screen {
             }
         });
 
-        fourPlayer.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // if the button image is displayed
-                if (!hasJoin){
-                    capacity = 4;
-                    hasJoin = true;
-
-                    joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
-                    twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-                    threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
-
-                    if(!SocketClient.isConnected()){
-                        connectSocket();
-                        socket.emit("room", capacity);
-
-                    } else {
-                        SocketClient.getInstance().emit("room", capacity);
-                    }
-                }
-                // Set the labels to show connected
-                numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
-                connectedLabel.setText("Connected to server!");
-            }
-        });
+//        fourPlayer.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                // if the button image is displayed
+//                if (!hasJoin){
+//                    capacity = 4;
+//                    hasJoin = true;
+//
+//                    joinImg.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("leaveGame.png"))));
+//                    twoPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+//                    threePlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+//                    fourPlayer.setDrawable(new TextureRegionDrawable(new TextureRegion(new Texture("blackness.png"))));
+//
+//                    if(!SocketClient.isConnected()){
+//                        connectSocket();
+//                        socket.emit("room", capacity);
+//
+//                    } else {
+//                        SocketClient.getInstance().emit("room", capacity);
+//                    }
+//                }
+//                // Set the labels to show connected
+//                numOfPlayersLabel.setText("Waiting for " + playersLeft() + " more players");
+//                connectedLabel.setText("Connected to server!");
+//            }
+//        });
 
         helpImg.addListener(new ClickListener() {
             @Override
