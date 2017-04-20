@@ -33,6 +33,7 @@ public class Player extends Object {
 
     //Animation and graphics
     private TextureRegion playerStand;
+    private Array<TextureRegion> playerStanding = new Array<TextureRegion>();
     public enum State{UP, DOWN, LEFT, RIGHT, STAND}
     public State currentState;
     public State prevState;
@@ -71,7 +72,7 @@ public class Player extends Object {
         this.id = "0";
 
         //graphics
-        playerStand = new TextureRegion(getTexture(), 400,237,32,32);
+        playerStand = new TextureRegion(getTexture(), 99,1,32,32);
         setBounds(getX(), getY(), 16, 16);
         setRegion(playerStand);
 
@@ -83,32 +84,57 @@ public class Player extends Object {
         //fixture
         defineObject();
 
+        playerStanding.add(new TextureRegion(getTexture(), 99,1,32,32));
+        playerStanding.add(new TextureRegion(getTexture(), 1,3,32,32));
+        playerStanding.add(new TextureRegion(getTexture(), 694,115,96,96));
+        playerStanding.add(new TextureRegion(getTexture(), 403,115,96,96));
+
         Array<TextureRegion> frames = new Array<TextureRegion>(12);
+
         for (int row = 0; row < 4; row++){
             for (int col = 0; col < 3; col++) {
-                frames.add(new TextureRegion(getTexture(), 400+col*32, 237+row*32, 32, 32));
+                frames.add(new TextureRegion(getTexture(), 99+col*32, 1+row*32, 32, 32));
             }
         }
-
         playerDown = new Animation(0.1f, frames.get(0), frames.get(1), frames.get(2));
         playerLeft = new Animation(0.1f, frames.get(3), frames.get(4), frames.get(5));
         playerRight = new Animation(0.1f, frames.get(6), frames.get(7), frames.get(8));
         playerUp = new Animation(0.1f, frames.get(9), frames.get(10), frames.get(11));
 
+        frames.clear();
+        for (int row = 0; row < 4; row++){
+            for (int col = 0; col < 3; col++) {
+                frames.add(new TextureRegion(getTexture(), 1+col*32, 3+row*32, 32, 32));
+            }
+        }
         playerDownB = new Animation(0.1f, frames.get(0), frames.get(1), frames.get(2));
         playerLeftB = new Animation(0.1f, frames.get(3), frames.get(4), frames.get(5));
         playerRightB = new Animation(0.1f, frames.get(6), frames.get(7), frames.get(8));
         playerUpB = new Animation(0.1f, frames.get(9), frames.get(10), frames.get(11));
 
+        frames.clear();
+        for (int row = 0; row < 4; row++){
+            for (int col = 0; col < 3; col++) {
+                frames.add(new TextureRegion(getTexture(), 694+col*96, 115+row*96, 96, 96));
+            }
+        }
         playerDownC = new Animation(0.1f, frames.get(0), frames.get(1), frames.get(2));
         playerLeftC = new Animation(0.1f, frames.get(3), frames.get(4), frames.get(5));
         playerRightC = new Animation(0.1f, frames.get(6), frames.get(7), frames.get(8));
         playerUpC = new Animation(0.1f, frames.get(9), frames.get(10), frames.get(11));
 
+        frames.clear();
+        for (int row = 0; row < 4; row++){
+            for (int col = 0; col < 3; col++) {
+                frames.add(new TextureRegion(getTexture(), 403+col*96, 115+row*96, 96, 96));
+            }
+        }
         playerDownD = new Animation(0.1f, frames.get(0), frames.get(1), frames.get(2));
         playerLeftD = new Animation(0.1f, frames.get(3), frames.get(4), frames.get(5));
         playerRightD = new Animation(0.1f, frames.get(6), frames.get(7), frames.get(8));
         playerUpD = new Animation(0.1f, frames.get(9), frames.get(10), frames.get(11));
+
+
     }
 
     @Override
@@ -204,6 +230,7 @@ public class Player extends Object {
         return region;
     }
 
+
     //rendering other player for multiplayer
     public TextureRegion getOtherFrame(float dt, Player player){
 
@@ -217,7 +244,14 @@ public class Player extends Object {
         }
 
         if (currentStateB==null){
-            return playerStand;
+            if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                region =  playerStanding.get(1);
+            } else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                region =  playerStanding.get(2);
+            } else if (allOtherPlayers.get(2).getID().equals(player.getID())){
+                region =  playerStanding.get(3);
+            }
+            return region;
         }
 
         switch(currentStateB){
@@ -306,11 +340,18 @@ public class Player extends Object {
                 }
                 break;
             case STAND:
-                region = playerStand;
+                if (allOtherPlayers.get(0).getID().equals(player.getID())){
+                    region =  playerStanding.get(1);
+                } else if (allOtherPlayers.get(1).getID().equals(player.getID())){
+                    region =  playerStanding.get(2);
+                } else if (allOtherPlayers.get(2).getID().equals(player.getID())){
+                    region =  playerStanding.get(3);
+                }
                 break;
         }
         return region;
     }
+
 
     //single player
     public State getState(){
