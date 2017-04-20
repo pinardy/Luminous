@@ -65,7 +65,7 @@ public class Shadow extends Object{
 
             Array<TextureRegion> frames = new Array<TextureRegion>();
             for (int i = 0; i < 12; i++) {
-                frames.add(new TextureRegion(getTexture(), i * 32, 0, 32, 57));
+                frames.add(new TextureRegion(getTexture(),1+ i * 32, 133, 32, 57));
             }
             shadowRun = new Animation(0.1f, frames);
         }

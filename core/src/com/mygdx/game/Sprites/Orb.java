@@ -73,7 +73,7 @@ public class Orb extends Object{
     private void initializeGraphics(boolean graphics) {
         //graphics
         if(graphics) {
-            orbGraphics = new TextureRegion(getTexture(), 55, 67, 350, 367);
+            orbGraphics = new TextureRegion(getTexture(),1, 199, 400, 300);
             setBounds(getX(), getY(), 16,16);
             setRegion(orbGraphics);
         }

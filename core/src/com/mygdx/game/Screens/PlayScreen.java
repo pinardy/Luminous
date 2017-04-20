@@ -126,7 +126,7 @@ public class PlayScreen implements Screen {
         keyPressed = false;
         this.multiplayer = multiplayer;
         WorldContactListener.multiplayer = multiplayer;
-        atlas = new TextureAtlas("shadowman.atlas");
+        atlas = new TextureAtlas("shadowman.pack");
 
         this.game = game;
 
