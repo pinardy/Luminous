@@ -95,11 +95,17 @@ public class GameEndScreen implements Screen {
                         Gdx.app.log("SocketIO", SocketClient.players.toString());
                         Gdx.app.log("SocketIO", SocketClient.status.toString());
                         Gdx.app.log("SocketIO", SocketClient.hostID);
-                        Gdx.app.log("SocketIO", "Game starts");
-                        ready = true;
+                        Gdx.app.log("SocketIO", "Player ready");
+                        SocketClient.getInstance().emit("startNow");
                     }catch (Exception e){
                         Gdx.app.log("SocketIO", "error starting game");
                     }
+                }
+            }).on("startNow", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Gdx.app.log("SocketIO", "Game starts");
+                    ready = true;
                 }
             });
             tapLabel.setText("Waiting for all players to be ready...");
@@ -134,7 +140,7 @@ public class GameEndScreen implements Screen {
                 if (StartScreen.hasJoin) {
                     StartScreen.hasJoin = false;
                     StartScreen.ready = false;
-                    SocketClient.getInstance().emit("leave");
+                    SocketClient.getInstance().disconnect();
                 }
                 dispose();
             }

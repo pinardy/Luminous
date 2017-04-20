@@ -119,8 +119,6 @@ public class PlayScreen implements Screen {
     private ShadowManagement sm = null;
 
     public PlayScreen(MultiplayerGame game, boolean multiplayer) {
-        if (players != null) players.clear();
-        if (playerActions != null) playerActions.clear();
         players = new HashMap<String, Player>();
         playerActions = new HashMap<String, LinkedList<Vector2>>();
         clientPrediction = new HashMap<String, Vector2>();
@@ -302,7 +300,7 @@ public class PlayScreen implements Screen {
         //whole map is lit when player touches pillar
         if (WorldContactListener.fullVisibility == 1) {
             renderer.render();
-            b2dr.render(world, gameCam.combined); //render fixture outlines
+//            b2dr.render(world, gameCam.combined); //render fixture outlines
 
             // tell our game batch to recognise where the gameCam is and render what the camera can see
             //render shadows
@@ -674,7 +672,7 @@ public class PlayScreen implements Screen {
             int duration = gameStatus.getInt("time");
             int health = gameStatus.getInt("health");
             int level = gameStatus.getInt("level");
-            hud.initializeStatus(300, health, level);
+            hud.initializeStatus(10, health, level);
         }catch (JSONException e){
             Gdx.app.log("SocketIO", "Error parsing game status");
             e.printStackTrace();
@@ -710,6 +708,7 @@ public class PlayScreen implements Screen {
                 try {
                     String id = data.getString("id");
                     players.remove(id);
+                    playerActions.remove(id);
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error player disconnected");
                 }

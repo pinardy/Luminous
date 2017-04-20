@@ -162,9 +162,11 @@ public class StartScreen implements Screen {
 
                     // Set labels to show leaving room
                     numOfPlayersLabel.setText("");
+                    socket.close();
+                    socket.disconnect();
                     connectedLabel.setText("Disconnected from server!");
                     //TODO: emit a leave
-                    socket.emit("leave", 0);
+                    numOfPlayers = 0;
                     hasJoin = false;
                 }
 
@@ -384,12 +386,18 @@ public class StartScreen implements Screen {
                     Gdx.app.log("SocketIO", SocketClient.players.toString());
                     Gdx.app.log("SocketIO", SocketClient.status.toString());
                     Gdx.app.log("SocketIO", SocketClient.hostID);
-                    Gdx.app.log("SocketIO", "Game starts");
-                    ready = true;
+                    Gdx.app.log("SocketIO", "Player ready");
+                    SocketClient.getInstance().emit("startNow");
                 }catch (Exception e){
                     Gdx.app.log("SocketIO", "error starting game");
                     e.printStackTrace();
                 }
+            }
+        }).on("startNow", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Gdx.app.log("SocketIO", "Game starts");
+                ready = true;
             }
         });
     }
