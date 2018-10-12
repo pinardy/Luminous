@@ -2,8 +2,8 @@
 Multiplayer Game project for Software Construction module
 
 <img src="https://github.com/pinardy/Multiplayer-Game/blob/master/android/res/drawable-hdpi/luminousicon.png"/>
-<img src="https://raw.githubusercontent.com/pinardy/pinardy.github.io/source/src/assets/images/projects/game_1.png" height="130" width="260"/>
-<img src="https://raw.githubusercontent.com/pinardy/pinardy.github.io/source/src/assets/images/projects/game_help.png" height="130" width="260"/>
+<img src="https://raw.githubusercontent.com/pinardy/pinardy.github.io/source/src/assets/images/projects/game_1.png" height="250" width="350"/>
+<img src="https://raw.githubusercontent.com/pinardy/pinardy.github.io/source/src/assets/images/projects/game_help.png" height="250" width="350"/>
 
 <u><b>Group members:</b></u>  
 1) Qiao Rui 
